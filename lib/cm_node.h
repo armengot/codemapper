@@ -6,6 +6,7 @@
 #include <cm_edge.h>
 
 using namespace std;
+class edge;
 /*
  _  _  ___  ___  ___ 
 | \| |/ _ \|   \| __|
@@ -13,11 +14,11 @@ using namespace std;
 |_|\_|\___/|___/|___|
 
 */                   
-class node 
+class cm_node 
 {
     public:
-        node(const string& in_name, const string& in_label);
-        add_feature(string feature);
+        cm_node(const string& in_name, const string& in_label);
+        void add_feature(const string& feature);
         string get_name();
         string get_label();
         vector<string> get_features();

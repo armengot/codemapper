@@ -1,29 +1,34 @@
+/* external headers */
+#include <iostream>
+#include <string>
+#include <sstream>
+/* codemapper headers */
 #include <cm_graph.h>
 #include <cm_node.h>
 #include <cm_edge.h>
 
-void cm_graph::cm_graph(const std::string& in_name)
+cm_graph::cm_graph(const std::string& in_name)
 {
     name = in_name;
 }
 
-void cm_graph::~graph(); 
+cm_graph::~cm_graph()
 {        
-    for (auto node : nodes) 
+    for (auto cm_node : nodes) 
     {
-        delete node;
+        delete cm_node;
     }
-    for (auto edge : edges) 
+    for (auto cm_edge : edges) 
     {
-        delete edge;
+        delete cm_edge;
     }
 }    
 
-void addnode(node* node)
+void cm_graph::addnode(cm_node* node)
 {
     nodes.push_back(node);
 }
-void addedge(edge* edge)
+void cm_graph::addedge(cm_edge* edge)
 {
     edges.push_back(edge);
 }

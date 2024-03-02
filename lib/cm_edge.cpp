@@ -1,6 +1,6 @@
 #include <cm_edge.h>
 
-void edge::edge(const string& in_name, const string& in_label, node* in_tail, node* in_head)
+cm_edge::cm_edge(const string& in_name, const string& in_label, cm_node* in_tail, cm_node* in_head)
 {
     name = in_name;
     label = in_label;
@@ -8,31 +8,31 @@ void edge::edge(const string& in_name, const string& in_label, node* in_tail, no
     head = in_head;
 }
 
-void edge::add_feature(const string& feature) 
+void cm_edge::add_feature(const string& feature) 
 {
     features.push_back(feature);
 }
 
-node* edge::get_head()
+cm_node* cm_edge::get_head()
 {
     return(head);
 }
-node* edge::get_tail()
+cm_node* cm_edge::get_tail()
 {
     return(tail);
 }
 
-string edge::get_name()
+std::string cm_edge::get_name()
 {
     return(name);
 }
 
-string edge::get_label()
+std::string cm_edge::get_label()
 {
     return(label);
 }
 
-vector<string> edge::get_features()
+std::vector<std::string> cm_edge::get_features()
 {
-    return(features):
+    return(features);
 }

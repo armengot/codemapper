@@ -14,20 +14,20 @@ using namespace std;
  \___|_|_\/_/ \_\_| |_||_|
     
 */                   
-class graph
+class cm_graph
 {
     public:
-        graph(string in_name);
-        ~graph(); 
+        cm_graph(const string& in_name);
+        ~cm_graph(); 
 
         string to_string() const;
-        void addnode(node* node);
-        void addedge(edge* edge);
+        void addnode(cm_node* node);
+        void addedge(cm_edge* edge);
 
     private:
         string name;
-        vector<node*> nodes;
-        vector<edge*> edges;
+        vector<cm_node*> nodes;
+        vector<cm_edge*> edges;
 };
 
 #endif
