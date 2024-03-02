@@ -2,7 +2,7 @@
 
 cm_edge::cm_edge(const string& in_name, const string& in_label, cm_node* in_tail, cm_node* in_head)
 {
-    name = in_name;
+    name = in_name;    
     label = in_label;
     tail = in_tail;
     head = in_head;

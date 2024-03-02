@@ -13,7 +13,8 @@ cm_graph::cm_graph(const std::string& in_name)
 }
 
 cm_graph::~cm_graph()
-{        
+{   
+    /*
     for (auto cm_node : nodes) 
     {
         delete cm_node;
@@ -22,7 +23,16 @@ cm_graph::~cm_graph()
     {
         delete cm_edge;
     }
-}    
+    */
+}
+
+void cm_graph::edgesall(const string& feature)
+{
+    for (const auto& edge : edges) 
+    {
+        edge->add_feature(feature);
+    }      
+}
 
 void cm_graph::addnode(cm_node* node)
 {
@@ -36,38 +46,38 @@ void cm_graph::addedge(cm_edge* edge)
 std::string cm_graph::to_string() const 
 {
     std::stringstream ss;
-    ss << "digraph {\n";
+    ss << "digraph " << name << "\n{\n";
 
+    // Generar nodos
     for (const auto& node : nodes) 
     {
-        ss << "    " << node->get_name() << " [label=\"\n" << node->get_label();
+        ss << "\t" << node->get_name() << "\n\t[\n";
+        ss << "\t\tlabel=\"" << node->get_label() << "\"\n";
+        
         std::vector<std::string> features = node->get_features();
-        if (!features.empty())
+        for (const auto& feature : features) 
         {
-            ss << "\\n";
-            for (const auto& feature : features) 
-            {
-                ss << "\\n" << feature;
-            }
+            ss << "\t\t" << feature << "\n";
         }
-        ss << "\"];\n";
+        
+        ss << "\t];\n";
     }
     
+    // Generar arcos
     for (const auto& edge : edges) 
     {
-        ss << "    " << edge->get_tail()->get_name() << " -> " << edge->get_head()->get_name() << " [label=\"" << edge->get_label();
+        ss << "\t" << edge->get_tail()->get_name() << " -> " 
+           << edge->get_head()->get_name() << "\n\t[\n";
+        ss << "\t\tlabel=\"" << edge->get_label() << "\"\n";
+        
         std::vector<std::string> features = edge->get_features();
-        if (!features.empty())
+        for (const auto& feature : features) 
         {
-            ss << "\\n";
-            for (const auto& feature : features) 
-            {
-                ss << "\\n" << feature;
-            }
+            ss << "\t\t" << feature << "\n";
         }
-        ss << "\"];\n";
+        
+        ss << "\t];\n";
     }
-
 
     ss << "}\n";
     return ss.str();

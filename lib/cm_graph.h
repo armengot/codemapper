@@ -23,6 +23,7 @@ class cm_graph
         string to_string() const;
         void addnode(cm_node* node);
         void addedge(cm_edge* edge);
+        void edgesall(const string& feature);        
 
     private:
         string name;

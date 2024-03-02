@@ -1,6 +1,8 @@
 #include <gvc.h>
 
 /* Graphviz documentation simple.c example */
+
+/* $ ./simple file.dot > file.png */
 int main(int argc, char **argv)
 {
     GVC_t *gvc;

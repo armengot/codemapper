@@ -1,30 +1,19 @@
-# Code Mapper
+/* external headers */
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <thread>
+#include <gvc.h>
 
-Code Mapper is a tool to generate standard ```graphviz``` graphs from source code.
+/* code mapper headers */
+#include <cm_graph.h>
+#include <cm_node.h>
+#include <cm_edge.h>
 
-## Requirements
+using namespace std;
 
-Code Mapper sources must link with ```graphviz``` as a library, so first to compile  ```codemapper``` sources your system must find ```graphviz``` sources.
-
-```
-$ git clone https://gitlab.com/graphviz/graphviz
-$ cd graphviz
-$ mkdir build
-$ cmake ..
-$ make
-$ make install
-```
-
-To complete this previous step, may be other packages could be required, as ```bison``` or ```flex```, etc.
-```
-$ sudo apt-get install bison
-$ sudo apt-get install flex
-```
-
-## Codemapper separated graph lib
-
-Inside ```lib``` folder the codemapper own graph lib is availble. To be used a ```cm_graph``` the ```exe/testlib.cpp``` is available.
-```
+int main() 
+{
     /* nodes and edges */    
     cm_node cm_exe("exe","exe/main.cpp");
     cm_node cm_gui("gui","gui/main.cpp");    
@@ -64,11 +53,8 @@ Inside ```lib``` folder the codemapper own graph lib is availble. To be used a `
     test.addedge(&dep7);
     test.edgesall("arrowhead = none");
 
-    /* output */
     std::cout << test.to_string() << std::endl;
-```
-And used as follows:
-```
-./codemapper | ./simple > codemapper.png
-```
-![example](basic.png)
+
+    return(0);
+}
+
