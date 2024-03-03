@@ -17,7 +17,7 @@ set(SOURCES exe/main.cpp)
 
 # codemapper own libraries
 add_library(cm_graph STATIC lib/cm_edge.cpp lib/cm_node.cpp lib/cm_graph.cpp)
-add_library(cm_lan STATIC lan/cm_lan.cpp) 
+add_library(cm_lan STATIC lan/cm_lan.cpp lib/tools.cpp) 
 add_library(cm_clan STATIC lan/cm_clan.cpp)
 
 # main executable

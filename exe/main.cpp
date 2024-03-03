@@ -37,9 +37,10 @@ int main(int argc, char* argv[])
 {
     string target_folder;
     string lang;
-    string output_format = "svg";
+    string output_format = "png";
     bool target_provided = false;
     bool lang_provided = false;
+    cm_graph* codetree;
 
     int opt;
     while ((opt = getopt(argc, argv, "t:l:v:o:")) != -1) 
@@ -85,10 +86,10 @@ int main(int argc, char* argv[])
     if (lang[0]=='c')
     {
         cpp_language project(target_folder);
-        project.parse();
+        codetree = project.parse();
+        project.createnodes(codetree);
+        codetree->to_string();
     }
-
-
 
     return(0);
 }

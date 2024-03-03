@@ -10,14 +10,8 @@ class cpp_language : public language
 {
     public:
         cpp_language(const string& in_target);
-        ~cpp_language() {};        
-        
-    private:
-        vector<cm_node> sources;
-        vector<cm_edge> deps;
-        string src_ext = "cpp";
-        string lib_ext = "h";
-        string inc_key = "include";    
+        ~cpp_language() {};   
+        void createnodes(cm_graph* project) override;      
 };
 
 #endif
