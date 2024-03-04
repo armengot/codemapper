@@ -6,7 +6,8 @@
 #include <cm_edge.h>
 
 using namespace std;
-class edge;
+
+class cm_edge;
 /*
  _  _  ___  ___  ___ 
 | \| |/ _ \|   \| __|
@@ -27,6 +28,7 @@ class cm_node
         string name;
         string label;
         vector<string> features;
+        vector<cm_edge*> edges;
 };
 
 #endif

@@ -38,9 +38,22 @@ void cm_graph::addnode(cm_node* node)
 {
     nodes.push_back(node);
 }
+
 void cm_graph::addedge(cm_edge* edge)
 {
     edges.push_back(edge);
+}
+
+cm_node* cm_graph::lookfor(std::string name)
+{
+    for (const auto& node : nodes) 
+    {
+        if (name == node->get_name())
+        {
+            return(node);
+        }
+    }
+    return(nullptr);
 }
 
 std::string cm_graph::to_string() const 
