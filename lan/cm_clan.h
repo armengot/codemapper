@@ -11,7 +11,8 @@ class cpp_language : public language
     public:
         cpp_language(const string& in_target);
         ~cpp_language() {};   
-        void createnodes(cm_graph* project) override;      
+        void create_nodes(cm_graph* project) override;
+        void create_edges(cm_graph* project) override;
 };
 
 #endif

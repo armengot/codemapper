@@ -19,7 +19,7 @@ cpp_language::cpp_language(const string& in_target) : language(in_target)
     inc_key = "include";   
 }
 
-void cpp_language::createnodes(cm_graph* project)
+void cpp_language::create_nodes(cm_graph* project)
 {
     std::vector<std::string> headers;
     std::vector<std::string> sources;
@@ -88,7 +88,13 @@ void cpp_language::createnodes(cm_graph* project)
     }
 }
 
-
+void cpp_language::create_edges(cm_graph* project)
+{
+    for (const auto& pair : sourcesmap) 
+    {
+        std::cerr << "Source called: " << pair.first << "  absolute path: " << pair.second << std::endl;
+    }
+}
 
 
 

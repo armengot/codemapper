@@ -89,7 +89,9 @@ int main(int argc, char* argv[])
     {
         cpp_language project(target_folder);
         codetree = project.parse();
-        project.createnodes(codetree);
+        project.create_nodes(codetree);
+        project.create_edges(codetree);
+        
         cout << codetree->to_string() << endl;
     }
 

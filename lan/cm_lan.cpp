@@ -53,6 +53,7 @@ void language::lookfor_sources()
                     if ((file_extension==src_ext)||(file_extension==lib_ext))
                     {
                         sourceslist.push_back(name);
+                        sourcesmap[name] = input.path().string();
                         std::cerr << " " << name << std::endl;
                     }
                 }
