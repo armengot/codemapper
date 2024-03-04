@@ -55,40 +55,42 @@ int main(int argc, char* argv[])
                 lang_provided = true;
                 break;
             case 'v':
-                cout << "codemapper by Marcelo Armengot (C) 2024 " << VERSION << endl;                
+                cerr << "codemapper by Marcelo Armengot (C) 2024 " << VERSION << endl;                
                 return 0;
             case 'o':
                 output_format = optarg;
                 break;
             default:
-                cout << "codemapper by Marcelo Armengot (C) 2024 " << VERSION << endl;                            
-                cout << "Usage: " << argv[0] << " -t folder -l lang [-v] [-o output_format]" << endl;
-                cout << "\t\t-t root folder of the target project" << endl;
-                cout << "\t\t-l source code language of the target project (currenly only available \"py\" for Python or \"cpp\" for C/C++" << endl;
-                cout << "\t\t-v version info" << endl;
-                cout << "\t\t-o output format (svg/png)";
+                cerr << "codemapper by Marcelo Armengot (C) 2024 " << VERSION << endl;                            
+                cerr << "Usage: " << argv[0] << " -t folder -l lang [-v] [-o output_format]" << endl;
+                cerr << "\t\t-t root folder of the target project" << endl;
+                cerr << "\t\t-l source code language of the target project (currenly only available \"py\" for Python or \"cpp\" for C/C++" << endl;
+                cerr << "\t\t-v version info" << endl;
+                cerr << "\t\t-o output format (svg/png)";
                 return 1;
         }
     }
     
     if (!target_provided || !lang_provided) 
     {
-        cout << "codemapper by Marcelo Armengot (C) 2024 " << VERSION << endl;                            
-        cout << "Usage: " << argv[0] << " -t folder -l lang [-v] [-o output_format]" << endl;        
+        cerr << "codemapper by Marcelo Armengot (C) 2024 " << VERSION << endl;                            
+        cerr << "Usage: " << argv[0] << " -t folder -l lang [-v] [-o output_format]" << endl;        
         cerr << "Missing mandatory parameters language and target folder." << std::endl;       
         return(1);
     }
     
-    cout << "   Specified target: " << target_folder << endl;
-    cout << "    Code written in: " << lang << endl;
-    cout << "Output graph format: " << output_format << endl;
+    cerr << "-------------------------------------------------------------------------------------------" << endl;
+    cerr << "   Specified target: " << target_folder << endl;
+    cerr << "    Code written in: " << lang << endl;
+    cerr << "Output graph format: " << output_format << endl;
+    cerr << "-------------------------------------------------------------------------------------------" << endl;
 
     if (lang[0]=='c')
     {
         cpp_language project(target_folder);
         codetree = project.parse();
         project.createnodes(codetree);
-        codetree->to_string();
+        cout << codetree->to_string() << endl;
     }
 
     return(0);

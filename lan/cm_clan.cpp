@@ -30,44 +30,49 @@ void cpp_language::createnodes(cm_graph* project)
         if (ext[0]=='h')
         {
             headers.push_back(source);
-            std::cout << "\tadding header: " << source << std::endl;
+            std::cerr << "\tadding header: " << source << std::endl;
         }
         if (ext[0]=='c')
         {
             sources.push_back(source);
-            std::cout << "\tadding source: " << source << std::endl;
+            std::cerr << "\tadding source: " << source << std::endl;
         }
     }
-    for (auto header = headers.begin(); header != headers.end(); )
+    for (auto header = headers.begin(); header != headers.end(); ++header)
     {
         string nameheader = firstname(*header,'.');
-        std::cout << "\tprocessing: " << nameheader << std::endl;
+        //std::cerr << "\tprocessing: " << nameheader << std::endl;
         if (nameheader!="")
         {
-            for (auto candidate = sources.begin(); candidate != sources.end(); )
+            for (auto candidate = sources.begin(); candidate != sources.end(); ++candidate)
             {
-                string namesource = firstname(*candidate,'.');
-                std::cout << "\t\tprocessing: " << nameheader << " : " << namesource << std::endl;
+                string clean,namesource = firstname(*candidate,'.');
+
+                //std::cerr << "\t\tprocessing: " << nameheader << " : " << namesource << std::endl;
                 if (nameheader == namesource)
                 {
-                    std::cout << "equal" << std::endl;
-                    cm_node* couple = new cm_node(namesource,"{"+*candidate+"|"+*header+"}");
+                    if ((namesource.find('.')!=string::npos))                    
+                    {                        
+                        clean = firstname(namesource,'.');
+                    }
+                    else
+                    {
+                        clean = namesource;
+                    }
+                    cm_node* couple = new cm_node(clean,"{"+*candidate+"|"+*header+"}");
                     couple->add_feature("shape = record");
                     //headers.erase(header);
                     //sources.erase(candidate);
                     project->addnode(couple);
-                }
-                break;
-            }
-            break;
-        }        
-        break;
+                }                
+            }            
+        }
     }
     if (!sources.empty())
     {
         for (const auto& source : sources)
         {
-            cm_node* alone = new cm_node(source,source);
+            cm_node* alone = new cm_node(firstname(source,'.'),source);
             alone->add_feature("shape = box");
             project->addnode(alone);
         }
@@ -76,7 +81,7 @@ void cpp_language::createnodes(cm_graph* project)
     {
         for (const auto& source : headers)
         {
-            cm_node* alone = new cm_node(source,source);
+            cm_node* alone = new cm_node(firstname(source,'.'),source);
             alone->add_feature("shape = box");
             project->addnode(alone);
         }

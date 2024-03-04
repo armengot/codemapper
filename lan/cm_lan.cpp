@@ -31,6 +31,7 @@ void language::lookfor_sources()
     {
         if (fs::is_regular_file(input))
         {
+            std::cerr << "looking for sources: " << input << std::endl;
             size_t pos = input.path().string().find("build");
             if (pos!=string::npos)
                 continue;
@@ -41,7 +42,7 @@ void language::lookfor_sources()
             if (pos!=string::npos)
                 continue;                                
 
-            std::cout << input.path();
+            std::cerr << "\t" << input.path();
             std::string name = lastname(input.path(),'/');
         
             if (name != "")
@@ -52,7 +53,7 @@ void language::lookfor_sources()
                     if ((file_extension==src_ext)||(file_extension==lib_ext))
                     {
                         sourceslist.push_back(name);
-                        std::cout << " " << name << std::endl;
+                        std::cerr << " " << name << std::endl;
                     }
                 }
             }
