@@ -67,8 +67,8 @@ Inside ```lib``` folder the codemapper own graph lib is availble. To be used a `
     /* output */
     std::cout << test.to_string() << std::endl;
 ```
-And used as follows:
+Example:
 ```
-./codemapper | ./simple > codemapper.png
+codemapper/build$ ./test | ./simple > basic.png
 ```
 ![example](doc/basic.png)
