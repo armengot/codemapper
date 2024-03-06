@@ -6,6 +6,7 @@
 #include <cm_graph.h>
 #include <cm_node.h>
 #include <cm_edge.h>
+#include <tools.h>
 
 cm_graph::cm_graph(const std::string& in_name)
 {
@@ -39,16 +40,42 @@ void cm_graph::addnode(cm_node* node)
     nodes.push_back(node);
 }
 
-void cm_graph::addedge(cm_edge* edge)
+int cm_graph::addedge(cm_edge* edge)
 {
+    cm_node* tail = edge->get_tail();
+    cm_node* head = edge->get_head();
+
+    if (tail==head)
+        return(0);
+
+    for (auto& each_edge : edges)
+    {
+        if ((tail == each_edge->get_tail())&&(head == each_edge->get_head()))
+            return(0);
+    }
     edges.push_back(edge);
+    return(1);
+}
+
+vector<cm_node*> cm_graph::allnodes()
+{
+    return(nodes);
 }
 
 cm_node* cm_graph::lookfor(std::string name)
 {
+    std::string copy;
+    if (name.find('.') != std::string::npos)
+    {
+        copy = firstname(name,'.');
+    }
+    else
+    {
+        copy = name;
+    }
     for (const auto& node : nodes) 
     {
-        if (name == node->get_name())
+        if (copy == node->get_name())
         {
             return(node);
         }

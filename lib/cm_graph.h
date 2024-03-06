@@ -22,9 +22,10 @@ class cm_graph
 
         string to_string() const;
         void addnode(cm_node* node);
-        void addedge(cm_edge* edge);
+        int addedge(cm_edge* edge);
         void edgesall(const string& feature);
         cm_node* lookfor(string name);
+        vector<cm_node*> allnodes();
 
     private:
         string name;

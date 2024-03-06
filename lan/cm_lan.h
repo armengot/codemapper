@@ -24,8 +24,7 @@ class language
     protected:
         void lookfor_sources();
         void lookfor_deps();    
-        vector<string> sourceslist;
-        vector<cm_node> node_sources;
+        vector<string> sourceslist;        
         vector<cm_edge> deps;
         map<string,string> sourcesmap;
         string src_ext;
