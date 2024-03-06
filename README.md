@@ -71,4 +71,4 @@ And used as follows:
 ```
 ./codemapper | ./simple > codemapper.png
 ```
-![example](basic.png)
+![example](doc/basic.png)
