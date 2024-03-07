@@ -35,9 +35,15 @@ void cm_graph::edgesall(const string& feature)
     }      
 }
 
-void cm_graph::addnode(cm_node* node)
+int cm_graph::addnode(cm_node* node)
 {
+    for (auto& each_node : nodes)
+    {        
+        if (each_node->get_name()==node->get_name())
+            return(0);
+    }
     nodes.push_back(node);
+    return(1);
 }
 
 int cm_graph::addedge(cm_edge* edge)
@@ -53,6 +59,7 @@ int cm_graph::addedge(cm_edge* edge)
         if ((tail == each_edge->get_tail())&&(head == each_edge->get_head()))
             return(0);
     }
+    edge->add_feature("dir=back");
     edges.push_back(edge);
     return(1);
 }

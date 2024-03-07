@@ -21,7 +21,7 @@ class cm_graph
         ~cm_graph(); 
 
         string to_string() const;
-        void addnode(cm_node* node);
+        int addnode(cm_node* node);
         int addedge(cm_edge* edge);
         void edgesall(const string& feature);
         cm_node* lookfor(string name);
