@@ -30,7 +30,7 @@ add_executable(test exe/testlib.cpp)
 # compile options and linker commands
 target_link_libraries(cm_clan PRIVATE cm_graph cm_lan cm_tools)
 target_compile_options(${PROJECT_NAME} PUBLIC ${CFLAGS})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${LDFLAGS} PRIVATE cm_graph cm_clan)
+target_link_libraries(${PROJECT_NAME} PUBLIC ${LDFLAGS} PRIVATE cm_graph cm_clan cm_tools)
 target_compile_options(test PUBLIC ${CFLAGS})
 target_link_libraries(test PUBLIC ${LDFLAGS} PRIVATE cm_graph cm_tools)
 

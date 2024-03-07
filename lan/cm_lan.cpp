@@ -42,7 +42,7 @@ void language::lookfor_sources()
             if (pos!=string::npos)
                 continue;                                
 
-            std::cerr << "\t" << input.path();
+            std::cerr << "\t" << input.path() << std::endl;
             std::string name = lastname(input.path(),'/');
         
             if (name != "")
@@ -52,13 +52,40 @@ void language::lookfor_sources()
                 {
                     if ((file_extension==src_ext)||(file_extension==lib_ext))
                     {
-                        sourceslist.push_back(name);
-                        sourcesmap[name] = input.path().string();
-                        std::cerr << " " << name << std::endl;
+                        auto it = sourcesmap.find(name);
+                        /* if a name equal in list */
+                        if (it!=sourcesmap.end())
+                        {
+                            std::cerr << "\t\t\tfound previous " << name << " : " << sourcesmap[name] << std::endl;
+                            /* change name of old */
+                            string old_path = sourcesmap[name];
+                            string new_name = lastwo(sourcesmap[name],'/',global_join_char);
+                            std::cerr << "\t\t\t" << name << " erased and changed by -> " << new_name << " : " << old_path << std::endl;
+                            sourcesmap.erase(name);
+                            erasestring(sourceslist,name);
+                            sourceslist.push_back(new_name);                            
+                            sourcesmap[new_name] = old_path;
+                            /* change current insertion name */
+                            new_name = lastwo(input.path(),'/',global_join_char);
+                            sourceslist.push_back(new_name);
+                            sourcesmap[new_name] = input.path().string();
+                            std::cerr << "\t" << new_name << " : " << sourcesmap[new_name] << std::endl;
+                        }
+                        else
+                        {
+                            sourceslist.push_back(name);
+                            sourcesmap[name] = input.path().string();
+                            std::cerr << "\t" << name << " : " << sourcesmap[name] << std::endl;
+                        }
                     }
                 }
             }
         }
+    }
+    std::cerr << "\n\nFINAL MAP\n";
+    for (const auto& pair : sourcesmap) 
+    {
+        std::cerr << pair.first << ": " << pair.second << std::endl;
     }
 }
 

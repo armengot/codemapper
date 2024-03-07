@@ -73,7 +73,16 @@ void cpp_language::create_nodes(cm_graph* project)
     {
         for (const auto& source : sources)
         {
-            cm_node* alone = new cm_node(firstname(source,'.'),source);
+            cm_node* alone;
+            if (charin(global_join_char,source))
+            {
+                string label = lastwo(source,global_join_char,'/');
+                alone = new cm_node(firstname(source,'.'),label);
+            }
+            else
+            {
+                alone = new cm_node(firstname(source,'.'),source);
+            }
             alone->add_feature("shape = box");
             project->addnode(alone);
         }
@@ -110,7 +119,7 @@ void cpp_language::create_edges(cm_graph* project)
                     for (auto& node : project->allnodes()) 
                     {
                         string name_node = node->get_name();
-                        std::cerr << "\t\tlooking for " << name_node << "   in   " << line << std::endl;
+                        //std::cerr << "\t\tlooking for " << name_node << "   in   " << line << std::endl;
                         if (line.find(name_node) != std::string::npos)
                         {                            
                             cm_node* head = project->lookfor(name_node);                            
