@@ -42,7 +42,7 @@ void language::lookfor_sources()
             if (pos!=string::npos)
                 continue;                                
 
-            std::cerr << "\t" << input.path() << std::endl;
+            //std::cerr << "\t" << input.path() << std::endl;
             std::string name = lastname(input.path(),'/');
         
             if (name != "")
@@ -69,23 +69,23 @@ void language::lookfor_sources()
                             new_name = lastwo(input.path(),'/',global_join_char);
                             sourceslist.push_back(new_name);
                             sourcesmap[new_name] = input.path().string();
-                            std::cerr << "\t" << new_name << " : " << sourcesmap[new_name] << std::endl;
+                            std::cerr << "\t" << new_name << " : " << DEBUG_BLDTXT << DEBUG_GRNTXT << sourcesmap[new_name] << DEBUG_RESTXT << std::endl;
                         }
                         else
                         {
                             sourceslist.push_back(name);
                             sourcesmap[name] = input.path().string();
-                            std::cerr << "\t" << name << " : " << sourcesmap[name] << std::endl;
+                            std::cerr << "\t" << name << " : " << DEBUG_BLDTXT << DEBUG_GRNTXT << sourcesmap[name] << DEBUG_RESTXT << std::endl;                            
                         }
                     }
                 }
             }
         }
     }
-    std::cerr << "\n\nFINAL MAP\n";
+    std::cerr << "\nWORKING MAP\n";
     for (const auto& pair : sourcesmap) 
     {
-        std::cerr << pair.first << ": " << pair.second << std::endl;
+        std::cerr << pair.first << ":\t" << pair.second << std::endl;
     }
 }
 

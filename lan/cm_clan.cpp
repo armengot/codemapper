@@ -31,12 +31,12 @@ void cpp_language::create_nodes(cm_graph* project)
         if (ext[0]=='h')
         {
             headers.push_back(source);
-            std::cerr << "\tadding header: " << source << std::endl;
+            std::cerr << "header: " << source << std::endl;
         }
         if (ext[0]=='c')
         {
             sources.push_back(source);
-            std::cerr << "\tadding source: " << source << std::endl;
+            std::cerr << "source: " << source << std::endl;
         }
     }
     for (auto header = headers.begin(); header != headers.end(); ++header)
@@ -102,7 +102,7 @@ void cpp_language::create_edges(cm_graph* project)
 {
     for (const auto& pair : sourcesmap) 
     {
-        std::cerr << "Source called: " << pair.first << "  absolute path: " << pair.second << std::endl;
+        std::cerr << "Looking for deps: " << pair.first << "  absolute path: " << pair.second << std::endl;
         cm_node* tail = project->lookfor(pair.first);
         std::cerr << "\tEquivalent node: " << tail->get_name() << std::endl;
         std::ifstream file(pair.second);
@@ -115,7 +115,7 @@ void cpp_language::create_edges(cm_graph* project)
                 line_number++;            
                 if (line.find(inc_key) != std::string::npos)
                 {
-                    std::cerr << "\tFound in file " << pair.second << " at line " << line_number << ": " << line << std::endl;
+                    std::cerr << "\tFound " << DEBUG_BLDTXT << inc_key << DEBUG_RESTXT << " in "  << pair.second << " at line " << line_number << ": " << line << std::endl;
                     for (auto& node : project->allnodes()) 
                     {
                         string name_node = node->get_name();
@@ -125,7 +125,7 @@ void cpp_language::create_edges(cm_graph* project)
                             cm_node* head = project->lookfor(name_node);                            
                             cm_edge* new_edge = new cm_edge("","",tail,head);
                             if (project->addedge(new_edge))
-                                std::cerr << "\t\t" << tail->get_name() << " -> " << head->get_name() << std::endl;
+                                std::cerr << DEBUG_GRNTXT << "\t\t" << tail->get_name() << " -> " << head->get_name() << DEBUG_RESTXT << std::endl;
 
                         }
                     }
