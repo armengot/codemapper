@@ -3,16 +3,6 @@
 #include <sstream>
 #include <algorithm>
 
-#define DEBUG_REDTXT      "\x1B[31m"
-#define DEBUG_GREENTXT    "\x1B[32m"
-#define DEBUG_YELLOWTXT   "\x1B[33m"
-#define DEBUG_BLUETXT     "\x1B[34m"
-#define DEBUG_MAGENTATXT  "\x1B[35m"
-#define DEBUG_CYANTXT     "\x1B[36m"
-#define DEBUG_BOLDTXT     "\x1B[1m"
-#define DEBUG_RESETXT     "\x1B[0m"
-
-
 using namespace std;
 
 char global_join_char = '_';
