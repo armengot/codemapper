@@ -56,18 +56,18 @@ int main(int argc, char* argv[])
                 lang_provided = true;
                 break;
             case 'v':
-                cerr << "\ncodemapper by Marcelo Armengot (C) 2024 " << VERSION << endl;                
+                cerr << "codemapper by Marcelo Armengot (C) 2024 " << GIT_OFFICIAL_VERSION << endl;                
                 cerr << "more info in https://github.com/armengot/codemapper" << endl;
                 return 0;
             case 'o':
                 output_format = optarg;
                 break;
             case 'h':
-                cerr << "\ncodemapper by Marcelo Armengot (C) 2024 " << VERSION << endl;
+                cerr << "codemapper by Marcelo Armengot (C) 2024 " << GIT_OFFICIAL_VERSION << endl;
                 cerr << "more info in https://github.com/armengot/codemapper" << endl << endl;
                 cerr << "Usage: " << argv[0] << " -t folder -l lang [-v] [-o output_format]" << endl;
                 cerr << "\t\t-t root folder of the target project." << endl;
-                cerr << "\t\t-l source code language of the target project (currenly only available \"py\" for Python or \"cpp\" for C/C++)." << endl;
+                cerr << "\t\t-l source code language of the target project, currenly only available \"cpp\" for C/C++ (Python in progress)." << endl;
                 cerr << "\t\t-v version info." << endl;
                 cerr << "\t\t-o output format (svg/png)." << endl;
                 return 1;
@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
     
     if (!target_provided || !lang_provided) 
     {
-        cerr << "\ncodemapper by Marcelo Armengot (C) 2024 " << VERSION << endl;                            
+        cerr << "codemapper by Marcelo Armengot (C) 2024 " << GIT_OFFICIAL_VERSION << endl;                            
         cerr << "Usage: " << argv[0] << " -t folder -l lang [-v] [-o output_format] [h for help]" << endl;        
         cerr << "Missing mandatory parameters language and target folder." << std::endl;       
         return(1);
