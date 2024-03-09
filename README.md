@@ -72,8 +72,15 @@ Inside ```lib``` folder the codemapper own graph lib is availble. To be used a `
     /* output */
     std::cout << test.to_string() << std::endl;
 ```
-Example:
+## Example (1):
 ```
 codemapper/build$ ./test | ./simple > basic.png
 ```
 ![example](doc/basic.png)
+
+## Example (2):
+Current status of this project: Can ```codemapper``` parse itself?
+```
+./codemapper -t /home/marcelo/dev/personal/github/codemapper -l "cpp" | ./simple > codemapper.png
+```
+![example](doc/codemapper.png)
