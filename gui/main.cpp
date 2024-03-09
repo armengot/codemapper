@@ -1,8 +1,17 @@
+#include <iostream>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QDialog>
 
-// Menu file
-//      -> parse input -> svg
-//      -> save graph
-//      -> export (render)
-//      -> quit
-// Menu help
-//      -> about
+#include <cm_qt5_gui.h>
+
+using namespace std;
+
+int main(int argc, char** argv)
+{ 
+    QApplication app(argc, argv);
+
+    auto win = new cm_qt5_gui;
+    win->show();
+
+    return app.exec();
+}
