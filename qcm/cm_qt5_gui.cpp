@@ -45,18 +45,24 @@ void cm_qt5_gui::debugqt(std::string stin)
 
 void cm_qt5_gui::setup_canvas()
 {
+    sarea = new QScrollArea;
+    sarea->setBackgroundRole(QPalette::Dark);
+    sarea->setWidgetResizable(true);
+
+    /* create canvas */
     canvas = new qcanvas();
-    canvas->setParent(this);
+    canvas->setParent(sarea);
     canvas->setMouseTracking(true);
     canvas->setBackgroundRole(QPalette::Base);
-    //canvas->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     canvas->setScaledContents(true);
-        
-    //setCentralWidget(&canvas);    
 
-    //sarea->setBackgroundRole(QPalette::Dark);
-    setCentralWidget(canvas);
+    /* Scroll Area -> canvas*/
+    sarea->setWidget(canvas);
+
+    /* main widget -> scroll area */
+    setCentralWidget(sarea);
 }
+
 
 void cm_qt5_gui::setup_menus()
 {
