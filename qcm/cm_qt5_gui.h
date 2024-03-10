@@ -30,7 +30,7 @@ class cm_qt5_gui : public QMainWindow
         qcanvas *canvas;
         string selected_input_language = "cpp";
         string selected_render_format = "png";
-        cm_graph* current_project;
+        cm_graph* current_project;        
 
         /* debug */
         void debugqt(std::string stin);        

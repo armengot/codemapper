@@ -47,19 +47,14 @@ void cm_qt5_gui::setup_canvas()
 {
     canvas = new qcanvas();
     canvas->setParent(this);
-    //sarea = new QScrollArea;
-
     canvas->setMouseTracking(true);
-
     canvas->setBackgroundRole(QPalette::Base);
-    canvas->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    //canvas->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     canvas->setScaledContents(true);
         
     //setCentralWidget(&canvas);    
 
     //sarea->setBackgroundRole(QPalette::Dark);
-    //sarea->setWidget(canvas);
-    //sarea->setVisible(false);
     setCentralWidget(canvas);
 }
 
@@ -171,13 +166,7 @@ void cm_qt5_gui::canvaslink(QPoint mouse)
 {  
     std::string tmp = "FATHER = [" + std::to_string(mouse.x()) +"," +std::to_string(mouse.y()) + "]";    
     debugqt(tmp);
-    /*
-    if (cvscene.query(mouse.x(),mouse.y()))
-    {
-        cvscene.play();
-        render();
-    }
-    */
+
 }
 
 void cm_qt5_gui::closeEvent(QCloseEvent *event)

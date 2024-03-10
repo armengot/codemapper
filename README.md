@@ -26,9 +26,9 @@ $ sudo apt-get install bison
 $ sudo apt-get install flex
 ```
 
-## Codemapper separated graph lib
+## Codemapper as separated graph library
 
-Inside ```lib``` folder the codemapper own graph lib is availble. To be used a ```cm_graph``` the ```exe/testlib.cpp``` is available.
+Inside ```lib``` folder the codemapper own graph lib is availble. To be used a ```cm_graph``` the ```exe/testlib.cpp``` is available to be executed as ```testlib``` binary.
 ```
     /* nodes and edges */    
     cm_node cm_exe("exe","exe/main.cpp");
@@ -72,15 +72,19 @@ Inside ```lib``` folder the codemapper own graph lib is availble. To be used a `
     /* output */
     std::cout << test.to_string() << std::endl;
 ```
-## Example (1):
+## Codemapper as command line app
+
+Finnaly compiled, ```codemapper```can be called from the prompt as shown in the following examples:
+
+### Example (1):
 ```
 codemapper/build$ ./test | ./simple > basic.png
 ```
 ![example](doc/basic.png)
 
-## Example (2):
+### Example (2):
 Current status of this project: Can ```codemapper``` parse itself?
 ```
-./codemapper -t /home/marcelo/dev/personal/github/codemapper -l "cpp" | ./simple > codemapper.png
+codemapper/build$ ./codemapper -t /home/marcelo/dev/personal/github/codemapper -l "cpp" | ./simple > codemapper.png
 ```
 ![example](doc/codemapper.png)

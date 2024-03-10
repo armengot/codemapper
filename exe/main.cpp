@@ -88,12 +88,3 @@ int main(int argc, char* argv[])
     return(0);
 }
 
-
-/*
-    stringstream output;    
-    std::thread processingThread(cm_render, test.to_string(), std::ref(output));      
-    processingThread.join();    
-    std::string svg = output.str();    
-    std::cout << svg << std::endl;
-*/
-
