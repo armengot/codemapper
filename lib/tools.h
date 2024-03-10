@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <gvc.h>
 
 #define DEBUG_REDTXT      "\x1B[31m"
 #define DEBUG_GRNTXT    "\x1B[32m"
@@ -23,5 +24,6 @@ string lastwo(std::string path, char splitchar, char joinchar);
 string firstname(string path, char splitchar);
 void erasestring(vector<string>& old, const string& key);
 bool charin(char c, const std::string& str);
+void cm_render(const string& input, std::stringstream& output);
 
 #endif

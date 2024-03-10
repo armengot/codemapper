@@ -60,6 +60,7 @@ add_custom_target(git_commit_header_target DEPENDS ${GIT_COMMIT_HEADER_FILE})
 find_package(Qt5Widgets)
 find_package(Qt5Core)
 find_package(Qt5Gui)
+find_package(Qt5 COMPONENTS Svg REQUIRED)
 # ---------------------------------------------------------------------------------------------------------
 # graphviz library usage
 execute_process(COMMAND pkg-config libgvc --cflags OUTPUT_VARIABLE CFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -70,6 +71,7 @@ include_directories(${GRAPHVIZ_INCLUDE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/lib/)
 include_directories(${CMAKE_SOURCE_DIR}/lan/)
 include_directories(${CMAKE_SOURCE_DIR}/qcm/)
+include_directories(${Qt5Svg_INCLUDE_DIRS})
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Meta-Object Compiler (MOC) : See Qt5 documentation: https://doc.qt.io/qt-5/moc.html
 # CMAKE AUTOMOC ON = no linker problems between Q_OBJECT qcanvas-cqtgui
@@ -101,11 +103,15 @@ add_dependencies(${PROJECT_NAME} git_commit_header_target)
 add_dependencies(${GUI_CODEMAPPER} git_commit_header_target)
 
 # compile options and linker commands
+target_compile_options(cm_tools PUBLIC ${CFLAGS})
+target_link_libraries(cm_tools PUBLIC ${LDFLAGS})
 target_link_libraries(cm_clan PRIVATE cm_graph cm_lan cm_tools)
 target_compile_options(${PROJECT_NAME} PUBLIC ${CFLAGS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${LDFLAGS} PRIVATE cm_graph cm_clan cm_tools)
 target_compile_options(test PUBLIC ${CFLAGS})
 target_link_libraries(test PUBLIC ${LDFLAGS} PRIVATE cm_graph cm_tools)
+target_compile_options(${GUI_CODEMAPPER} PUBLIC ${CFLAGS})
+
 # Qt5 link
 target_link_libraries(cm_qcanvas Qt5::Gui)
 target_link_libraries(cm_qcanvas Qt5::Widgets)
@@ -113,11 +119,9 @@ target_link_libraries(cm_qtlib cm_qcanvas)
 target_link_libraries(cm_qtlib Qt5::Widgets)
 target_link_libraries(cm_qtlib Qt5::Gui)
 target_link_libraries(cm_qtlib Qt5::Core)
-target_link_libraries(${GUI_CODEMAPPER} Qt5::Widgets)
-target_link_libraries(${GUI_CODEMAPPER} Qt5::Gui)
-target_link_libraries(${GUI_CODEMAPPER} Qt5::Core)
-target_link_libraries(${GUI_CODEMAPPER} cm_qtlib)
-target_link_libraries(${GUI_CODEMAPPER} cm_qcanvas)
+target_link_libraries(cm_qtlib ${Qt5Svg_LIBRARIES})
+target_link_libraries(${GUI_CODEMAPPER} PUBLIC ${LDFLAGS} cm_qtlib cm_qcanvas cm_graph cm_clan cm_tools)
+
 
 # tests and examples too
 target_compile_options(simple PUBLIC ${CFLAGS})
@@ -140,5 +144,11 @@ add_custom_command(TARGET test
     POST_BUILD
     COMMAND echo -n
     COMMENT "test${RESETCOLOR} is a example of cm_graph library usage."
+    VERBATIM
+)
+add_custom_command(TARGET ${GUI_CODEMAPPER}
+    POST_BUILD
+    COMMAND echo -n
+    COMMENT "${REDCOLOR}${GUI_CODEMAPPER}${RESETCOLOR} is a Qt5 frontend to render graphs parsed by codemapper libs and edit the result (beta, in progress)."
     VERBATIM
 )

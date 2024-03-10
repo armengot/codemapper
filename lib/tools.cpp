@@ -2,6 +2,7 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
+#include <gvc.h>
 
 using namespace std;
 
@@ -89,4 +90,30 @@ void erasestring(vector<string>& old, const string& key)
     {
         old.erase(it);        
     } 
+}
+
+void cm_render(const string& input, std::stringstream& output) 
+{
+    GVC_t *gvc;
+    Agraph_t *g;
+    FILE *fp;
+    char* buffer;
+    unsigned int len;
+
+    gvc = gvContext();
+    fp = fmemopen((void*)input.c_str(), input.length(), "r");
+    g = agread(fp, 0);
+    gvLayout(gvc, g, "dot");
+    //gvRender(gvc, g, "svg", stdout);
+    gvRenderData(gvc, g, "svg", &buffer, &len); 
+    gvFreeLayout(gvc, g);
+    agclose(g);
+    gvFreeContext(gvc);
+    fclose(fp);
+    //output << stdout;
+    if (buffer != NULL) 
+    {
+        output << buffer;
+        gvFreeRenderData(buffer);
+    }    
 }

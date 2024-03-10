@@ -4,7 +4,6 @@
 #include <string>
 #include <sstream>
 #include <thread>
-#include <gvc.h>
 
 /* code mapper headers */
 #include <cm_lan.h>
@@ -15,23 +14,6 @@
 #include <gitinfo.h>
 
 using namespace std;
-
-void cm_render(const string& input, std::stringstream& output) 
-{
-    GVC_t *gvc;
-    Agraph_t *g;
-    FILE *fp;
-    gvc = gvContext();
-    fp = fmemopen((void*)input.c_str(), input.length(), "r");
-    g = agread(fp, 0);
-    gvLayout(gvc, g, "dot");
-    gvRender(gvc, g, "png", stdout);
-    gvFreeLayout(gvc, g);
-    agclose(g);
-    gvFreeContext(gvc);
-    fclose(fp);
-    output << stdout;
-}
 
 int main(int argc, char* argv[]) 
 {
