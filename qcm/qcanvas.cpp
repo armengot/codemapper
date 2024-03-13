@@ -46,7 +46,7 @@ void qcanvas::xmlingest()
 {
     /* parse xml */
     bool ok = true;
-    QXmlStreamReader xmlReader(xml);
+    QXmlStreamReader xmlReader(xml);    
 
     while (!xmlReader.atEnd() && !xmlReader.hasError()) 
     {
@@ -88,47 +88,42 @@ void qcanvas::xmlingest()
                 }
             }        
             else
-            {
-                xmlnode newNode;
-                newNode.id = xmlReader.attributes().value("id").toString().toStdString();
-                
-                while (!xmlReader.atEnd() && !xmlReader.hasError())
-                {
+            {                
+                if (xmlReader.attributes().value("class").toString().toStdString()=="node")
+                {       
+                    xmlnode newn;
+                    newn.id = xmlReader.attributes().value("id").toString().toStdString();
+
                     xmlReader.readNext();                    
-                    if (xmlReader.isStartElement())
-                    {
-                        if (xmlReader.name() == "title")
+                    while (xmlReader.name().toString().toStdString() != "title")
+                        xmlReader.readNext();
+                    newn.title = xmlReader.readElementText().toStdString();
+                    xmlReader.readNext();                    
+                    while (xmlReader.name() != "text")
+                        xmlReader.readNext();                    
+                    newn.label = xmlReader.readElementText().toStdString();
+                    while (xmlReader.name() != "polygon") 
+                        xmlReader.readNext();                
+                    QString pointstring = xmlReader.attributes().value("points").toString();                    
+                    QStringList lpoints = pointstring.split(' ');
+                    for (const QString& point : lpoints)
+                    {                        
+                        QStringList coords = point.split(',');
+                        if (coords.size() == 2)
                         {
-                            newNode.title = xmlReader.readElementText().toStdString();
+                            qreal x = coords[0].toFloat();
+                            qreal y = coords[1].toFloat();
+                            newn.bounding.append(QPointF(x, y));
                         }
-                        else if (xmlReader.name() == "text")
-                        {
-                            newNode.label = xmlReader.readElementText().toStdString();
-                        }
-                        else if (xmlReader.name() == "polygon")
-                        {                            
-                            QString pointsString = xmlReader.attributes().value("points").toString();
-                            QStringList pointsList = pointsString.split(' ', QString::SkipEmptyParts);
-                            for (const QString& point : pointsList)
-                            {
-                                QStringList coords = point.split(',');
-                                if (coords.size() == 2)
-                                {
-                                    qreal x = coords[0].toFloat();
-                                    qreal y = coords[1].toFloat();
-                                    newNode.bounding.append(QPointF(x, y));
-                                }
-                            }
-                            
-                        }
-                    }                    
-                    if (xmlReader.isEndElement())
-                    {                     
-                        break;
                     }
+                    currentsvg.nodes.push_back(newn);
+                    std::cerr << newn.id << " " << newn.title << " " << newn.label << std::endl;
+                    for (auto each : newn.bounding)
+                    {
+                        std::cerr << "\t" << each.x() << " " << each.y() << std::endl;
+                    }
+
                 }
-                currentsvg.nodes.push_back(newNode);
-                std::cerr << "NODE " << newNode.id << " " << newNode.title << " " << newNode.label << std::endl;
             }
         }
     }
