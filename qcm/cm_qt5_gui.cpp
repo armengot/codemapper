@@ -12,10 +12,7 @@
 #include <QLayout>
 #include <QObject>
 #include <QFileDialog>
-#include <QByteArray>
-#include <QSvgRenderer>
-#include <QPainter>
-#include <QXmlStreamReader>
+
 
 /* PROJECT LIBS */
 #include <cm_qt5_gui.h>
@@ -37,11 +34,6 @@ cm_qt5_gui::cm_qt5_gui()
 
     setup_canvas();
     setup_menus();   
-}
-
-void cm_qt5_gui::debugqt(std::string stin)
-{
-    std::cerr << "debug(QT): " << stin << std::endl; 
 }
 
 void cm_qt5_gui::setup_canvas()
@@ -137,27 +129,8 @@ void cm_qt5_gui::infolder()
         stringstream output;
         debugqt("graphviz call to svg build... ");
         cm_render(current_project->to_string(), output);        
-        svg = output.str();    
-        //std::cerr << svg;            
-        QByteArray qbytes(svg.c_str(), static_cast<int>(svg.length()));        
-        renderer.load(qbytes);
-
-        if (renderer.isValid()) 
-        {
-            QPixmap pixmap(renderer.defaultSize());
-            pixmap.fill(Qt::transparent);
-            QPainter painter(&pixmap);
-            renderer.render(&painter);
-            painter.end();    
-            canvas->setPixmap(pixmap);
-            canvas->set_render(&renderer);
-            canvas->xml = QString::fromStdString(svg);
-            canvas->xmlingest();
-        }
-        else 
-        {
-            debugqt("Error happened rendering SVG graph.");
-        }
+        svg = output.str();  
+        canvas->load(svg);  
     }
 }
 

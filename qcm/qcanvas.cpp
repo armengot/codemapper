@@ -8,15 +8,23 @@
 #include <QMouseEvent>
 #include <QSvgRenderer>
 #include <QString>
+#include <QPainter>
+#include <QByteArray>
+#include <QXmlStreamReader>
 
 /* PROJECT LIBS */
 #include <qcanvas.h>
+
+void debugqt(std::string stin)
+{
+    cerr << "debug(QT): " << stin << endl; 
+}
 
 void qcanvas::mouseMoveEvent(QMouseEvent *event)
 {
     mouse = event->pos();
     //std::cerr << "debug(CANVAS): QLabel = [" << mouse.x() << "," << mouse.y() << "]\n";    
-    if (svg_render)
+    if (svg_loaded_as_xml)
     {
         /* ratio between CANVAS and original SVG */
         QRect frame = geometry();        
@@ -33,20 +41,58 @@ void qcanvas::mouseMoveEvent(QMouseEvent *event)
         svgpos.setX(qx - currentsvg.translate[0]);
         svgpos.setY(qy - currentsvg.translate[1]);
         //std::cerr << " ==> [" << svgpos.x() << "," << svgpos.y() << "]\n";     
+        for (const auto& square: currentsvg.nodes)
+        {
+            if (square.bounding.contains(svgpos))
+            {
+                std::cerr << square.label << std::endl;
+            }
+            else
+            {
+                /*
+                std::cerr << "[" << svgpos.x() << "," << svgpos.y() << "] outside of {";
+                for (const QPointF& v : square.bounding)
+                {
+                    std::cerr << "(" << v.x() << "," << v.y() << ") ";
+                }
+                std::cerr << std::endl;
+                */
+            }
+        }
     }
     emit user(mouse);
 }
 
-void qcanvas::set_render(QSvgRenderer* svg)
-{
-    svg_render = svg;
+void qcanvas::load(std::string svg)
+{    
+    //std::cerr << svg;            
+    QByteArray qbytes(svg.c_str(), static_cast<int>(svg.length()));        
+    svg_render.load(qbytes);
+
+    if (svg_render.isValid()) 
+    {
+        QPixmap pixmap(svg_render.defaultSize());
+        pixmap.fill(Qt::transparent);
+        QPainter painter(&pixmap);
+        svg_render.render(&painter);
+        painter.end();    
+        setPixmap(pixmap);                
+        if (xmlingest(svg)>2)
+            svg_loaded_as_xml = true;
+    }
+    else 
+    {
+        debugqt("Error happened rendering SVG graph.");
+    }
 }
 
-void qcanvas::xmlingest()
+int qcanvas::xmlingest(std::string svg)
 {
     /* parse xml */
+    xml = QString::fromStdString(svg);        
+    QXmlStreamReader xmlReader(xml);
     bool ok = true;
-    QXmlStreamReader xmlReader(xml);    
+    int r = 0;
 
     while (!xmlReader.atEnd() && !xmlReader.hasError()) 
     {
@@ -63,7 +109,7 @@ void qcanvas::xmlingest()
                 currentsvg.vbox[i] = four[i].toFloat(&ok);
             }
             std::cerr << currentsvg.vbox[0] << " " << currentsvg.vbox[1] << " " << currentsvg.vbox[2] << " " << currentsvg.vbox[3] << std::endl;
-            
+            r = r + 1;            
         }
         if (xmlReader.name() == "g")
         {
@@ -85,6 +131,7 @@ void qcanvas::xmlingest()
                     std::cerr << "scale: " << currentsvg.scale[0] << ":"<< currentsvg.scale[1];
                     std::cerr << " rotate: " << currentsvg.rotate;
                     std::cerr << " translate: [" << currentsvg.translate[0] << "," << currentsvg.translate[1] << "]" << std::endl;
+                    r = r + 1;
                 }
             }        
             else
@@ -122,10 +169,10 @@ void qcanvas::xmlingest()
                     {
                         std::cerr << "\t" << each.x() << " " << each.y() << std::endl;
                     }
-
+                    r = r + 1;
                 }
             }
-        }
-    }
-
+        }        
+    }    
+    return(r);
 }

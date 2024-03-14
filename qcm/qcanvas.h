@@ -1,10 +1,15 @@
 #ifndef QCANVAS_H
 #define QCANVAS_H
 
+/* Qt libraries */
 #include <QWidget>
 #include <QObject>
 #include <QLabel>
 #include <QSvgRenderer>
+#include <QPolygonF>
+
+/* external standard libraries */
+#include <iostream>
 
 using namespace std;
 
@@ -13,7 +18,7 @@ struct xmlnode
     string id;
     string title;
     string label;    
-    QVector<QPointF> bounding;
+    QPolygonF bounding;
 };
 
 struct xmlsvg
@@ -27,22 +32,26 @@ struct xmlsvg
     vector<xmlnode> nodes;
 };
 
+void debugqt(std::string stin);
+
 class qcanvas : public QLabel
 {
     Q_OBJECT
 
     public:
-        qcanvas() = default; // declare constructor to allow linker work    
-        void set_render(QSvgRenderer* svg);
-        void xmlingest();
-        QString xml;        
+        qcanvas() = default; // declare constructor to allow linker work            
+        void load(std::string svg);
+        int xmlingest(std::string svg);
+                
 
     protected:
         void mouseMoveEvent(QMouseEvent *event) override;   
 
     private:
+        bool svg_loaded_as_xml = false;
         QPoint mouse;
-        QSvgRenderer* svg_render = nullptr;
+        QSvgRenderer svg_render;
+        QString xml;
         struct xmlsvg currentsvg;
 
     signals:

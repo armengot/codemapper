@@ -37,11 +37,7 @@ class cm_qt5_gui : public QMainWindow
 
         /* target objects */
         cm_graph* current_project;
-        QSvgRenderer renderer;
         std::string svg;             
-
-        /* debug */
-        void debugqt(std::string stin);        
 
         /* general */
         void render();

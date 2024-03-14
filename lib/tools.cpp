@@ -92,6 +92,7 @@ void erasestring(vector<string>& old, const string& key)
     } 
 }
 
+/* graphviz library real connection */
 void cm_render(const string& input, std::stringstream& output) 
 {
     GVC_t *gvc;
