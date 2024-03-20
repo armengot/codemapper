@@ -42,9 +42,14 @@ void cm_qt5_gui::setup_canvas()
     sarea->setBackgroundRole(QPalette::Dark);
     sarea->setWidgetResizable(true);
 
+    /* text bar */
+    textbar = new QTextEdit;
+    textbar->setReadOnly(true);
+    textbar->setFixedHeight(40);
+
     /* create canvas */
     canvas = new qcanvas();
-    canvas->setParent(sarea);
+    //canvas->setParent(sarea);
     canvas->setMouseTracking(true);
     canvas->setBackgroundRole(QPalette::Base);
     canvas->setScaledContents(true);
@@ -52,8 +57,21 @@ void cm_qt5_gui::setup_canvas()
     /* Scroll Area -> canvas*/
     sarea->setWidget(canvas);
 
+    /* layout -> canvas+text */
+    QVBoxLayout* layout = new QVBoxLayout;
+    layout->addWidget(sarea);
+    layout->addWidget(textbar); 
+
+    /* output link */
+    canvas->canvas_textline = textbar;
+
+    /* container */
+    QWidget* container = new QWidget;
+    container->setLayout(layout);    
+
     /* main widget -> scroll area */
-    setCentralWidget(sarea);
+    // setCentralWidget(sarea);
+    setCentralWidget(container);
 }
 
 
@@ -136,7 +154,18 @@ void cm_qt5_gui::infolder()
 
 void cm_qt5_gui::guiabout()
 {
-    debugqt("about");
+    // debugqt("about");
+    QString about;
+    about += "codemapper by Marcelo Armengot (C) 2024 " + QString(GIT_OFFICIAL_VERSION);
+    about += "\nThis application is a GUI for codemapper tools.\n";
+    about += "For more information, visit: https://github.com/armengot/codemapper\n";
+    about += "This release was tagged as " + QString(GIT_OFFICIAL_VERSION) + " version number.\n";
+    about += "Qt " + QString(QT_VERSION_STR) + " is included.";    
+    //QMessageBox::information(this, "About", about, QMessageBox::Ok);
+    QMessageBox box(QMessageBox::Information, "About", about, QMessageBox::Ok, this);    
+    box.setTextFormat(Qt::RichText);    
+    box.setFixedSize(700, 300);   
+    box.exec();
 }
 
 QString cm_qt5_gui::getversion()
@@ -148,7 +177,6 @@ void cm_qt5_gui::canvaslink(QPoint mouse)
 {  
     std::string tmp = "FATHER = [" + std::to_string(mouse.x()) +"," +std::to_string(mouse.y()) + "]";    
     debugqt(tmp);
-
 }
 
 void cm_qt5_gui::closeEvent(QCloseEvent *event)

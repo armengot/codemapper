@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QSvgRenderer>
 #include <QPolygonF>
+#include <QTextEdit>
 
 /* external standard libraries */
 #include <iostream>
@@ -43,10 +44,12 @@ class qcanvas : public QLabel
         qcanvas() = default; // declare constructor to allow linker work            
         void load(std::string svg);
         int xmlingest(std::string svg);
+        QTextEdit* canvas_textline;
                 
 
     protected:
         void mouseMoveEvent(QMouseEvent *event) override;   
+        void mousePressEvent(QMouseEvent *event) override;
 
     private:
         bool svg_loaded_as_xml = false;

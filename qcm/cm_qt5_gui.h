@@ -16,6 +16,7 @@
 #include <QSvgRenderer>
 #include <QString>
 #include <QXmlStreamReader>
+#include <QTextEdit>
 
 /* PROJECT LIBS */
 #include <cm_graph.h>
@@ -31,7 +32,7 @@ class cm_qt5_gui : public QMainWindow
     private:
         /* global vars */
         QScrollArea* sarea;
-        
+        QTextEdit* textbar;
         qcanvas* canvas;        
         string selected_input_language = "cpp";
         string selected_render_format = "png";

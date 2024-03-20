@@ -21,6 +21,25 @@ void debugqt(std::string stin)
     cerr << "debug(QT): " << stin << endl; 
 }
 
+void qcanvas::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) 
+    {
+        debugqt("LEFT");
+        QString to_find = canvas_textline->toPlainText();
+        std::cerr << to_find.toStdString() << std::endl;
+    }
+    else if (event->button() == Qt::RightButton) 
+    {
+        debugqt("RIGHT");        
+    } 
+    else if (event->button() == Qt::MiddleButton) 
+    {
+        debugqt("CENTER");        
+    }    
+    QLabel::mousePressEvent(event);
+}
+
 void qcanvas::mouseMoveEvent(QMouseEvent *event)
 {
     mouse = event->pos();
@@ -43,15 +62,18 @@ void qcanvas::mouseMoveEvent(QMouseEvent *event)
         //svgpos.setY(currentsvg.translate[1] - qy);
         svgpos.setY(qy - currentsvg.translate[1]);
         //std::cerr << " ==> [" << svgpos.x() << "," << svgpos.y() << "]\n";     
+        bool text_bar_filled = false;
         for (const auto& square: currentsvg.nodes)
         {
             qreal diffX = square.center.x() - svgpos.x();
             qreal diffY = square.center.y() - svgpos.y();
-            qreal distance = sqrt(diffX * diffX + diffY * diffY);
+            qreal distance = sqrt(diffX * diffX + diffY * diffY);            
             //std::cerr << "\t" << square.label << "[" << square.center.x() << "," << square.center.y() << "] : " << distance << std::endl;
             if (distance<20)
             {
-                std::cerr << square.label << std::endl;
+                // std::cerr << square.label << std::endl;
+                canvas_textline->setText(QString::fromStdString(square.label));
+                text_bar_filled = true;
             }
             if (square.bounding.contains(svgpos))
             {
@@ -68,6 +90,10 @@ void qcanvas::mouseMoveEvent(QMouseEvent *event)
                 std::cerr << std::endl;
                 */
             }
+        }
+        if (!text_bar_filled)
+        {
+            canvas_textline->setText(QString::fromStdString(""));
         }
     }
     emit user(mouse);
