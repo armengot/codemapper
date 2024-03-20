@@ -30,8 +30,9 @@ class cm_qt5_gui : public QMainWindow
     
     private:
         /* global vars */
-        QScrollArea* sarea;                
-        qcanvas* canvas;
+        QScrollArea* sarea;
+        
+        qcanvas* canvas;        
         string selected_input_language = "cpp";
         string selected_render_format = "png";
 

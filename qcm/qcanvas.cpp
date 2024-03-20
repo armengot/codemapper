@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include <regex>
+#include <math.h>
 
 /* Qt5 environment libraries */
 #include <QLabel>
@@ -39,10 +40,19 @@ void qcanvas::mouseMoveEvent(QMouseEvent *event)
         /* de-translation */
         QPointF svgpos;
         svgpos.setX(qx - currentsvg.translate[0]);
+        //svgpos.setY(currentsvg.translate[1] - qy);
         svgpos.setY(qy - currentsvg.translate[1]);
         //std::cerr << " ==> [" << svgpos.x() << "," << svgpos.y() << "]\n";     
         for (const auto& square: currentsvg.nodes)
         {
+            qreal diffX = square.center.x() - svgpos.x();
+            qreal diffY = square.center.y() - svgpos.y();
+            qreal distance = sqrt(diffX * diffX + diffY * diffY);
+            //std::cerr << "\t" << square.label << "[" << square.center.x() << "," << square.center.y() << "] : " << distance << std::endl;
+            if (distance<20)
+            {
+                std::cerr << square.label << std::endl;
+            }
             if (square.bounding.contains(svgpos))
             {
                 std::cerr << square.label << std::endl;
@@ -65,7 +75,7 @@ void qcanvas::mouseMoveEvent(QMouseEvent *event)
 
 void qcanvas::load(std::string svg)
 {    
-    //std::cerr << svg;            
+    // std::cout << svg;            
     QByteArray qbytes(svg.c_str(), static_cast<int>(svg.length()));        
     svg_render.load(qbytes);
 
@@ -135,7 +145,17 @@ int qcanvas::xmlingest(std::string svg)
                 }
             }        
             else
-            {                
+            {      
+                /* node example 
+                <!-- cm_lan -->
+                <g id="node1" class="node">
+                <title>cm_lan</title>
+                <polygon fill="none" stroke="black" points="281.69,-260.3 281.69,-309.9 361.69,-309.9 361.69,-260.3 281.69,-260.3"/>
+                <text text-anchor="middle" x="321.69" y="-292.6" font-family="Times,serif" font-size="14.00">cm_lan.cpp</text>
+                <polyline fill="none" stroke="black" points="281.69,-285.1 361.69,-285.1"/>
+                <text text-anchor="middle" x="321.69" y="-267.8" font-family="Times,serif" font-size="14.00">cm_lan.h</text>
+                </g>            
+                */              
                 if (xmlReader.attributes().value("class").toString().toStdString()=="node")
                 {       
                     xmlnode newn;
@@ -144,15 +164,29 @@ int qcanvas::xmlingest(std::string svg)
                     xmlReader.readNext();                    
                     while (xmlReader.name().toString().toStdString() != "title")
                         xmlReader.readNext();
-                    newn.title = xmlReader.readElementText().toStdString();
-                    xmlReader.readNext();                    
-                    while (xmlReader.name() != "text")
-                        xmlReader.readNext();                    
-                    newn.label = xmlReader.readElementText().toStdString();
+                    newn.title = xmlReader.readElementText().toStdString();                    
                     while (xmlReader.name() != "polygon") 
                         xmlReader.readNext();                
                     QString pointstring = xmlReader.attributes().value("points").toString();                    
                     QStringList lpoints = pointstring.split(' ');
+                    /* COMPUTE CENTROID */
+                    qreal sumX = 0.0;
+                    qreal sumY = 0.0;
+                    for (const QString& point : lpoints)
+                    {                        
+                        QStringList coords = point.split(',');
+                        if (coords.size() == 2)
+                        {
+                            qreal x = coords[0].toFloat();
+                            qreal y = coords[1].toFloat();
+                            sumX += x;
+                            sumY += y;
+                        }
+                    }
+                    qreal centroidX = sumX / lpoints.size();
+                    qreal centroidY = sumY / lpoints.size();
+                    newn.center = QPointF(centroidX,centroidY);
+                    /* STORE BOUNDING POINTS */                    
                     for (const QString& point : lpoints)
                     {                        
                         QStringList coords = point.split(',');
@@ -163,8 +197,14 @@ int qcanvas::xmlingest(std::string svg)
                             newn.bounding.append(QPointF(x, y));
                         }
                     }
+                    xmlReader.readNext();                    
+                    while (xmlReader.name() != "text")
+                        xmlReader.readNext();                    
+                    newn.label = xmlReader.readElementText().toStdString();                    
+                    
                     currentsvg.nodes.push_back(newn);
                     std::cerr << newn.id << " " << newn.title << " " << newn.label << std::endl;
+                    std::cerr << "CENTER [" << newn.center.x() << "," << newn.center.y() << "]" << std::endl;
                     for (auto each : newn.bounding)
                     {
                         std::cerr << "\t" << each.x() << " " << each.y() << std::endl;

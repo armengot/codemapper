@@ -17,7 +17,8 @@ struct xmlnode
 {
     string id;
     string title;
-    string label;    
+    string label;
+    QPointF center;        
     QPolygonF bounding;
 };
 
