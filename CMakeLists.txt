@@ -137,18 +137,18 @@ target_link_libraries(test PUBLIC ${LDFLAGS})
 add_custom_command(TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMAND echo -n
-    COMMENT "${REDCOLOR}${PROJECT_NAME}${RESETCOLOR} is just command line tool to parse source code projects."
+    COMMENT "${GREENCOLOR}${PROJECT_NAME}${RESETCOLOR} is just command line tool to parse source code projects."
     VERBATIM
 )
 add_custom_command(TARGET test
     POST_BUILD
     COMMAND echo -n
-    COMMENT "test${RESETCOLOR} is a example of cm_graph library usage."
+    COMMENT "${GREENCOLOR}test${RESETCOLOR} is a example of cm_graph library usage."
     VERBATIM
 )
 add_custom_command(TARGET ${GUI_CODEMAPPER}
     POST_BUILD
     COMMAND echo -n
-    COMMENT "${REDCOLOR}${GUI_CODEMAPPER}${RESETCOLOR} is a Qt5 frontend to render graphs parsed by codemapper libs and edit the result (beta, in progress)."
+    COMMENT "${GREENCOLOR}${GUI_CODEMAPPER}${RESETCOLOR} is a Qt5 frontend to render graphs parsed by codemapper libs and edit the result (beta, in progress)."
     VERBATIM
 )

@@ -46,6 +46,8 @@ void qcanvas::mouseMoveEvent(QMouseEvent *event)
     //std::cerr << "debug(CANVAS): QLabel = [" << mouse.x() << "," << mouse.y() << "]\n";    
     if (svg_loaded_as_xml)
     {
+        /* Step (1) convert mouse coords to real SVG world coords */
+        /* *********************************************************************************** */
         /* ratio between CANVAS and original SVG */
         QRect frame = geometry();        
         /* mouse relative to canvas */
@@ -62,6 +64,8 @@ void qcanvas::mouseMoveEvent(QMouseEvent *event)
         //svgpos.setY(currentsvg.translate[1] - qy);
         svgpos.setY(qy - currentsvg.translate[1]);
         //std::cerr << " ==> [" << svgpos.x() << "," << svgpos.y() << "]\n";     
+        /* Step (2) look for eastest near node under a threshold */
+        /* *********************************************************************************** */        
         bool text_bar_filled = false;
         for (const auto& square: currentsvg.nodes)
         {
@@ -74,21 +78,6 @@ void qcanvas::mouseMoveEvent(QMouseEvent *event)
                 // std::cerr << square.label << std::endl;
                 canvas_textline->setText(QString::fromStdString(square.label));
                 text_bar_filled = true;
-            }
-            if (square.bounding.contains(svgpos))
-            {
-                std::cerr << square.label << std::endl;
-            }
-            else
-            {
-                /*
-                std::cerr << "[" << svgpos.x() << "," << svgpos.y() << "] outside of {";
-                for (const QPointF& v : square.bounding)
-                {
-                    std::cerr << "(" << v.x() << "," << v.y() << ") ";
-                }
-                std::cerr << std::endl;
-                */
             }
         }
         if (!text_bar_filled)
