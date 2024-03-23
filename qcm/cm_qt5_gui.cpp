@@ -156,30 +156,14 @@ void cm_qt5_gui::infolder()
 
 void cm_qt5_gui::guiabout()
 {
-    // debugqt("about");
     QMessageBox box;
     QString about;
     about = QString("codemapper by Marcelo Armengot (C) 2024 - ") + QString(GIT_OFFICIAL_VERSION) + QString("\n");
     about = about + QString("This application is a GUI for codemapper tools.\n");
-    about = about + QString("For more information, visit: https://github.com/armengot/codemapper\n");
+    about = about + QString("For more information, visit: ") + QString(CODEMAPPER_URL) + QString("\n");
     about = about + QString("(+) Qt ") + QString(QT_VERSION_STR) + QString(" is included.\n");
     about = about + QString("(+) Graphviz ") + QString(PACKAGE_VERSION) + QString(" is used.\n");    
     box.setInformativeText(about);
-    /*
-    about += "codemapper by Marcelo Armengot (C) 2024 " + QString(GIT_OFFICIAL_VERSION);
-    about += "\nThis application is a GUI for codemapper tools.\n";
-    about += "For more information, visit: https://github.com/armengot/codemapper\n";
-    about += "This release was tagged as " + QString(GIT_OFFICIAL_VERSION) + " version number.\n";
-    about += "Qt " + QString(QT_VERSION_STR) + " is included.";    
-    */
-    //QMessageBox::information(this, "About", about, QMessageBox::Ok);
-    /*
-    QMessageBox box(QMessageBox::Information, "About", about, QMessageBox::Ok, this);    
-    box.setTextFormat(Qt::RichText);    
-    box.setFixedSize(200, 900);   
-    box.exec();
-    */
-
     QSpacerItem* horizontal = new QSpacerItem(800, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
     QGridLayout* layout = (QGridLayout*)box.layout();
     layout->addItem(horizontal, layout->rowCount(), 0, 1, layout->columnCount());

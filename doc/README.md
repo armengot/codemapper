@@ -9,7 +9,7 @@ The ```codemapper``` tools have been developed with a triple objective:
 
 - [x] 🔭 (1) on one hand, out of necessity, to provide tools for automated visual analysis of software; 
 - [x] 🐧 (2) on the other hand, to demonstrate to ourselves how a project in C++ can be developed with a graphical environment (Qt5) and linked to both external and our own libraries; 
-- [ ] 🎓 (3) simultaneously addressing what the projects we will analyze through the codemapper utilities did not do, which is to draw design diagrams as we were taught in university.
+- [ ] 🎓 (3) simultaneously addressing what the projects we will analyze through the codemapper tools did not do, which is to draw design diagrams as we were taught in university.
 
 So, the third goal of the previous list, is the target of next sections.
 

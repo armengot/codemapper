@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
             case 'v':
                 cerr << "codemapper by Marcelo Armengot (C) 2024 " << GIT_OFFICIAL_VERSION << endl;
                 cerr << "graphviz rendering has been included from version " << PACKAGE_VERSION << endl;                
-                cerr << "more info in https://github.com/armengot/codemapper" << endl;
+                cerr << "more info in: " << CODEMAPPER_URL << endl;
                 return 0;
             case 'o':
                 output_format = optarg;
@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
             case 'h':
                 cerr << "codemapper by Marcelo Armengot (C) 2024 " << GIT_OFFICIAL_VERSION << endl;
                 cerr << "graphviz rendering has been included from version " << PACKAGE_VERSION << endl;
-                cerr << "more info in https://github.com/armengot/codemapper" << endl << endl;
+                cerr << "more info in: " << CODEMAPPER_URL << endl << endl;
                 cerr << "Usage: " << argv[0] << " -t folder -l lang [-v] [-o output_format]" << endl;
                 cerr << "\t\t-t root folder of the target project." << endl;
                 cerr << "\t\t-l source code language of the target project, currenly only available \"cpp\" for C/C++ (Python in progress)." << endl;
