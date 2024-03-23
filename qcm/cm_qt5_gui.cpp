@@ -13,6 +13,8 @@
 #include <QObject>
 #include <QFileDialog>
 
+/* graphviz */
+#include <graphviz_version.h>
 
 /* PROJECT LIBS */
 #include <cm_qt5_gui.h>
@@ -144,10 +146,10 @@ void cm_qt5_gui::infolder()
         input_source_code.create_nodes(current_project);
         input_source_code.create_edges(current_project);        
         debugqt("CODEMAPPER graph created, rendering ... ");
-        stringstream output;
+        string output;
         debugqt("graphviz call to svg build... ");
-        cm_render(current_project->to_string(), output);        
-        svg = output.str();  
+        cm_render(current_project->to_string(), output, CM_OUTPUT_SVG);        
+        svg = output;  
         canvas->load(svg);  
     }
 }
@@ -155,16 +157,32 @@ void cm_qt5_gui::infolder()
 void cm_qt5_gui::guiabout()
 {
     // debugqt("about");
+    QMessageBox box;
     QString about;
+    about = QString("codemapper by Marcelo Armengot (C) 2024 - ") + QString(GIT_OFFICIAL_VERSION) + QString("\n");
+    about = about + QString("This application is a GUI for codemapper tools.\n");
+    about = about + QString("For more information, visit: https://github.com/armengot/codemapper\n");
+    about = about + QString("(+) Qt ") + QString(QT_VERSION_STR) + QString(" is included.\n");
+    about = about + QString("(+) Graphviz ") + QString(PACKAGE_VERSION) + QString(" is used.\n");    
+    box.setInformativeText(about);
+    /*
     about += "codemapper by Marcelo Armengot (C) 2024 " + QString(GIT_OFFICIAL_VERSION);
     about += "\nThis application is a GUI for codemapper tools.\n";
     about += "For more information, visit: https://github.com/armengot/codemapper\n";
     about += "This release was tagged as " + QString(GIT_OFFICIAL_VERSION) + " version number.\n";
     about += "Qt " + QString(QT_VERSION_STR) + " is included.";    
+    */
     //QMessageBox::information(this, "About", about, QMessageBox::Ok);
+    /*
     QMessageBox box(QMessageBox::Information, "About", about, QMessageBox::Ok, this);    
     box.setTextFormat(Qt::RichText);    
-    box.setFixedSize(700, 300);   
+    box.setFixedSize(200, 900);   
+    box.exec();
+    */
+
+    QSpacerItem* horizontal = new QSpacerItem(800, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    QGridLayout* layout = (QGridLayout*)box.layout();
+    layout->addItem(horizontal, layout->rowCount(), 0, 1, layout->columnCount());
     box.exec();
 }
 
@@ -178,6 +196,7 @@ void cm_qt5_gui::canvaslink(QPoint mouse)
     std::string tmp = "FATHER = [" + std::to_string(mouse.x()) +"," +std::to_string(mouse.y()) + "]";    
     debugqt(tmp);
 }
+
 
 void cm_qt5_gui::closeEvent(QCloseEvent *event)
 {

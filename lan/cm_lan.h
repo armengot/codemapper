@@ -22,8 +22,7 @@ class language
         virtual void create_edges(cm_graph* project) = 0;
     
     protected:
-        void lookfor_sources();
-        void lookfor_deps();    
+        void lookfor_sources();  
         vector<string> sourceslist;        
         vector<cm_edge> deps;
         map<string,string> sourcesmap;

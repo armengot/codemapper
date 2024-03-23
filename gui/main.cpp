@@ -4,7 +4,10 @@
 #include <QtWidgets/QDialog>
 #include <qglobal.h>
 
-/* project GUI class */
+/* graphviz */
+#include <graphviz_version.h>
+
+/* project GUI headers */
 #include <cm_qt5_gui.h>
 #include <gitinfo.h>
 
@@ -18,6 +21,7 @@ int main(int argc, char** argv)
     cerr << argv[0] << " is GUI from codemapper tools, for more info, you're wellcome to visit https://github.com/armengot/codemapper" << endl;
     cerr << "this release was tagged as " << GIT_OFFICIAL_VERSION << " version number" << endl;
     cerr << "Qt " << QT_VERSION_STR << " is included." << endl;
+    cerr << "graphviz rendering has been included from version " << PACKAGE_VERSION << endl;
 
     auto win = new cm_qt5_gui;
     win->show();

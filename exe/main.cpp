@@ -6,6 +6,7 @@
 #include <thread>
 
 /* code mapper headers */
+#include <tools.h>
 #include <cm_lan.h>
 #include <cm_clan.h>
 #include <cm_graph.h>
@@ -23,7 +24,8 @@ int main(int argc, char* argv[])
     bool target_provided = false;
     bool lang_provided = false;
     bool format_provided = false;
-    cm_graph* codetree;
+    cm_graph* codetree = nullptr;
+    cpp_language* project = nullptr;
 
     int opt;
     while ((opt = getopt(argc, argv, "t:l:o:vh")) != -1) 
@@ -38,7 +40,8 @@ int main(int argc, char* argv[])
                 lang_provided = true;
                 break;
             case 'v':
-                cerr << "codemapper by Marcelo Armengot (C) 2024 " << GIT_OFFICIAL_VERSION << endl;                
+                cerr << "codemapper by Marcelo Armengot (C) 2024 " << GIT_OFFICIAL_VERSION << endl;
+                cerr << "graphviz rendering has been included from version " << PACKAGE_VERSION << endl;                
                 cerr << "more info in https://github.com/armengot/codemapper" << endl;
                 return 0;
             case 'o':
@@ -46,19 +49,21 @@ int main(int argc, char* argv[])
                 break;
             case 'h':
                 cerr << "codemapper by Marcelo Armengot (C) 2024 " << GIT_OFFICIAL_VERSION << endl;
+                cerr << "graphviz rendering has been included from version " << PACKAGE_VERSION << endl;
                 cerr << "more info in https://github.com/armengot/codemapper" << endl << endl;
                 cerr << "Usage: " << argv[0] << " -t folder -l lang [-v] [-o output_format]" << endl;
                 cerr << "\t\t-t root folder of the target project." << endl;
                 cerr << "\t\t-l source code language of the target project, currenly only available \"cpp\" for C/C++ (Python in progress)." << endl;
                 cerr << "\t\t-v version info." << endl;
-                cerr << "\t\t-o output format (svg/png)." << endl;
+                cerr << "\t\t-o output format (svg/png/dot)." << endl;
                 return 1;
         }
     }
     
     if (!target_provided || !lang_provided) 
     {
-        cerr << "codemapper by Marcelo Armengot (C) 2024 " << GIT_OFFICIAL_VERSION << endl;                            
+        cerr << "codemapper by Marcelo Armengot (C) 2024 " << GIT_OFFICIAL_VERSION << endl;
+        cerr << "graphviz rendering has been included from version " << PACKAGE_VERSION << endl;
         cerr << "Usage: " << argv[0] << " -t folder -l lang [-v] [-o output_format] [h for help]" << endl;        
         cerr << "Missing mandatory parameters language and target folder." << std::endl;       
         return(1);
@@ -77,13 +82,28 @@ int main(int argc, char* argv[])
 
     if (lang[0]=='c')
     {
-        cpp_language project(target_folder);
-        codetree = project.parse();
-        project.create_nodes(codetree);
-        project.create_edges(codetree);
-        
-        cout << codetree->to_string() << endl;
+        project = new cpp_language(target_folder);        
+        codetree = project->parse();
+        project->create_nodes(codetree);
+        project->create_edges(codetree);
     }
+
+    if ((output_format == "svg")||(output_format=="SVG"))
+    {
+        string output;
+        cm_render(codetree->to_string(), output, CM_OUTPUT_SVG);        
+        cout << output << endl;  
+    }
+    if ((output_format == "png")||(output_format=="PNG"))
+    {
+        string output;
+        cm_render(codetree->to_string(), output, CM_OUTPUT_PNG);        
+        cout << output << endl;  
+    }    
+    if ((output_format == "dot")||(output_format=="DOT"))
+    {
+        cout << codetree->to_string() << endl;        
+    }        
 
     return(0);
 }

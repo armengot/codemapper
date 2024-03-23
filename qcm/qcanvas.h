@@ -12,6 +12,9 @@
 /* external standard libraries */
 #include <iostream>
 
+/* codemapper project libraries */
+#include <cm_graph.h>
+
 using namespace std;
 
 struct xmlnode
@@ -43,6 +46,7 @@ class qcanvas : public QLabel
     public:
         qcanvas() = default; // declare constructor to allow linker work            
         void load(std::string svg);
+        void setgraph(cm_graph* project);
         int xmlingest(std::string svg);
         QTextEdit* canvas_textline;
                 
@@ -57,6 +61,7 @@ class qcanvas : public QLabel
         QSvgRenderer svg_render;
         QString xml;
         struct xmlsvg currentsvg;
+        cm_graph* current_project;
 
     signals:
         void user(QPoint mouse);    

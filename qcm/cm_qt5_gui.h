@@ -39,10 +39,7 @@ class cm_qt5_gui : public QMainWindow
 
         /* target objects */
         cm_graph* current_project;
-        std::string svg;             
-
-        /* general */
-        void render();
+        string svg;             
         
         /* setup */
         void setup_canvas();

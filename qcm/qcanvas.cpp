@@ -88,6 +88,11 @@ void qcanvas::mouseMoveEvent(QMouseEvent *event)
     emit user(mouse);
 }
 
+void qcanvas::setgraph(cm_graph* project)
+{
+    current_project = project;
+}
+
 void qcanvas::load(std::string svg)
 {    
     // std::cout << svg;            

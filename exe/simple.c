@@ -15,7 +15,7 @@ int main(int argc, char **argv)
         fp = stdin;
     g = agread(fp, 0);
     gvLayout(gvc, g, "dot");
-    gvRender(gvc, g, "svg", stdout);
+    gvRender(gvc, g, "png", stdout);
     gvFreeLayout(gvc, g);
     agclose(g);
     return (gvFreeContext(gvc));

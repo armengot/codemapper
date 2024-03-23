@@ -5,7 +5,8 @@
 
 # Code Mapper
 
-Code Mapper is a tool to generate standard ```graphviz``` graphs from source code.
+Code Mapper is a set of tools to generate standard ```graphviz``` graphs from source code. Play with ```Graphviz``` learning ```codemapper```.
+
 
 ## Requirements
 
@@ -85,6 +86,8 @@ codemapper/build$ ./test | ./simple > basic.png
 ### Example (2):
 Current status of this project: Can ```codemapper``` parse itself?
 ```
-codemapper/build$ ./codemapper -t /home/marcelo/dev/personal/github/codemapper -l "cpp" | ./simple > codemapper.png
+$ ./codemapper -t /home/marcelo/dev/personal/github/codemapper/ -l cpp -o png > codemapper.png
+$ ./codemapper -t /home/marcelo/dev/personal/github/codemapper/ -l cpp -o svg > codemapper.svg
+$ ./codemapper -t /home/marcelo/dev/personal/github/codemapper/ -l cpp -o dot > codemapper.dot
 ```
 ![example](doc/codemapper.png)

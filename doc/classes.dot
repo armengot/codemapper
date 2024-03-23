@@ -1,0 +1,225 @@
+digraph cm_classes
+{
+    subgraph cluster_lan
+    {
+        label = "source code project object"
+        style=filled
+        fillcolor=lightgrey
+        cm_lan
+        [        
+            label = "{language(str in_target)\n
+                    cm_graph* parse()\n
+                    create_nodes(cm_graph* project)\n
+                    create_edges(cm_graph* project) |
+                    void lookfor_sources()\n
+                    vector(str) sourceslist\n            
+                    vector(cm_edge) deps\n
+                    map(str,str) sourcesmap\n
+                    str src_ext\n
+                    str lib_ext\n
+                    str inc_key\n
+                    str target|CM_LAN class}"        
+            shape = record
+            style = filled    
+            fillcolor = white            
+        ]
+        cm_clan
+        [
+            label = "{cpp_language(str in_target)\n        
+                    create_nodes(cm_graph* project) override\n
+                    create_edges(cm_graph* project) override|
+                    C/C++ language\n child class}"
+            shape = record            
+            style = filled    
+            fillcolor = white
+        ]
+        cm_pylan
+        [
+            label = "{py_language(str in_target)\n        
+                    create_nodes(cm_graph* project) override\n
+                    create_edges(cm_graph* project) override|
+                    Python language\n child class}"
+            shape = record   
+            style = filled    
+            fillcolor = white                
+        ]
+        cm_other
+        [
+            label = "{(OTHER)_language(str in_target)\n        
+                    create_nodes(cm_graph* project) override\n
+                    create_edges(cm_graph* project) override|
+                    any OTHER language\n child class}"
+            shape = record   
+            style = filled    
+            fillcolor = white                
+        ]        
+        cluster_slot
+        [
+            label = "called by infolder()"
+            color = lightgrey
+        ]
+        cm_clan -> cluster_slot
+        [
+            style = invis
+        ]
+    }
+    cm_node
+    [
+        label = "{cm_node(str in_name, str in_label)\n
+                add_feature(str feature)\n
+                str get_name()\n
+                str get_label()\n
+                vector(str) get_features()|    
+                str name\n
+                str label\n
+                vector(str) features\n
+                vector(cm_edge*) edges|
+                cm_node class}"
+        shape = record
+        style = filled
+        fillcolor = cornflowerblue
+    ]
+    cm_edge
+    [
+        label = "{cm_edge(str name,\nstr label,\ncm_node* tail,\ncm_node* head)\n
+                add_feature(str feature)\n
+                cm_node* get_head()\n
+                cm_node* get_tail()\n
+                str get_name()\n
+                str get_label()\n
+                vector(str) get_features()|
+                str name\n
+                str label\n
+                vector(str) features\n
+                cm_node* tail\n
+                cm_node* head|cm_edge class}"
+        shape = record
+        style = filled
+        fillcolor = cornflowerblue        
+    ]
+    cm_graph
+    [
+        label = "{cm_graph(string name)\n
+                str to_string()\n
+                int addnode(cm_node* node)\n
+                int addedge(cm_edge* edge)\n
+                edgesall(const string& feature)\n
+                cm_node* lookfor(string name)\n
+                vector(cm_node*) allnodes()|    
+                str name\n
+                vector(cm_node*) nodes\n
+                vector(cm_edge*) edges|
+                cm_graph class}"
+        shape = record
+        style = filled
+        fillcolor = cornflowerblue        
+    ]
+    cm_qt5_gui
+    [
+        label = "{QTextEdit* textbar\nqcanvas* canvas|        
+                cm_graph* current_project\n
+                str svg|
+                setup_canvas()\n
+                setup_menus()\n
+                infolder()\n
+                infile()\n
+                guiabout()\n
+                quitcool()\n
+                QString getversion()|
+                codemapper Qt5 GUI class}"
+        shape = record
+        style = filled    
+        fillcolor = chartreuse3
+    ]
+    xmlnode
+    [
+        label = "{str id\nstr title\nstr label|QPointF center\nQPolygonF bounding|struct xmlnode}"
+        shape = record
+        style = filled    
+        fillcolor = goldenrod3
+    ]
+    xmlsvg
+    [
+        label = "{int ptw\nint pth\nfloat vbox[4]\nint scale[2]\nfloat rotate\nfloat translate[2]\nvector(xmlnode) nodes|struct xmlsvg}"
+        shape = record
+        style = filled    
+        fillcolor = goldenrod3        
+    ]   
+    qcanvas
+    [
+        label = "{qcanvas()\nload(str svg)\nsetgraph(cm_graph* project)\nint xmlingest(str svg)\nQTextEdit* canvas_textline|
+                mouseMoveEvent(QMouseEvent *event) override\n 
+                mousePressEvent(QMouseEvent *event) override||    
+                bool svg_loaded_as_xml\nQPoint mouse\nQSvgRenderer svg_render\nQString xml|
+                xmlsvg currentsvg\ncm_graph* current_project||qcanvas child class}"
+        shape = record
+        style = filled    
+        fillcolor = chartreuse3        
+    ]
+
+    /* ********************************************************** */
+    cm_clan -> cm_lan
+    [
+        dir = back
+    ]
+    cm_pylan -> cm_lan
+    [
+        dir = back
+    ]    
+    cm_other -> cm_lan
+    [
+        dir = back
+    ]      
+    cm_graph -> cm_node
+    [
+        dir = back
+    ]
+    cm_graph -> cm_edge
+    [
+        dir = back
+    ]
+    xmlsvg -> xmlnode
+    [
+        dir = back
+    ]
+    qcanvas -> xmlsvg
+    [
+        dir = back
+    ]
+    cm_qt5_gui -> qcanvas
+    [
+        dir = back
+    ]
+    cm_qt5_gui -> cm_graph
+    [
+        arrowhead = diamond        
+    ]
+    qcanvas -> cm_graph
+    [
+        arrowhead = diamond        
+    ]
+    cm_lan -> cm_graph
+    [
+        arrowhead = diamond        
+    ]    
+    cm_qt5_gui -> cm_clan
+    [
+        style = invis
+    ]
+    cm_qt5_gui -> cm_pylan
+    [
+        style = invis
+    ]    
+    cm_qt5_gui -> cm_other
+    [
+        style = invis
+    ]    
+    qcanvas -> cm_lan
+    [
+        style = invis
+    ]
+    cm_qt5_gui -> cluster_slot
+    [
+        arrowhead = diamond        
+    ]
+}

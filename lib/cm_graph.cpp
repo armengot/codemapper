@@ -95,7 +95,7 @@ std::string cm_graph::to_string() const
     std::stringstream ss;
     ss << "digraph " << name << "\n{\n";
 
-    // Generar nodos
+    // write nodes
     for (const auto& node : nodes) 
     {
         ss << "\t" << node->get_name() << "\n\t[\n";
@@ -110,7 +110,7 @@ std::string cm_graph::to_string() const
         ss << "\t];\n";
     }
     
-    // Generar arcos
+    // write edges
     for (const auto& edge : edges) 
     {
         ss << "\t" << edge->get_tail()->get_name() << " -> " 

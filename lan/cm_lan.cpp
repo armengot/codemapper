@@ -89,11 +89,6 @@ void language::lookfor_sources()
     }
 }
 
-void language::lookfor_deps()
-{
-
-}
-
 language::~language()
 {
 
