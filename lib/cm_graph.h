@@ -26,6 +26,7 @@ class cm_graph
         void edgesall(const string& feature);
         cm_node* lookfor(string name);
         vector<cm_node*> allnodes();
+        void removenode(string name);
 
     private:
         string name;

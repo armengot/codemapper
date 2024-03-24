@@ -48,12 +48,14 @@ class qcanvas : public QLabel
         void load(std::string svg);
         void setgraph(cm_graph* project);
         int xmlingest(std::string svg);
+        void deletenode();
         QTextEdit* canvas_textline;
                 
 
     protected:
         void mouseMoveEvent(QMouseEvent *event) override;   
         void mousePressEvent(QMouseEvent *event) override;
+        //void keyPressEvent(QKeyEvent *event) override;
 
     private:
         /* functions */
@@ -65,6 +67,7 @@ class qcanvas : public QLabel
         QString xml;
         struct xmlsvg currentsvg;
         cm_graph* current_project;
+        string selected_node = "";
 
     signals:
         void user(QPoint mouse);    
