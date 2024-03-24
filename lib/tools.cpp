@@ -10,7 +10,19 @@
 
 using namespace std;
 
-char global_join_char = '_';
+const char CM_GLOBAL_JOIN_CHAR = '_';
+const char CM_SYS_SPLITER_CHAR = '/';
+
+void rechar(std::string& str, char oldc, char newc)
+{
+    for (size_t i = 0; i < str.length(); ++i) 
+    {
+        if (str[i] == oldc) 
+        {
+            str[i] = newc;
+        }
+    }
+}
 
 bool charin(char c, const std::string& str) 
 {
@@ -98,38 +110,6 @@ void erasestring(vector<string>& old, const string& key)
 
 /* graphviz library real connection */
 /* same example as simple.c from graphviz docs */
-/*
-void cm_render(const string& input, std::stringstream& output,CM_OUTPUT_OUTPUT_MODES mode)
-{
-    GVC_t *gvc;
-    Agraph_t *g;
-    FILE *fp;
-    char* buffer;
-    unsigned int len;
-
-    gvc = gvContext();
-    fp = fmemopen((void*)input.c_str(), input.length(), "r");
-    g = agread(fp, 0);
-    gvLayout(gvc, g, "dot");
-    //gvRender(gvc, g, "svg", stdout);
-    if (mode==CM_OUTPUT_SVG)
-        gvRenderData(gvc, g, "svg", &buffer, &len); 
-    else
-        gvRenderData(gvc, g, "png", &buffer, &len);
-         
-    gvFreeLayout(gvc, g);
-    agclose(g);
-    gvFreeContext(gvc);
-    fclose(fp);
-    //output << stdout;
-    if (buffer != NULL) 
-    {
-        output << buffer;
-        gvFreeRenderData(buffer);
-    }    
-}
-*/
-
 void cm_render(const string& input, std::string& output, CM_OUTPUT_OUTPUT_MODES mode)
 {
     GVC_t *gvc;

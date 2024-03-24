@@ -59,14 +59,14 @@ void language::lookfor_sources()
                             std::cerr << "\t\t\tfound previous " << name << " : " << sourcesmap[name] << std::endl;
                             /* change name of old */
                             string old_path = sourcesmap[name];
-                            string new_name = lastwo(sourcesmap[name],'/',global_join_char);
+                            string new_name = lastwo(sourcesmap[name],CM_SYS_SPLITER_CHAR,CM_GLOBAL_JOIN_CHAR);
                             std::cerr << "\t\t\t" << name << " erased and changed by -> " << new_name << " : " << old_path << std::endl;
                             sourcesmap.erase(name);
                             erasestring(sourceslist,name);
                             sourceslist.push_back(new_name);                            
                             sourcesmap[new_name] = old_path;
                             /* change current insertion name */
-                            new_name = lastwo(input.path(),'/',global_join_char);
+                            new_name = lastwo(input.path(),'/',CM_GLOBAL_JOIN_CHAR);
                             sourceslist.push_back(new_name);
                             sourcesmap[new_name] = input.path().string();
                             std::cerr << "\t" << new_name << " : " << DEBUG_BLDTXT << DEBUG_GRNTXT << sourcesmap[new_name] << DEBUG_RESTXT << std::endl;

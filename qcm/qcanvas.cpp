@@ -12,9 +12,11 @@
 #include <QPainter>
 #include <QByteArray>
 #include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 
-/* PROJECT LIBS */
+/* codemapper project libraries */
 #include <qcanvas.h>
+#include <tools.h>
 
 void debugqt(std::string stin)
 {
@@ -27,7 +29,10 @@ void qcanvas::mousePressEvent(QMouseEvent *event)
     {
         debugqt("LEFT");
         QString to_find = canvas_textline->toPlainText();
-        std::cerr << to_find.toStdString() << std::endl;
+        if (!to_find.isEmpty())
+        {
+            select_node(to_find.toStdString());
+        }
     }
     else if (event->button() == Qt::RightButton) 
     {
@@ -46,6 +51,7 @@ void qcanvas::mouseMoveEvent(QMouseEvent *event)
     //std::cerr << "debug(CANVAS): QLabel = [" << mouse.x() << "," << mouse.y() << "]\n";    
     if (svg_loaded_as_xml)
     {
+        /* *********************************************************************************** */        
         /* Step (1) convert mouse coords to real SVG world coords */
         /* *********************************************************************************** */
         /* ratio between CANVAS and original SVG */
@@ -64,6 +70,8 @@ void qcanvas::mouseMoveEvent(QMouseEvent *event)
         //svgpos.setY(currentsvg.translate[1] - qy);
         svgpos.setY(qy - currentsvg.translate[1]);
         //std::cerr << " ==> [" << svgpos.x() << "," << svgpos.y() << "]\n";     
+
+        /* *********************************************************************************** */        
         /* Step (2) look for eastest near node under a threshold */
         /* *********************************************************************************** */        
         bool text_bar_filled = false;
@@ -82,6 +90,7 @@ void qcanvas::mouseMoveEvent(QMouseEvent *event)
         }
         if (!text_bar_filled)
         {
+            /* always cleaning the status bar */
             canvas_textline->setText(QString::fromStdString(""));
         }
     }
@@ -99,6 +108,8 @@ void qcanvas::load(std::string svg)
     QByteArray qbytes(svg.c_str(), static_cast<int>(svg.length()));        
     svg_render.load(qbytes);
 
+    std::cerr << DEBUG_GRNTXT << "REFRESH" << DEBUG_RESTXT << std::endl;
+
     if (svg_render.isValid()) 
     {
         QPixmap pixmap(svg_render.defaultSize());
@@ -106,9 +117,12 @@ void qcanvas::load(std::string svg)
         QPainter painter(&pixmap);
         svg_render.render(&painter);
         painter.end();    
-        setPixmap(pixmap);                
-        if (xmlingest(svg)>2)
-            svg_loaded_as_xml = true;
+        setPixmap(pixmap);   
+        if (!svg_loaded_as_xml) // first time
+        {
+            if (xmlingest(svg)>2)
+                svg_loaded_as_xml = true;
+        }
     }
     else 
     {
@@ -116,24 +130,128 @@ void qcanvas::load(std::string svg)
     }
 }
 
+void qcanvas::select_node(std::string label)
+{
+    /* *********************** */
+    bool found = false;
+    QXmlStreamReader reader(xml);
+    QString xmlout;
+    QXmlStreamWriter writer(&xmlout);    
+    writer.setCodec("UTF-8");
+    writer.setAutoFormatting(true);
+    std::string target,debugger;
+    QString qtarget;
+    QString tqvoid = QString("");
+    /* *********************** */
+    if (charin('.',label))    
+    {    
+        target = firstname(label,'.');
+    }
+    else
+    {
+        target = label;
+    }
+    if (charin(CM_SYS_SPLITER_CHAR,target))        
+    {        
+        rechar(target,CM_SYS_SPLITER_CHAR,CM_GLOBAL_JOIN_CHAR);
+    }
+    std::cerr << "TARGET: " << target << std::endl;
+    qtarget = QString::fromStdString(target);
+    reader.setNamespaceProcessing(false);    
+    /* remember:
+    <!-- cm_lan -->
+    <g id="node1" class="node">
+    <title>cm_lan</title>
+    <polygon fill="none" stroke="black" points="281.69,-260.3 281.69,-309.9 361.69,-309.9 361.69,-260.3 281.69,-260.3"/>
+    <text text-anchor="middle" x="321.69" y="-292.6" font-family="Times,serif" font-size="14.00">cm_lan.cpp</text>
+    <polyline fill="none" stroke="black" points="281.69,-285.1 361.69,-285.1"/>
+    <text text-anchor="middle" x="321.69" y="-267.8" font-family="Times,serif" font-size="14.00">cm_lan.h</text>
+    </g> */
+    while (!reader.atEnd() && !reader.hasError()) 
+    {
+        reader.readNext(); 
+        debugger = reader.name().toString().toStdString();
+        if (reader.isStartElement()) 
+        {        
+            if (reader.attributes().value("class").toString() == "node") 
+            {
+                while (!(reader.name() == "title"))
+                {
+                    writer.writeCurrentToken(reader);
+                    reader.readNext();
+                    debugger = reader.name().toString().toStdString();
+                }
+                if (!reader.isStartElement())
+                {
+                    writer.writeCurrentToken(reader);
+                }
+                else
+                {   
+                    // std::cerr << "\n\n" << xmlout.toStdString() << std::endl;
+                    writer.writeCurrentToken(reader);
+                    QString current = reader.readElementText();
+                    writer.writeCharacters(current);
+                    //std::cerr << "\n\n" << xmlout.toStdString() << std::endl;
+                    writer.writeCurrentToken(reader);
+                    //std::cerr << "\n\n" << xmlout.toStdString() << std::endl;
+                    //std::cerr << "\tcomparing " << qtarget.toStdString() << " with " << current.toStdString() << std::endl;
+                    if (current.indexOf(qtarget) != -1)                          
+                    {                           
+                        //std::cerr << "\n\n" << xmlout.toStdString() << std::endl;
+                        std::cerr << "\t\tINSIDE: " << reader.name().toString().toStdString() << std::endl;
+                        reader.readNext();
+                        while (!(reader.name() == "polygon")) 
+                        {
+                            writer.writeCurrentToken(reader);
+                            //std::cerr << "\n\n" << xmlout.toStdString() << std::endl;
+                            reader.readNext();
+                            debugger = reader.name().toString().toStdString();
+                        }
+                        //std::string foo = reader.name().toString().toStdString();                        
+                        writer.writeStartElement(reader.name().toString());                        
+                        writer.writeAttribute("stroke-width", "3");                        
+                        writer.writeAttributes(reader.attributes());                        
+                        //writer.writeEndElement();
+                        //reader.readNext();
+                    }
+                    else
+                    {
+                        //writer.writeCurrentToken(reader);
+                    }
+                }
+            }
+            else
+            {
+                writer.writeCurrentToken(reader);    
+            }
+        }   
+        else
+        {
+            writer.writeCurrentToken(reader);
+        }
+    }    
+    //std::cout << xmlout.toStdString() << std::endl;
+    load(xmlout.toStdString());
+}
+
 int qcanvas::xmlingest(std::string svg)
 {
     /* parse xml */
     xml = QString::fromStdString(svg);        
-    QXmlStreamReader xmlReader(xml);
+    QXmlStreamReader reader(xml);
     bool ok = true;
     int r = 0;
 
-    while (!xmlReader.atEnd() && !xmlReader.hasError()) 
+    while (!reader.atEnd() && !reader.hasError()) 
     {
-        xmlReader.readNext();
+        reader.readNext();
 
-        if (xmlReader.isStartElement() && xmlReader.name() == "svg")
+        if (reader.isStartElement() && reader.name() == "svg")
         {
-            currentsvg.ptw = xmlReader.attributes().value("width").toString().chopped(2).toInt();
-            currentsvg.pth = xmlReader.attributes().value("height").toString().chopped(2).toInt();
+            currentsvg.ptw = reader.attributes().value("width").toString().chopped(2).toInt();
+            currentsvg.pth = reader.attributes().value("height").toString().chopped(2).toInt();
             std::cerr << currentsvg.ptw << " x " << currentsvg.pth << std::endl;
-            QStringList four = xmlReader.attributes().value("viewBox").toString().split(' ');
+            QStringList four = reader.attributes().value("viewBox").toString().split(' ');
             for (int i=0;i<4;i++)
             {
                 currentsvg.vbox[i] = four[i].toFloat(&ok);
@@ -141,11 +259,11 @@ int qcanvas::xmlingest(std::string svg)
             std::cerr << currentsvg.vbox[0] << " " << currentsvg.vbox[1] << " " << currentsvg.vbox[2] << " " << currentsvg.vbox[3] << std::endl;
             r = r + 1;            
         }
-        if (xmlReader.name() == "g")
+        if (reader.name() == "g")
         {
-            if (xmlReader.attributes().value("id").toString() == "graph0")
+            if (reader.attributes().value("id").toString() == "graph0")
             {
-                QString transform = xmlReader.attributes().value("transform").toString();
+                QString transform = reader.attributes().value("transform").toString();
                 std::string tvalues = transform.toStdString();
                 //std::cerr << "Transform: " << transform.toStdString() << std::endl;
                 std::regex regex("scale\\((-?\\d+\\.?\\d*) (-?\\d+\\.?\\d*)\\) rotate\\((-?\\d+\\.?\\d*)\\) translate\\((-?\\d+\\.?\\d*) (-?\\d+\\.?\\d*)\\)");
@@ -176,18 +294,18 @@ int qcanvas::xmlingest(std::string svg)
                 <text text-anchor="middle" x="321.69" y="-267.8" font-family="Times,serif" font-size="14.00">cm_lan.h</text>
                 </g>            
                 */              
-                if (xmlReader.attributes().value("class").toString().toStdString()=="node")
+                if (reader.attributes().value("class").toString().toStdString()=="node")
                 {       
                     xmlnode newn;
-                    newn.id = xmlReader.attributes().value("id").toString().toStdString();
+                    newn.id = reader.attributes().value("id").toString().toStdString();
 
-                    xmlReader.readNext();                    
-                    while (xmlReader.name().toString().toStdString() != "title")
-                        xmlReader.readNext();
-                    newn.title = xmlReader.readElementText().toStdString();                    
-                    while (xmlReader.name() != "polygon") 
-                        xmlReader.readNext();                
-                    QString pointstring = xmlReader.attributes().value("points").toString();                    
+                    reader.readNext();                    
+                    while (reader.name().toString().toStdString() != "title")
+                        reader.readNext();
+                    newn.title = reader.readElementText().toStdString();                    
+                    while (reader.name() != "polygon") 
+                        reader.readNext();                
+                    QString pointstring = reader.attributes().value("points").toString();                    
                     QStringList lpoints = pointstring.split(' ');
                     /* COMPUTE CENTROID */
                     qreal sumX = 0.0;
@@ -217,17 +335,17 @@ int qcanvas::xmlingest(std::string svg)
                             newn.bounding.append(QPointF(x, y));
                         }
                     }
-                    xmlReader.readNext();                    
-                    while (xmlReader.name() != "text")
-                        xmlReader.readNext();                    
-                    newn.label = xmlReader.readElementText().toStdString();                    
+                    reader.readNext();                    
+                    while (reader.name() != "text")
+                        reader.readNext();                    
+                    newn.label = reader.readElementText().toStdString();                    
                     
                     currentsvg.nodes.push_back(newn);
-                    std::cerr << newn.id << " " << newn.title << " " << newn.label << std::endl;
-                    std::cerr << "CENTER [" << newn.center.x() << "," << newn.center.y() << "]" << std::endl;
+                    //std::cerr << newn.id << " " << newn.title << " " << newn.label << std::endl;
+                    //std::cerr << "CENTER [" << newn.center.x() << "," << newn.center.y() << "]" << std::endl;
                     for (auto each : newn.bounding)
                     {
-                        std::cerr << "\t" << each.x() << " " << each.y() << std::endl;
+                        //std::cerr << "\t" << each.x() << " " << each.y() << std::endl;
                     }
                     r = r + 1;
                 }

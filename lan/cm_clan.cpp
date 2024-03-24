@@ -74,9 +74,9 @@ void cpp_language::create_nodes(cm_graph* project)
         for (const auto& source : sources)
         {
             cm_node* alone;
-            if (charin(global_join_char,source))
+            if (charin(CM_GLOBAL_JOIN_CHAR,source))
             {
-                string label = lastwo(source,global_join_char,'/');
+                string label = lastwo(source,CM_GLOBAL_JOIN_CHAR,CM_SYS_SPLITER_CHAR);
                 alone = new cm_node(firstname(source,'.'),label);
             }
             else

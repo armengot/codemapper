@@ -7,6 +7,8 @@
 
 Code Mapper is a set of tools to generate standard ```graphviz``` graphs from source code. Play with ```codemapper``` learning ```Graphviz```.
 
+This project is starting and in progress, please join us to work together and start with the: [TO-DO](doc/TODO.md) list.
+
 
 ## Requirements
 

@@ -56,6 +56,9 @@ class qcanvas : public QLabel
         void mousePressEvent(QMouseEvent *event) override;
 
     private:
+        /* functions */
+        void select_node(std::string label);
+        /* attributes*/
         bool svg_loaded_as_xml = false;
         QPoint mouse;
         QSvgRenderer svg_render;
