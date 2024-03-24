@@ -20,4 +20,3 @@ $ ./codemapper -t /home/marcelo/dev/personal/github/codemapper/ -l cpp -o png > 
 - [ ] cm_graph class delete nodes function
 - [ ] adding levels to the graph
 - [ ] adding features to nodes
-
