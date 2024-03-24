@@ -30,6 +30,7 @@ class cm_qt5_gui : public QMainWindow
     Q_OBJECT
     
     private:
+        QString getversion();
         /* global vars */
         QScrollArea* sarea;
         QTextEdit* textbar;
@@ -46,16 +47,16 @@ class cm_qt5_gui : public QMainWindow
         void setup_menus();
         void infolder();
         void infile();
-        void guiabout();
-        void quitcool();
-        QString getversion();
-
+        void guiabout();        
+        void quitcool(); 
+        
     public:
         /* constructor */
-        cm_qt5_gui();    
-
+        cm_qt5_gui();   
+        
     protected:
         void closeEvent(QCloseEvent *event);
+        void keyPressEvent(QKeyEvent *event) override;
 
     protected slots:
         void canvaslink(QPoint mouse);

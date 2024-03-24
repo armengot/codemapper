@@ -46,6 +46,11 @@ endif()
 execute_process(COMMAND git describe --tags --abbrev=0 OUTPUT_VARIABLE GIT_LASTAG
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
   OUTPUT_STRIP_TRAILING_WHITESPACE)
+if("${GIT_LASTAG}" STREQUAL "")
+  message(STATUS "${REDCOLOR}Warning: unknown version")
+else()
+  message(STATUS "Checking the compilation of ${REDCOLOR}${GIT_LASTAG}${RESETCOLOR} release, visit our repo if want more info about other releases.")
+endif()  
 file(WRITE ${GIT_COMMIT_HEADER_FILE} "// Get GIT info\n"
     "#ifndef GITINFO_H\n"
     "#define GITINFO_H\n"

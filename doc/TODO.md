@@ -13,6 +13,7 @@ $ ./codemapper -t /home/marcelo/dev/personal/github/codemapper/ -l cpp -o png > 
 - [ ] ... (etc) many other languages
 - [x] Documentation
 - [ ] Finish documentation
+- [ ] Finish all classes with all functionalities
 
 ## GUI functionalities
 
@@ -22,6 +23,12 @@ $ ./codemapper -t /home/marcelo/dev/personal/github/codemapper/ -l cpp -o png > 
 - [ ] cm_graph class delete nodes function
 - [ ] adding levels to the graph
 - [ ] adding features to nodes
+- [ ] GUI ways of output:
+- [ ] (1) output as dot
+- [ ] (2) output as png
+- [ ] (3) output as svg
+- [ ] (4) output as internal codemapper project
+- [ ] (5) import a project file saved by (4) now empty in the GUI button
 - [ ] Documentation
 
 ## Win32 version

@@ -38,6 +38,22 @@ cm_qt5_gui::cm_qt5_gui()
     setup_menus();   
 }
 
+void cm_qt5_gui::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Escape) 
+    {
+        quitcool();
+    }
+    else if (event->key() == Qt::Key_Delete)
+    {
+        canvas->deletenode();
+    }
+    else
+    {
+        debugqt(QKeySequence(event->key()).toString().toStdString());
+    }
+}
+
 void cm_qt5_gui::setup_canvas()
 {
     sarea = new QScrollArea;
@@ -150,7 +166,8 @@ void cm_qt5_gui::infolder()
         debugqt("graphviz call to svg build... ");
         cm_render(current_project->to_string(), output, CM_OUTPUT_SVG);        
         svg = output;  
-        canvas->load(svg);  
+        canvas->load(svg);
+        canvas->setgraph(current_project);
     }
 }
 

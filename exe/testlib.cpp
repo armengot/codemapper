@@ -16,7 +16,8 @@ int main()
 {
     /* nodes and edges */    
     cm_node cm_exe("exe","exe/main.cpp");
-    cm_node cm_gui("gui","gui/main.cpp");    
+    cm_node cm_gui("gui","gui/main.cpp");
+    cm_node* test_remove = new cm_node("toberemoved","nothing");    
     cm_node cm_lib("lib","{lib/*|class node\\nclass edge\\nclass graph}");
     cm_lib.add_feature("shape = record");
     cm_node cm_lan("lan","{lan/*|source language}");
@@ -44,13 +45,15 @@ int main()
     test.addnode(&cm_lan);
     test.addnode(&qt_lib);
     test.addnode(&grphvz);
+    test.addnode(test_remove);    
     test.addedge(&dep1);
     test.addedge(&dep2);
     test.addedge(&dep3);
     test.addedge(&dep4);
     test.addedge(&dep5);
     test.addedge(&dep6);
-    test.addedge(&dep7);
+    test.addedge(&dep7);    
+    test.removenode("toberemoved");
     test.edgesall("arrowhead = none");
 
     std::cout << test.to_string() << std::endl;

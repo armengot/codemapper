@@ -6,6 +6,7 @@
 
 /* Qt5 environment libraries */
 #include <QLabel>
+#include <QKeySequence>
 #include <QMouseEvent>
 #include <QSvgRenderer>
 #include <QString>
@@ -15,6 +16,7 @@
 #include <QXmlStreamWriter>
 
 /* codemapper project libraries */
+#include <cm_qt5_gui.h>
 #include <qcanvas.h>
 #include <tools.h>
 
@@ -29,9 +31,17 @@ void qcanvas::mousePressEvent(QMouseEvent *event)
     {
         debugqt("LEFT");
         QString to_find = canvas_textline->toPlainText();
-        if (!to_find.isEmpty())
+        if (!to_find.isEmpty()) // case mouse over label
         {
             select_node(to_find.toStdString());
+            selected_node = to_find.toStdString();
+            std::cerr << "Selected node: " << selected_node << std::endl;
+        }
+        else
+        {                       // mouse everywhere != label
+            selected_node = "";
+            load(xml.toStdString());           
+            std::cerr << "Any node selected node." << std::endl;
         }
     }
     else if (event->button() == Qt::RightButton) 
@@ -44,6 +54,31 @@ void qcanvas::mousePressEvent(QMouseEvent *event)
     }    
     QLabel::mousePressEvent(event);
 }
+
+void qcanvas::deletenode()
+{
+    if (selected_node != "")
+    {
+        std::string clean = selected_node;
+        if (charin(CM_SYS_SPLITER_CHAR,clean))
+        {
+            rechar(clean,CM_SYS_SPLITER_CHAR,CM_GLOBAL_JOIN_CHAR);
+        }
+        debugqt("Removing node: "+selected_node+" --> parsed as: "+clean);
+        current_project->removenode(clean);
+        std::string new_svg;
+        cm_render(current_project->to_string(), new_svg, CM_OUTPUT_SVG);                
+        load(new_svg);
+
+        xmlingest(new_svg);        
+        //xml = QString::fromStdString(new_svg);        
+    }
+    else
+    {
+        debugqt("No selected node to remove.");
+    }
+}
+
 
 void qcanvas::mouseMoveEvent(QMouseEvent *event)
 {
@@ -198,7 +233,7 @@ void qcanvas::select_node(std::string label)
                     if (current.indexOf(qtarget) != -1)                          
                     {                           
                         //std::cerr << "\n\n" << xmlout.toStdString() << std::endl;
-                        std::cerr << "\t\tINSIDE: " << reader.name().toString().toStdString() << std::endl;
+                        //std::cerr << "\t\tINSIDE: " << reader.name().toString().toStdString() << std::endl;
                         reader.readNext();
                         while (!(reader.name() == "polygon")) 
                         {
@@ -354,3 +389,4 @@ int qcanvas::xmlingest(std::string svg)
     }    
     return(r);
 }
+
