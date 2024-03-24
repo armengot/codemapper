@@ -198,7 +198,6 @@ void cm_qt5_gui::canvaslink(QPoint mouse)
     debugqt(tmp);
 }
 
-
 void cm_qt5_gui::closeEvent(QCloseEvent *event)
 {
     event->ignore();
