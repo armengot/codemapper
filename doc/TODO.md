@@ -19,8 +19,8 @@ $ ./codemapper -t /home/marcelo/dev/personal/github/codemapper/ -l cpp -o png > 
 
 - [x] Show codemapper output
 - [x] Node selection
-- [ ] Delete nodes and edges
-- [ ] cm_graph class delete nodes function
+- [x] Delete nodes and child edges
+- [x] cm_graph class delete nodes function
 - [ ] adding levels to the graph
 - [ ] adding features to nodes
 - [ ] GUI ways of output:
