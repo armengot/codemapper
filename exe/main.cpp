@@ -104,17 +104,17 @@ int main(int argc, char* argv[])
 
     if ((output_format == "svg")||(output_format=="SVG"))
     {
-        string output;
-        cm_render(codetree->to_string(), output, CM_OUTPUT_SVG);        
+        string svg_output,output = codetree->to_string();
         cm_dashclean(output);
-        cout << output << endl;  
+        cm_render(output, svg_output, CM_OUTPUT_SVG);                
+        cout << svg_output << endl;  
     }
     if ((output_format == "png")||(output_format=="PNG"))
     {
-        string output;
-        cm_render(codetree->to_string(), output, CM_OUTPUT_PNG);        
+        string png_output,output = codetree->to_string();
         cm_dashclean(output);
-        cout << output << endl;  
+        cm_render(output, png_output, CM_OUTPUT_PNG);                
+        cout << png_output << endl;  
     }    
     if ((output_format == "dot")||(output_format=="DOT"))
     {
