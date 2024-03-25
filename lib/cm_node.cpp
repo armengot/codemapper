@@ -1,7 +1,9 @@
+/* codemapper headers */
 #include <cm_node.h>
+#include <tools.h>
 
 cm_node::cm_node(const std::string& in_name, const std::string& in_label)
-{
+{    
     name = in_name;
     label = in_label;
 }

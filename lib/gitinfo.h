@@ -3,8 +3,8 @@
 #define GITINFO_H
 #define GITAUTHORID "marcelo.armengot@gmail.com"
 #define GIT_MACHINE "omen"
-#define GIT_DTETIME "2024-03-25-00:53:02"
-#define GIT_LNGHASH "4ad4edb5c2b494d5f40d264606254b59acca533e"
+#define GIT_DTETIME "2024-03-25-01:36:53"
+#define GIT_LNGHASH "2f9f951470b321846d3d5698ee45128c29b6a3a0"
 #define GIT_USERCXX "marcelo.armengot@gmail.com"
 #define GIT_OFFICIAL_VERSION "REL_00_05"
 #define CODEMAPPER_AUTHOR "Marcelo Armengot"

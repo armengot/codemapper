@@ -151,23 +151,25 @@ void cm_qt5_gui::infile()
 void cm_qt5_gui::infolder()
 {    
     QString folder = QFileDialog::getExistingDirectory(0, ("Select folder"), QDir::currentPath());
-    string folder_input = folder.toStdString();
-    debugqt("Folder selected: "+folder_input);
-
-    if (selected_input_language[0]=='c')
+    if (!folder.isEmpty())
     {
-        debugqt("Parsing as C/C++ project");
-        cpp_language input_source_code(folder_input);
-        current_project = input_source_code.parse();
-        input_source_code.create_nodes(current_project);
-        input_source_code.create_edges(current_project);        
-        debugqt("CODEMAPPER graph created, rendering ... ");
-        string output;
-        debugqt("graphviz call to svg build... ");
-        cm_render(current_project->to_string(), output, CM_OUTPUT_SVG);        
-        svg = output;  
-        canvas->load(svg);
-        canvas->setgraph(current_project);
+        string folder_input = folder.toStdString();
+        debugqt("Folder selected: "+folder_input);
+        if (selected_input_language[0]=='c')
+        {
+            debugqt("Parsing as C/C++ project");
+            cpp_language input_source_code(folder_input);
+            current_project = input_source_code.parse();
+            input_source_code.create_nodes(current_project);
+            input_source_code.create_edges(current_project);        
+            debugqt("CODEMAPPER graph created, rendering ... ");
+            string output;
+            debugqt("graphviz call to svg build... ");
+            cm_render(current_project->to_string(), output, CM_OUTPUT_SVG);        
+            svg = output;  
+            canvas->load(svg);
+            canvas->setgraph(current_project);
+        }
     }
 }
 

@@ -82,7 +82,11 @@ int main(int argc, char* argv[])
 
     if (lang[0]=='c')
     {
-        project = new cpp_language(target_folder);        
+        project = new cpp_language(target_folder);
+        if (lang == "cpp")
+            project->mode_c_or_cpp(1); // C++
+        else
+            project->mode_c_or_cpp(0); // C
         codetree = project->parse();
         project->create_nodes(codetree);
         project->create_edges(codetree);
