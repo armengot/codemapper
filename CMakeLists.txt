@@ -99,6 +99,7 @@ add_library(cm_tools STATIC lib/tools.cpp)
 add_library(cm_graph STATIC lib/cm_edge.cpp lib/cm_node.cpp lib/cm_graph.cpp)
 add_library(cm_lan STATIC lan/cm_lan.cpp ) 
 add_library(cm_clan STATIC lan/cm_clan.cpp)
+add_library(cm_pylan STATIC lan/cm_pylan.cpp)
 add_library(cm_qcanvas STATIC qcm/qcanvas.cpp)
 add_library(cm_qtlib STATIC qcm/cm_qt5_gui.cpp)
 # ---------------------------------------------------------------------------------------------------------
@@ -119,9 +120,10 @@ add_dependencies(${GUI_CODEMAPPER} git_commit_header_target)
 # compile options and linker commands
 target_compile_options(cm_tools PUBLIC ${CFLAGS})
 target_link_libraries(cm_tools PUBLIC ${LDFLAGS})
-target_link_libraries(cm_clan PRIVATE cm_graph cm_lan cm_tools stdc++fs) # stdc++fs links experimental/filesystem library
+target_link_libraries(cm_clan PRIVATE cm_graph cm_lan cm_tools stdc++fs)
+target_link_libraries(cm_pylan PRIVATE cm_graph cm_lan cm_tools stdc++fs) # stdc++fs links experimental/filesystem library
 target_compile_options(${PROJECT_NAME} PUBLIC ${CFLAGS})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${LDFLAGS} PRIVATE cm_graph cm_clan cm_tools)
+target_link_libraries(${PROJECT_NAME} PUBLIC ${LDFLAGS} PRIVATE cm_graph cm_clan cm_pylan cm_tools)
 target_compile_options(test PUBLIC ${CFLAGS})
 target_link_libraries(test PUBLIC ${LDFLAGS} PRIVATE cm_graph cm_tools)
 target_compile_options(${GUI_CODEMAPPER} PUBLIC ${CFLAGS})
@@ -134,7 +136,7 @@ target_link_libraries(cm_qtlib Qt5::Widgets)
 target_link_libraries(cm_qtlib Qt5::Gui)
 target_link_libraries(cm_qtlib Qt5::Core)
 target_link_libraries(cm_qtlib ${Qt5Svg_LIBRARIES})
-target_link_libraries(${GUI_CODEMAPPER} PUBLIC ${LDFLAGS} cm_qtlib cm_qcanvas cm_graph cm_clan cm_tools)
+target_link_libraries(${GUI_CODEMAPPER} PUBLIC ${LDFLAGS} PRIVATE cm_qtlib cm_qcanvas cm_graph cm_clan cm_pylan cm_tools)
 # ---------------------------------------------------------------------------------------------------------
 # tests and examples too
 target_compile_options(simple PUBLIC ${CFLAGS})

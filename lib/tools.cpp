@@ -4,6 +4,7 @@
 #include <sstream>
 #include <algorithm>
 #include <gvc.h>
+#include <iostream>
 
 /* codemapper project headers */
 #include <tools.h>
@@ -110,7 +111,7 @@ void erasestring(vector<string>& old, const string& key)
 
 /* graphviz library real connection */
 /* same example as simple.c from graphviz docs */
-void cm_render(const string& input, std::string& output, CM_OUTPUT_OUTPUT_MODES mode)
+void cm_render(const string& input, std::string& output, CM_OUTPUT_MODES mode)
 {
     GVC_t *gvc;
     Agraph_t *g;
@@ -118,6 +119,7 @@ void cm_render(const string& input, std::string& output, CM_OUTPUT_OUTPUT_MODES 
     char* buffer;
     unsigned int len;
 
+    std::cerr << "cm_render: using graphviz under https://graphviz.org/license/ terms" << std::endl;
     gvc = gvContext();
     fp = fmemopen((void*)input.c_str(), input.length(), "r");
     g = agread(fp, 0);
@@ -138,4 +140,18 @@ void cm_render(const string& input, std::string& output, CM_OUTPUT_OUTPUT_MODES 
         output.assign(buffer, len);
         gvFreeRenderData(buffer);
     }    
+}
+
+void cm_dashclean(std::string& str) 
+{
+    int c=0;
+    for (size_t i = 0; i < str.length() - 1; ++i) 
+    {
+        if (str[i] == '-' && str[i + 1] != '>') 
+        {
+            c = c + 1;
+            str.erase(i, 1);  // Borra el guion
+        }
+    }
+    std::cerr << "cm_dashclean: " << c << " slashes removed" << std::endl;
 }

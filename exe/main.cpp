@@ -9,6 +9,7 @@
 #include <tools.h>
 #include <cm_lan.h>
 #include <cm_clan.h>
+#include <cm_pylan.h>
 #include <cm_graph.h>
 #include <cm_node.h>
 #include <cm_edge.h>
@@ -25,7 +26,7 @@ int main(int argc, char* argv[])
     bool lang_provided = false;
     bool format_provided = false;
     cm_graph* codetree = nullptr;
-    cpp_language* project = nullptr;
+    language* project = nullptr;
 
     int opt;
     while ((opt = getopt(argc, argv, "t:l:o:vh")) != -1) 
@@ -82,31 +83,45 @@ int main(int argc, char* argv[])
 
     if (lang[0]=='c')
     {
+        cpp_language* p_project;
         project = new cpp_language(target_folder);
+        p_project = dynamic_cast<cpp_language*>(project);
         if (lang == "cpp")
-            project->mode_c_or_cpp(1); // C++
+            p_project->mode_c_or_cpp(1); // C++
         else
-            project->mode_c_or_cpp(0); // C
+            p_project->mode_c_or_cpp(0); // C
+        codetree = p_project->parse();
+        p_project->create_nodes(codetree);
+        p_project->create_edges(codetree);
+    }
+    if (lang=="py")
+    {
+        project = new py_language(target_folder);
         codetree = project->parse();
         project->create_nodes(codetree);
         project->create_edges(codetree);
-    }
+    }    
 
     if ((output_format == "svg")||(output_format=="SVG"))
     {
-        string output;
-        cm_render(codetree->to_string(), output, CM_OUTPUT_SVG);        
-        cout << output << endl;  
+        string svg_output,output = codetree->to_string();
+        cm_dashclean(output);
+        cm_render(output, svg_output, CM_OUTPUT_SVG);                
+        cout << svg_output << endl;  
     }
     if ((output_format == "png")||(output_format=="PNG"))
     {
-        string output;
-        cm_render(codetree->to_string(), output, CM_OUTPUT_PNG);        
-        cout << output << endl;  
+        string png_output,output = codetree->to_string();
+        cm_dashclean(output);
+        cm_render(output, png_output, CM_OUTPUT_PNG);                
+        cout << png_output << endl;  
     }    
     if ((output_format == "dot")||(output_format=="DOT"))
     {
-        cout << codetree->to_string() << endl;        
+        string output;
+        output = codetree->to_string();
+        cm_dashclean(output);
+        cout << output << endl;        
     }        
 
     return(0);

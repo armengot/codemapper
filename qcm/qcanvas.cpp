@@ -64,12 +64,13 @@ void qcanvas::deletenode()
         {
             rechar(clean,CM_SYS_SPLITER_CHAR,CM_GLOBAL_JOIN_CHAR);
         }
+        cm_dashclean(clean);
         debugqt("Removing node: "+selected_node+" --> parsed as: "+clean);
         current_project->removenode(clean);
-        std::string new_svg;
-        cm_render(current_project->to_string(), new_svg, CM_OUTPUT_SVG);                
+        std::string new_svg,fromgraphviz = current_project->to_string();
+        cm_dashclean(fromgraphviz);
+        cm_render(fromgraphviz, new_svg, CM_OUTPUT_SVG);                
         load(new_svg);
-
         xmlingest(new_svg);        
         //xml = QString::fromStdString(new_svg);        
     }
@@ -96,21 +97,21 @@ void qcanvas::mouseMoveEvent(QMouseEvent *event)
         float ry = static_cast<float>(mouse.y()) / frame.height();
         //std::cerr << "MOUSE(" << mouse.x() << "," << mouse.y() << ") -> RELATIVE (" << rx << "," << ry << ") ";
         /* qx qy = scale */
-        float qx = rx * currentsvg.vbox[2];
-        float qy = ry * currentsvg.vbox[3];
+        float qx = rx * currentsvg->vbox[2];
+        float qy = ry * currentsvg->vbox[3];
         //std::cerr << "SVG[" << qx << "," << qy << "]";
         /* de-translation */
         QPointF svgpos;
-        svgpos.setX(qx - currentsvg.translate[0]);
-        //svgpos.setY(currentsvg.translate[1] - qy);
-        svgpos.setY(qy - currentsvg.translate[1]);
+        svgpos.setX(qx - currentsvg->translate[0]);
+        //svgpos.setY(currentsvg->translate[1] - qy);
+        svgpos.setY(qy - currentsvg->translate[1]);
         //std::cerr << " ==> [" << svgpos.x() << "," << svgpos.y() << "]\n";     
 
         /* *********************************************************************************** */        
         /* Step (2) look for eastest near node under a threshold */
         /* *********************************************************************************** */        
         bool text_bar_filled = false;
-        for (const auto& square: currentsvg.nodes)
+        for (const auto& square: currentsvg->nodes)
         {
             qreal diffX = square.center.x() - svgpos.x();
             qreal diffY = square.center.y() - svgpos.y();
@@ -277,21 +278,27 @@ int qcanvas::xmlingest(std::string svg)
     bool ok = true;
     int r = 0;
 
+    if (currentsvg)
+    {
+        delete(currentsvg);
+    }
+    currentsvg = new xmlsvg;
+
     while (!reader.atEnd() && !reader.hasError()) 
     {
         reader.readNext();
 
         if (reader.isStartElement() && reader.name() == "svg")
         {
-            currentsvg.ptw = reader.attributes().value("width").toString().chopped(2).toInt();
-            currentsvg.pth = reader.attributes().value("height").toString().chopped(2).toInt();
-            std::cerr << currentsvg.ptw << " x " << currentsvg.pth << std::endl;
+            currentsvg->ptw = reader.attributes().value("width").toString().chopped(2).toInt();
+            currentsvg->pth = reader.attributes().value("height").toString().chopped(2).toInt();
+            std::cerr << currentsvg->ptw << " x " << currentsvg->pth << std::endl;
             QStringList four = reader.attributes().value("viewBox").toString().split(' ');
             for (int i=0;i<4;i++)
             {
-                currentsvg.vbox[i] = four[i].toFloat(&ok);
+                currentsvg->vbox[i] = four[i].toFloat(&ok);
             }
-            std::cerr << currentsvg.vbox[0] << " " << currentsvg.vbox[1] << " " << currentsvg.vbox[2] << " " << currentsvg.vbox[3] << std::endl;
+            std::cerr << currentsvg->vbox[0] << " " << currentsvg->vbox[1] << " " << currentsvg->vbox[2] << " " << currentsvg->vbox[3] << std::endl;
             r = r + 1;            
         }
         if (reader.name() == "g")
@@ -306,14 +313,14 @@ int qcanvas::xmlingest(std::string svg)
                 std::smatch match;
                 if (std::regex_search(tvalues, match, regex)) 
                 {
-                    currentsvg.scale[0] = std::stof(match[1].str());
-                    currentsvg.scale[1] = std::stof(match[2].str());
-                    currentsvg.rotate   = std::stof(match[3].str());
-                    currentsvg.translate[0] = std::stof(match[4].str());
-                    currentsvg.translate[1] = std::stof(match[5].str());                    
-                    std::cerr << "scale: " << currentsvg.scale[0] << ":"<< currentsvg.scale[1];
-                    std::cerr << " rotate: " << currentsvg.rotate;
-                    std::cerr << " translate: [" << currentsvg.translate[0] << "," << currentsvg.translate[1] << "]" << std::endl;
+                    currentsvg->scale[0] = std::stof(match[1].str());
+                    currentsvg->scale[1] = std::stof(match[2].str());
+                    currentsvg->rotate   = std::stof(match[3].str());
+                    currentsvg->translate[0] = std::stof(match[4].str());
+                    currentsvg->translate[1] = std::stof(match[5].str());                    
+                    std::cerr << "scale: " << currentsvg->scale[0] << ":"<< currentsvg->scale[1];
+                    std::cerr << " rotate: " << currentsvg->rotate;
+                    std::cerr << " translate: [" << currentsvg->translate[0] << "," << currentsvg->translate[1] << "]" << std::endl;
                     r = r + 1;
                 }
             }        
@@ -375,7 +382,7 @@ int qcanvas::xmlingest(std::string svg)
                         reader.readNext();                    
                     newn.label = reader.readElementText().toStdString();                    
                     
-                    currentsvg.nodes.push_back(newn);
+                    currentsvg->nodes.push_back(newn);
                     //std::cerr << newn.id << " " << newn.title << " " << newn.label << std::endl;
                     //std::cerr << "CENTER [" << newn.center.x() << "," << newn.center.y() << "]" << std::endl;
                     for (auto each : newn.bounding)

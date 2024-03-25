@@ -96,8 +96,7 @@ void cm_graph::removenode(string name)
         {
             cm_node* toremove = *it_node;
             std::cerr << "cm_graph: " << "Remove node " << toremove->get_name() << std::endl;
-            nodes.erase(it_node);            
-            std::cerr << "cm_graph: " << "Remove node " << toremove->get_name() << std::endl;
+            nodes.erase(it_node);                        
             delete toremove;
         }
         std::cerr << "cm_graph: Node " << name << " removed successfully." << std::endl;
@@ -126,7 +125,7 @@ cm_node* cm_graph::lookfor(std::string name)
         //std::cerr << "cm_graph: comparing " << copy << " with " << node->get_name() << std::endl;
         if (copy == node->get_name())
         {
-            std::cerr << "Found node: [" << node->get_name() << " : " << node->get_label() << "]" << std::endl;
+            std::cerr << "cm_graph: Found node [" << node->get_name() << " : " << node->get_label() << "]" << std::endl;
             return(node);
         }
     }
