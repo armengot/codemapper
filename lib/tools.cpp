@@ -111,7 +111,7 @@ void erasestring(vector<string>& old, const string& key)
 
 /* graphviz library real connection */
 /* same example as simple.c from graphviz docs */
-void cm_render(const string& input, std::string& output, CM_OUTPUT_OUTPUT_MODES mode)
+void cm_render(const string& input, std::string& output, CM_OUTPUT_MODES mode)
 {
     GVC_t *gvc;
     Agraph_t *g;
@@ -119,6 +119,7 @@ void cm_render(const string& input, std::string& output, CM_OUTPUT_OUTPUT_MODES 
     char* buffer;
     unsigned int len;
 
+    std::cerr << "cm_render: using graphviz under https://graphviz.org/license/ terms" << std::endl;
     gvc = gvContext();
     fp = fmemopen((void*)input.c_str(), input.length(), "r");
     g = agread(fp, 0);

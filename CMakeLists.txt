@@ -136,7 +136,7 @@ target_link_libraries(cm_qtlib Qt5::Widgets)
 target_link_libraries(cm_qtlib Qt5::Gui)
 target_link_libraries(cm_qtlib Qt5::Core)
 target_link_libraries(cm_qtlib ${Qt5Svg_LIBRARIES})
-target_link_libraries(${GUI_CODEMAPPER} PUBLIC ${LDFLAGS} cm_qtlib cm_qcanvas cm_graph cm_clan cm_pylan cm_tools)
+target_link_libraries(${GUI_CODEMAPPER} PUBLIC ${LDFLAGS} PRIVATE cm_qtlib cm_qcanvas cm_graph cm_clan cm_pylan cm_tools)
 # ---------------------------------------------------------------------------------------------------------
 # tests and examples too
 target_compile_options(simple PUBLIC ${CFLAGS})

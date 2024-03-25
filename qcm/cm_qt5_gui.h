@@ -37,9 +37,10 @@ class cm_qt5_gui : public QMainWindow
         qcanvas* canvas;        
         string selected_input_language = "cpp";
         string selected_render_format = "png";
+        bool lan_selected = false;
 
         /* target objects */
-        cm_graph* current_project;
+        cm_graph* current_project = nullptr;
         string svg;             
         
         /* setup */
@@ -48,7 +49,8 @@ class cm_qt5_gui : public QMainWindow
         void infolder();
         void infile();
         void guiabout();        
-        void quitcool(); 
+        void quitcool();
+        void select_language(string lan);
         
     public:
         /* constructor */

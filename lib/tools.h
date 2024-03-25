@@ -22,7 +22,7 @@
 extern const char CM_GLOBAL_JOIN_CHAR;
 extern const char CM_SYS_SPLITER_CHAR;
 
-enum CM_OUTPUT_OUTPUT_MODES
+enum CM_OUTPUT_MODES
 {
     CM_OUTPUT_SVG,
     CM_OUTPUT_PNG,
@@ -37,7 +37,7 @@ string firstname(string path, char splitchar);
 void erasestring(vector<string>& old, const string& key);
 void rechar(string& str, char oldc, char newc);
 bool charin(char c, const std::string& str);
-void cm_render(const string& input, std::string& output, CM_OUTPUT_OUTPUT_MODES mode);
+void cm_render(const string& input, std::string& output, CM_OUTPUT_MODES mode);
 void cm_dashclean(string& str);
 
 #endif

@@ -65,8 +65,8 @@ class qcanvas : public QLabel
         QPoint mouse;
         QSvgRenderer svg_render;
         QString xml;
-        struct xmlsvg currentsvg;
-        cm_graph* current_project;
+        struct xmlsvg* currentsvg = nullptr;
+        cm_graph* current_project = nullptr;
         string selected_node = "";
 
     signals:

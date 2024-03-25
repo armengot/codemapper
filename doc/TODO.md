@@ -8,7 +8,7 @@ $ ./codemapper -t /home/marcelo/dev/personal/github/codemapper/ -l cpp -o png > 
 ```
 - [x] General language class 
 - [x] C/C++ particular child class
-- [ ] Python particular child class
+- [x] Python particular child class
 - [ ] Java particular child class
 - [ ] ... (etc) many other languages
 - [x] Documentation
