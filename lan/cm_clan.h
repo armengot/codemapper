@@ -13,6 +13,7 @@ class cpp_language : public language
         ~cpp_language() {};   
         void create_nodes(cm_graph* project) override;
         void create_edges(cm_graph* project) override;
+        void mode_c_or_cpp(int mode);
 };
 
 #endif

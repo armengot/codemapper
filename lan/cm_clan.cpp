@@ -13,6 +13,18 @@
 
 namespace fs = std::experimental::filesystem;
 
+void cpp_language::mode_c_or_cpp(int mode)
+{
+    if (mode == 0)
+    {
+        src_ext = "c";
+    }
+    else
+    {
+        src_ext = "cpp";
+    }
+}
+
 cpp_language::cpp_language(const string& in_target) : language(in_target)
 {    
     src_ext = "cpp";

@@ -72,29 +72,6 @@ vector<cm_node*> cm_graph::allnodes()
     return(nodes);
 }
 
-/*
-void cm_graph::removenode(string name)
-{
-    cm_node* toberemoved = nullptr;
-
-    toberemoved = lookfor(name);
-    if (toberemoved)
-    {
-        std::cerr << "cm_graph: Removing " << name << std::endl;
-        auto it = std::find_if(nodes.begin(), nodes.end(), [&](cm_node* node){return node == toberemoved;});
-        if (it != nodes.end()) 
-        {
-            //std::cerr << "cm_graph: " << name << " found in graph to be removed." << std::endl;
-            nodes.erase(it);
-        }
-    }
-    else
-    {
-        std::cerr << "cm_graph: Coudlnt find node called " << DEBUG_MGTTXT << name << DEBUG_RESTXT;
-    }
-}
-*/
-
 void cm_graph::removenode(string name)
 {
     cm_node* toberemoved = lookfor(name);
