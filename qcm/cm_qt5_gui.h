@@ -46,8 +46,11 @@ class cm_qt5_gui : public QMainWindow
         /* setup */
         void setup_canvas();
         void setup_menus();
+        /* input data load */
         void infolder();
         void infile();
+        /* output data saving */
+        void project_save();
         void guiabout();        
         void quitcool();
         void select_language(string lan);

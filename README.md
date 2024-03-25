@@ -9,6 +9,7 @@ Code Mapper is a set of tools to generate standard ```graphviz``` graphs from so
 
 This project is starting and in progress, please join us to work together and start with the: [TO-DO](doc/TODO.md) list.
 
+![demo](doc/demogui.gif)
 
 ## Requirements
 

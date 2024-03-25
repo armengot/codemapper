@@ -64,12 +64,13 @@ void qcanvas::deletenode()
         {
             rechar(clean,CM_SYS_SPLITER_CHAR,CM_GLOBAL_JOIN_CHAR);
         }
+        cm_dashclean(clean);
         debugqt("Removing node: "+selected_node+" --> parsed as: "+clean);
         current_project->removenode(clean);
-        std::string new_svg;
-        cm_render(current_project->to_string(), new_svg, CM_OUTPUT_SVG);                
+        std::string new_svg,fromgraphviz = current_project->to_string();
+        cm_dashclean(fromgraphviz);
+        cm_render(fromgraphviz, new_svg, CM_OUTPUT_SVG);                
         load(new_svg);
-
         xmlingest(new_svg);        
         //xml = QString::fromStdString(new_svg);        
     }

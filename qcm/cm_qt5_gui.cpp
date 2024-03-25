@@ -12,6 +12,7 @@
 #include <QLayout>
 #include <QObject>
 #include <QFileDialog>
+#include <QTextStream>
 
 /* graphviz */
 #include <graphviz_version.h>
@@ -107,9 +108,7 @@ void cm_qt5_gui::setup_menus()
     QMenu *file = mbar->addMenu("&File");
     QMenu *open = file->addMenu("&Open");
     /* LANGUAGE */
-    QMenu *lan_menu = mbar->addMenu("&Language");
-    /* VIEW */
-    // QMenu *view = mbar->addMenu("&View");
+    QMenu *lan_menu = mbar->addMenu("&Language");    
 
     /* HELP */
     QMenu *help = rbar->addMenu("&Help");
@@ -120,9 +119,17 @@ void cm_qt5_gui::setup_menus()
     QAction *openfolder = open->addAction(tr("&Folder"), this, &cm_qt5_gui::infolder);
     QAction *openfile = open->addAction(tr("&Project file"), this, &cm_qt5_gui::infile);
     file->addSeparator();
+    /* ---------------- */    
+    QAction *save = file->addAction(tr("&Save"), this, &cm_qt5_gui::project_save);
+    save->setShortcut(Qt::Key_S);
+    file->addAction(save);
+    file->addSeparator();
+    /* ---------------- */        
     QAction *quit = file->addAction(tr("&Quit"), this, &cm_qt5_gui::quitcool);
     quit->setShortcut(Qt::Key_Q);
     file->addAction(quit);
+
+
     /* LANGUAGE MENU -> SWITCH among lan options */
     /* ----------------------------------------- */        
     QActionGroup *lanswitch = new QActionGroup(this);
@@ -175,6 +182,65 @@ void cm_qt5_gui::select_language(std::string lan)
         selected_input_language = "c  ";
     }
 }
+
+void cm_qt5_gui::project_save()
+{    
+    if (current_project==nullptr)
+    {
+        QMessageBox warning;
+        warning.setWindowTitle("Warning");
+        warning.setText("There is no project loaded currently.");
+        warning.setStandardButtons(QMessageBox::Ok);    
+        warning.exec();        
+    }
+    else
+    {
+        QString starter = QDir::currentPath();    
+        QString target = QFileDialog::getSaveFileName(this, tr("Save Project"), starter, tr("SVG Files (*.svg);;DOT Files (*.dot);;PNG Files (*.png)"));
+
+        if (!target.isEmpty()) 
+        {
+            QFileInfo target_info(target);
+            QString extension = target_info.suffix();
+            debugqt("Saving project to file: " + target.toStdString());
+            string foutput, output = current_project->to_string();                
+            cm_dashclean(output);                
+            debugqt("graphviz call to svg build... ");
+            if (extension.toLower() == "svg") 
+            {
+                cm_render(output, foutput, CM_OUTPUT_SVG);        
+            }
+            else if (extension.toLower() == "png") 
+            {
+                cm_render(output, foutput, CM_OUTPUT_PNG);
+            }
+            else
+            {
+                foutput = output;
+            }
+            QFile file(target);
+            if (file.open(QIODevice::WriteOnly)) 
+            {
+                if (extension.toLower() == "png")
+                {
+                    file.write(foutput.data(), foutput.size());
+                }
+                else
+                {
+                    QTextStream fout(&file);
+                    fout << QString::fromStdString(foutput);
+                    file.close();
+                    debugqt("Project saved successfully: "+target.toStdString());
+                }
+            } 
+            else 
+            {
+                debugqt("Unable to open file for writing.");
+            }        
+        }
+    }
+}
+
 
 void cm_qt5_gui::quitcool()
 {
