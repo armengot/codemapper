@@ -50,6 +50,7 @@ class qcanvas : public QLabel
         int xmlingest(std::string svg);
         void deletenode();
         QTextEdit* canvas_textline;
+        bool svg_loaded_as_xml = false;
                 
 
     protected:
@@ -60,8 +61,7 @@ class qcanvas : public QLabel
     private:
         /* functions */
         void select_node(std::string label);
-        /* attributes*/
-        bool svg_loaded_as_xml = false;
+        /* attributes*/        
         QPoint mouse;
         QSvgRenderer svg_render;
         QString xml;

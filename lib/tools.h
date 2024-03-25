@@ -32,11 +32,12 @@ enum CM_OUTPUT_OUTPUT_MODES
 using namespace std;
 
 string lastname(string path, char splitchar);
-string lastwo(std::string path, char splitchar, char joinchar);
+string lastwo(string path, char splitchar, char joinchar);
 string firstname(string path, char splitchar);
 void erasestring(vector<string>& old, const string& key);
-void rechar(std::string& str, char oldc, char newc);
+void rechar(string& str, char oldc, char newc);
 bool charin(char c, const std::string& str);
 void cm_render(const string& input, std::string& output, CM_OUTPUT_OUTPUT_MODES mode);
+void cm_dashclean(string& str);
 
 #endif

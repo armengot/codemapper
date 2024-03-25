@@ -157,6 +157,10 @@ void cm_qt5_gui::infolder()
         debugqt("Folder selected: "+folder_input);
         if (selected_input_language[0]=='c')
         {
+            if (canvas->svg_loaded_as_xml)
+            {
+                canvas->svg_loaded_as_xml = false;
+            }
             debugqt("Parsing as C/C++ project");
             cpp_language input_source_code(folder_input);
             current_project = input_source_code.parse();
