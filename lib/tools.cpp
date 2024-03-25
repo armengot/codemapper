@@ -111,24 +111,32 @@ void erasestring(vector<string>& old, const string& key)
 
 /* graphviz library real connection */
 /* same example as simple.c from graphviz docs */
-void cm_render(const string& input, std::string& output, CM_OUTPUT_MODES mode)
+int cm_render(const string& input, std::string& output, CM_OUTPUT_MODES mode)
 {
     GVC_t *gvc;
-    Agraph_t *g;
+    Agraph_t *g = nullptr;
     FILE *fp;
     char* buffer;
     unsigned int len;
+    int r;
 
     std::cerr << "cm_render: using graphviz under https://graphviz.org/license/ terms" << std::endl;
     gvc = gvContext();
-    fp = fmemopen((void*)input.c_str(), input.length(), "r");
+    fp = fmemopen((void*)input.c_str(), input.length(), "r");    
     g = agread(fp, 0);
-    gvLayout(gvc, g, "dot");
-    
+    if (g == nullptr)
+    {
+        std::cerr << "cm_render: graphviz::agread() returned NULL" << std::endl;    
+        return(-1);
+    }
+   
+    r = gvLayout(gvc, g, "dot");        
+    std::cerr << "cm_render: graphviz::gvLayout() returned " << r << std::endl;
     if (mode == CM_OUTPUT_SVG)
-        gvRenderData(gvc, g, "svg", &buffer, &len); 
+        r = gvRenderData(gvc, g, "svg", &buffer, &len); 
     else if (mode == CM_OUTPUT_PNG)
-        gvRenderData(gvc, g, "png", &buffer, &len);
+        r = gvRenderData(gvc, g, "png", &buffer, &len);
+    std::cerr << "cm_render: graphviz::gvRenderData() returned " << r << std::endl;
     
     gvFreeLayout(gvc, g);
     agclose(g);
@@ -140,6 +148,7 @@ void cm_render(const string& input, std::string& output, CM_OUTPUT_MODES mode)
         output.assign(buffer, len);
         gvFreeRenderData(buffer);
     }    
+    return(0);
 }
 
 void cm_dashclean(std::string& str) 

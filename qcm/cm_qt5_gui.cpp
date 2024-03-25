@@ -301,10 +301,21 @@ void cm_qt5_gui::infolder()
                 string svg_output, output = current_project->to_string();                
                 cm_dashclean(output);                
                 debugqt("graphviz call to svg build... ");
-                cm_render(output, svg_output, CM_OUTPUT_SVG);        
-                svg = svg_output;                
-                canvas->load(svg);
-                canvas->setgraph(current_project);                
+                int r = cm_render(output, svg_output, CM_OUTPUT_SVG);
+                if (r!=0)
+                {
+                    QMessageBox error;
+                    error.setWindowTitle("Graphviz error");
+                    error.setText("Graphviz render didnt work without errors, check about keywords in source (graph, node, edge) or reserver chars (-).");
+                    error.setStandardButtons(QMessageBox::Ok);    
+                    error.exec();
+                }
+                else
+                {                        
+                    svg = svg_output;                
+                    canvas->load(svg);
+                    canvas->setgraph(current_project);                
+                }
             }
             else if (selected_input_language == "py")
             {
@@ -317,10 +328,21 @@ void cm_qt5_gui::infolder()
                 string svg_output, output = current_project->to_string();
                 cm_dashclean(output);
                 debugqt("graphviz call to svg build... ");
-                cm_render(output, svg_output, CM_OUTPUT_SVG);        
-                svg = svg_output;                
-                canvas->load(svg);
-                canvas->setgraph(current_project);
+                int r = cm_render(output, svg_output, CM_OUTPUT_SVG);        
+                if (r!=0)
+                {
+                    QMessageBox error;
+                    error.setWindowTitle("Graphviz error");
+                    error.setText("Errors happened while graphviz rendering, check about keywords in source (graph, node, edge) or reserver chars (-).");
+                    error.setStandardButtons(QMessageBox::Ok);    
+                    error.exec();
+                }
+                else
+                {                        
+                    svg = svg_output;                
+                    canvas->load(svg);
+                    canvas->setgraph(current_project);                
+                }
             }            
         }
     }
@@ -352,7 +374,6 @@ void cm_qt5_gui::canvaslink(QPoint mouse)
     std::string tmp = "FATHER = [" + std::to_string(mouse.x()) +"," +std::to_string(mouse.y()) + "]";    
     debugqt(tmp);
 }
-
 
 void cm_qt5_gui::closeEvent(QCloseEvent *event)
 {

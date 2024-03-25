@@ -37,7 +37,7 @@ string firstname(string path, char splitchar);
 void erasestring(vector<string>& old, const string& key);
 void rechar(string& str, char oldc, char newc);
 bool charin(char c, const std::string& str);
-void cm_render(const string& input, std::string& output, CM_OUTPUT_MODES mode);
+int cm_render(const string& input, std::string& output, CM_OUTPUT_MODES mode);
 void cm_dashclean(string& str);
 
 #endif
