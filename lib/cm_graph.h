@@ -38,7 +38,7 @@ class cm_graph
         void removenode(string name);
         void removeedge(cm_edge* edge);
         void reset_edge_colors();
-        cm_edge* nextedge(cm_edge* current);
+        cm_edge* nextedge(cm_edge* current, int tailhead);
 
     private:
         string name;

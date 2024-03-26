@@ -59,11 +59,11 @@ void cm_qt5_gui::keyReleaseEvent(QKeyEvent *event)
         {
             if (canvas->selected_edge != nullptr)
             {
-                cm_edge* next = current_project->nextedge(canvas->selected_edge);
+                cm_edge* next = current_project->nextedge(canvas->selected_edge,canvas->tailhead);
                 canvas->select_edge(next);
             }
         }      
-    }
+    }    
 }
 
 void cm_qt5_gui::keyPressEvent(QKeyEvent *event)

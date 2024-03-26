@@ -97,7 +97,16 @@ void qcanvas::select_edge(cm_edge* direct)
     cm_dashclean(fromgraphviz);
     cm_render(fromgraphviz, new_svg, CM_OUTPUT_SVG);                
     load(new_svg);
-    selected_edge = direct;  
+    selected_edge = direct;
+    cm_node* tailedge = direct->get_tail();
+    if (tailedge->get_name() == selected_node)
+    {
+        tailhead = 0;
+    }
+    else
+    {
+        tailhead = 1;
+    }
     selected_node = "";       
 }
 

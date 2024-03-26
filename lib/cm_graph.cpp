@@ -145,35 +145,54 @@ vector<cm_node*> cm_graph::allnodes()
     return(nodes);
 }
 
-cm_edge* cm_graph::nextedge(cm_edge* current)
+cm_edge* cm_graph::nextedge(cm_edge* current, int tailhead)
 {
-    cm_node* head = current->get_head();
+    cm_node* comparison;
+    if (tailhead ==0)
+        comparison = current->get_head();
+    else
+        comparison = current->get_tail();
     cm_edge* bereturned = nullptr;
+    int full_rotation = 0;
     bool next = false;
-    for (int i = 0; i < edges.size(); i++)
+    while (bereturned==nullptr)
     {
-        cm_edge* each = edges[i];        
-        if (head == each->get_head())
+        for (int i = 0; i < edges.size(); i++)
         {
-            if (current == each)
+            cm_edge* each = edges[i];
+            bool check = false;
+            if (tailhead == 0)        
             {
-                next = true;
+                check = (comparison == each->get_head());
             }
             else
             {
-                if (bereturned == nullptr)
+                check = (comparison == each->get_tail());
+            }
+            if (check)
+            {
+                if (current == each)
                 {
-                    bereturned = each;
+                    next = true;
                 }
-                if (next)                
-                    return(each);
+                else
+                {
+                    if (bereturned == nullptr)
+                    {
+                        bereturned = each;
+                    }
+                    if (next)                
+                        return(each);
+                }
             }
         }
-    }        
-    if (bereturned!=nullptr)
-        return(bereturned);
-    else
-        return(edges[0]);
+        full_rotation = full_rotation + 1;
+        if (full_rotation==2)
+        {
+            bereturned = edges[0];
+        }
+    }
+    return(bereturned);
 }
 
 void cm_graph::removeedge(cm_edge* edge)

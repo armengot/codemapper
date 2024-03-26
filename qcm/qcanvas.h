@@ -57,6 +57,7 @@ class qcanvas : public QLabel
         cm_edge* selected_edge = nullptr;
         QPoint lastclick;    
         void select_edge(cm_edge* direct);
+        int tailhead = 0;
 
     protected:
         void mouseMoveEvent(QMouseEvent *event) override;   
