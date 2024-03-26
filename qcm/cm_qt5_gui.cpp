@@ -13,6 +13,7 @@
 #include <QObject>
 #include <QFileDialog>
 #include <QTextStream>
+#include <QMouseEvent>
 
 /* graphviz */
 #include <gvc.h>
@@ -41,19 +42,36 @@ cm_qt5_gui::cm_qt5_gui()
     setup_menus();   
 }
 
-void cm_qt5_gui::keyPressEvent(QKeyEvent *event)
+void cm_qt5_gui::keyReleaseEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_Escape) 
+    if (event->key() == Qt::Key_Tab)
+    {        
+        if (canvas->selected_node != "")
+        {
+            /* std::cerr << "tab" << std::endl; */
+            QPoint pos;
+            QMouseEvent *fake = new QMouseEvent(QEvent::MouseButtonPress, pos, Qt::RightButton, Qt::RightButton, Qt::NoModifier);
+            debugqt("sending right mouse event to canvas");
+            canvas->callable_rightmouse(fake);
+        }        
+    }
+}
+
+void cm_qt5_gui::keyPressEvent(QKeyEvent *event)
+{    
+    QKeyEvent* key = static_cast<QKeyEvent*>(event);
+    std::cerr << "KEY PRESSED" << std::endl;
+    if (key->key() == Qt::Key_Escape) 
     {
         quitcool();
     }
-    else if (event->key() == Qt::Key_Delete)
+    else if (key->key() == Qt::Key_Delete)
     {
         canvas->deletenode();
     }
     else
     {
-        debugqt(QKeySequence(event->key()).toString().toStdString());
+        debugqt(QKeySequence(key->key()).toString().toStdString());
     }
 }
 

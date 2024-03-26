@@ -244,3 +244,21 @@ std::string cm_graph::to_string() const
     ss << "}\n";
     return ss.str();
 }
+
+std::vector<cm_edge*> cm_graph::edgesinvolved(cm_node* node)
+{
+    std::vector<cm_edge*> rlist;
+    cm_node* gtail;
+    cm_node* ghead;
+    
+    for (auto& each_edge : edges)
+    {
+        gtail = each_edge->get_tail();
+        ghead = each_edge->get_head();
+        if ((node == gtail)||(node == ghead))
+        {
+            rlist.push_back(each_edge);
+        }
+    }    
+    return(rlist);
+}

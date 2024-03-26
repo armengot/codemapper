@@ -37,3 +37,10 @@ std::vector<std::string> cm_edge::get_features()
 {
     return(features);
 }
+string cm_edge::humanreadable()
+{    
+    std::string edge_humanreadable = tail->get_name()+" --> "+head->get_name();
+    return(edge_humanreadable);
+}
+
+                    

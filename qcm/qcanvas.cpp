@@ -15,6 +15,7 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 #include <QMessageBox>
+#include <QMenu>
 
 /* codemapper project libraries */
 #include <cm_qt5_gui.h>
@@ -28,6 +29,11 @@ void debugqt(std::string stin)
 
 void qcanvas::mousePressEvent(QMouseEvent *event)
 {
+    callable_rightmouse(event);
+}
+
+void qcanvas::callable_rightmouse(QMouseEvent *event)
+{
     if (event->button() == Qt::LeftButton) 
     {
         debugqt("LEFT");
@@ -36,24 +42,53 @@ void qcanvas::mousePressEvent(QMouseEvent *event)
         {
             select_node(to_find.toStdString());
             selected_node = to_find.toStdString();
-            std::cerr << "Selected node: " << selected_node << std::endl;
+            std::cerr << "qcanvas::callable_rightmouse: Selected node: " << selected_node << std::endl;
         }
         else
         {                       // mouse everywhere != label
             selected_node = "";
             load(xml.toStdString());           
-            std::cerr << "Any node selected node." << std::endl;
+            std::cerr << "qcanvas::callable_rightmouse: Any node selected node." << std::endl;
         }
     }
     else if (event->button() == Qt::RightButton) 
     {
-        debugqt("RIGHT");        
+        debugqt("RIGHT");
+        QString to_find = canvas_textline->toPlainText();
+        if (!to_find.isEmpty())
+        {
+            cm_node* p = current_project->lookfor(to_find.toStdString());
+            std::vector<cm_edge*> involved_edges = current_project->edgesinvolved(p);
+            if (!involved_edges.empty())
+            {
+                QMenu *cm_popup = new QMenu(this);
+                QAction *action;
+                for (auto& each_edge : involved_edges)
+                {                    
+                    debugqt("qcanvas: "+each_edge->humanreadable());
+                    action = new QAction(QString::fromStdString(each_edge->humanreadable()), this);
+                    cm_edge* edge_ptr = static_cast<cm_edge*>(each_edge);                    
+                    QObject::connect(action, &QAction::triggered, this, [this, edge_ptr]() { this->select_edge(edge_ptr); });   
+                    cm_popup->addAction(action);
+                }
+                cm_popup->popup(QCursor::pos());
+            }
+        }
+        else
+        {
+        
+        }                
     } 
     else if (event->button() == Qt::MiddleButton) 
     {
         debugqt("CENTER");        
     }    
     QLabel::mousePressEvent(event);
+}
+
+void qcanvas::select_edge(cm_edge* direct)
+{
+    debugqt("qcanvas::select_edge "+direct->humanreadable());
 }
 
 void qcanvas::deletenode()
@@ -407,7 +442,7 @@ int qcanvas::xmlingest(std::string svg)
                         //std::cerr << "\t" << each.x() << " " << each.y() << std::endl;
                     }
                     r = r + 1;
-                }
+                }                
             }
         }        
     }    

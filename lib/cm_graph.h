@@ -33,6 +33,7 @@ class cm_graph
         int addedge(cm_edge* edge);
         void edgesall(const string& feature);
         cm_node* lookfor(string name);
+        vector<cm_edge*> edgesinvolved(cm_node* node);
         vector<cm_node*> allnodes();
         void removenode(string name);
 

@@ -62,6 +62,7 @@ class cm_qt5_gui : public QMainWindow
     protected:
         void closeEvent(QCloseEvent *event);
         void keyPressEvent(QKeyEvent *event) override;
+        void keyReleaseEvent(QKeyEvent *event) override;
 
     protected slots:
         void canvaslink(QPoint mouse);

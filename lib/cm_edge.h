@@ -23,6 +23,7 @@ class cm_edge
         cm_node* get_tail();
         string get_name();
         string get_label();
+        string humanreadable();
         vector<string> get_features();        
 
     private:
