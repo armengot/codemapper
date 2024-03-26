@@ -1,0 +1,173 @@
+digraph flow
+{    
+    cm_graph
+    [
+        label = "cm_graph\nclass"
+        shape = box
+        penwidth=3
+        style = filled
+        fillcolor = cornflowerblue
+    ]
+    a
+    [
+        style = invis
+    ]
+    b
+    [
+        style = invis
+    ]    
+    c
+    [
+        style = invis
+    ]        
+    cm_lan
+    [
+        label = "cm_lan class\nor child class\nfor any language"
+        shape = box
+        penwidth=3
+        style = filled
+        fillcolor = cornflowerblue        
+    ]
+    folder
+    [
+        label = "absolute path to\ndev folder project"
+        shape = box
+        penwidth=3
+    ]
+    cmrender
+    [
+        label = "{cm_render\nfunction()|tools.h}"
+        shape = record
+        penwidth=3
+        style = filled
+        fillcolor = cornflowerblue        
+    ]
+    dot
+    [
+        label = "graph written\nas dot file"
+        shape = box
+        penwidth=3
+        style=filled
+        fillcolor=lightgrey        
+    ]
+    g
+    [
+        label = "{Agraph_t *g|graphviz}"        
+        shape = record
+        penwidth=3
+        style=filled
+        fillcolor=lightgrey        
+    ]
+    svg
+    [
+        label = "svg/xml\nstring"
+        penwidth=3
+        style=filled
+        fillcolor=lightgrey        
+    ]
+    
+    xmlsvg
+    [
+        label = "struct xmlsvg"
+        shape = box
+        style=filled
+        fillcolor=lightgrey                
+        penwidth=3
+    ]
+    qcm
+    [
+        label = "{cm_Qt5_gui class|qcanvas class}"
+        shape = record
+        penwidth=3
+        style = filled    
+        fillcolor = chartreuse3        
+    ]
+    cm_graph -> cm_lan
+    [
+        dir = back
+        penwidth=3    
+        color = cornflowerblue    
+    ]
+    cm_lan -> folder
+    [
+        dir = back
+        penwidth=4
+        label = "parse()"
+        color = lightgreen
+    ]    
+    cm_graph -> g
+    [
+        dir = back
+        penwidth=3
+        color = cornflowerblue    
+    ]    
+
+    cm_graph -> cmrender
+    [
+        label = " to_string() "
+        penwidth=3
+        color = cornflowerblue    
+    ]
+    g -> dot
+    [
+        dir = back
+        penwidth=3
+    ]
+    cmrender -> svg
+    [
+        penwidth=3
+        label = "(svg)"
+    ]
+    cmrender -> dot
+    [     
+        label = "(dot)"
+        penwidth=3        
+    ]
+    qcm -> svg
+    [
+        dir = back
+        penwidth=3
+        color = chartreuse3
+    ]
+
+    qcm -> xmlsvg
+    [
+        arrowhead = none
+        color = chartreuse3
+    ]
+      
+    a -> cm_graph
+    [
+        style = invis
+    ]    
+    a -> cm_lan
+    [
+        style = invis
+    ]    
+    a -> qcm
+    [
+        style = invis
+    ]   
+    folder -> b
+    [
+        dir = back
+        penwidth = 6
+        color = lightgreen
+        label = "input"
+    ]
+    dot -> c
+    [
+        dir = both
+        penwidth = 6
+        color = lightgreen
+        arrotail = normal
+        label = "input/output"
+    ]
+    qcm -> cm_graph
+    [        
+        arrowhead = none
+        color = chartreuse3
+    ]   
+
+    
+}

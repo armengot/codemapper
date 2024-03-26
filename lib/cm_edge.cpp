@@ -11,6 +11,7 @@ cm_edge::cm_edge(const string& in_name, const string& in_label, cm_node* in_tail
 void cm_edge::add_feature(const string& feature) 
 {
     features.push_back(feature);
+    
 }
 
 cm_node* cm_edge::get_head()

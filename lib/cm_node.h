@@ -22,6 +22,7 @@ class cm_node
         void add_feature(const string& feature);
         string get_name();
         string get_label();
+        void set_label(const string& in_label);
         vector<string> get_features();
 
     private:

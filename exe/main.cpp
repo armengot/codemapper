@@ -102,27 +102,30 @@ int main(int argc, char* argv[])
         project->create_edges(codetree);
     }    
 
+    int graphviz_response = -1;
+    string output;
     if ((output_format == "svg")||(output_format=="SVG"))
     {
-        string svg_output,output = codetree->to_string();
-        cm_dashclean(output);
-        cm_render(output, svg_output, CM_OUTPUT_SVG);                
-        cout << svg_output << endl;  
+        string svg_output = codetree->to_string();
+        cm_dashclean(svg_output);
+        graphviz_response = cm_render(svg_output, output, CM_OUTPUT_SVG);                         
     }
     if ((output_format == "png")||(output_format=="PNG"))
     {
-        string png_output,output = codetree->to_string();
-        cm_dashclean(output);
-        cm_render(output, png_output, CM_OUTPUT_PNG);                
-        cout << png_output << endl;  
+        string png_output = codetree->to_string();
+        cm_dashclean(png_output);
+        graphviz_response = cm_render(png_output, output, CM_OUTPUT_PNG);                        
     }    
     if ((output_format == "dot")||(output_format=="DOT"))
-    {
-        string output;
+    {        
         output = codetree->to_string();
         cm_dashclean(output);
-        cout << output << endl;        
+        graphviz_response = 0;        
     }        
+    if (graphviz_response == 0)
+    {
+        cout << output << endl;  
+    }
 
     return(0);
 }

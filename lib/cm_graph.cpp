@@ -1,5 +1,6 @@
 /* external headers */
 #include <iostream>
+#include <cstring>
 #include <string>
 #include <sstream>
 #include <vector>
@@ -11,9 +12,81 @@
 #include <cm_edge.h>
 #include <tools.h>
 
+/* graphviz headers */
+#include <cgraph.h>
+
 cm_graph::cm_graph(const std::string& in_name)
 {
     name = in_name;
+}
+
+cm_graph::cm_graph(Agraph_t *g)
+{    
+    Agnode_t *n;
+    Agedge_t *e;
+    Agsym_t *sym; 
+    cm_node* wnode;
+    cm_edge* wedge;
+    if (g == nullptr)
+    {
+        return;    
+    }
+    fprintf(stderr,"cm_graph(g): graphviz internal graph to be parsed as cm_grap class\n");
+    fprintf(stderr,"cm_graph(g): running over graph called [%s]\n", agnameof(g));
+    name.assign(agnameof(g));    
+    for (n = agfstnode(g); n != NULL; n = agnxtnode(g, n)) 
+    {
+        fprintf(stderr,"cm_graph(g): Node: %s\n", agnameof(n));
+        std::string wname = std::string(agnameof(n));
+        wnode = new cm_node(wname,"");
+        for (sym = agnxtattr(g, AGNODE, NULL); sym != NULL; sym = agnxtattr(g, AGNODE, sym)) 
+        {
+            std::string feature;
+            fprintf(stderr,"cm_graph(g): Node feature: %s = %s\n", sym->name, agxget(n, sym));                        
+            if (std::strcmp(sym->name, "label") == 0) 
+            {
+                feature = std::string(agxget(n,sym));
+                wnode->set_label(feature);
+            }
+            else
+            {
+                if (std::string(agxget(n,sym))!="")                
+                {
+                    feature = std::string(sym->name) + " = " + std::string(agxget(n,sym));
+                    wnode->add_feature(feature);
+                }
+            }
+            addnode(wnode);
+        }               
+    }    
+    for (n = agfstnode(g); n != NULL; n = agnxtnode(g, n)) 
+    {
+        fprintf(stderr,"cm_graph(g): Node %s edges: \n", agnameof(n));
+        for (e = agfstout(g, n); e != NULL; e = agnxtout(g, e)) 
+        {
+            cm_node* head = lookfor(std::string(agnameof(aghead(e))));
+            cm_node* tail = lookfor(std::string(agnameof(agtail(e))));
+            cm_edge* wedge = new cm_edge("","",tail,head);
+            fprintf(stderr,"cm_graph(g): Edge: %s -> %s\n", agnameof(agtail(e)), agnameof(aghead(e)));
+            for (sym = agnxtattr(g,AGEDGE,NULL); sym != NULL; sym = agnxtattr(g,AGEDGE,sym))
+            {           
+                bool insert = true;     
+                std::string feature = std::string(sym->name) + " = " + std::string(agxget(e, sym));
+                //fprintf(stderr,"cm_graph: Edge feature: %s = %s\n", sym->name, agxget(e, sym));                
+                for (const auto& feature : wedge->get_features())
+                {
+                    size_t pos = feature.find(std::string(sym->name));
+                    if (pos==std::string::npos)
+                    {
+                        insert = false;
+                    }
+                }
+                if (insert)
+                    wedge->add_feature(feature);
+            }
+            addedge(wedge);
+        }
+    }    
 }
 
 cm_graph::~cm_graph()
@@ -82,7 +155,7 @@ void cm_graph::removenode(string name)
             cm_edge* edge = *it;
             if (edge->get_head() == toberemoved || edge->get_tail() == toberemoved)
             {
-                std::cerr << "cm_graph: Delete edge " << edge->get_head()->get_name() << " --> "  << edge->get_tail()->get_name() << std::endl;                
+                std::cerr << "removenode: Delete edge " << edge->get_head()->get_name() << " --> "  << edge->get_tail()->get_name() << std::endl;                
                 edges.erase(it);
                 delete edge;                
             }
@@ -95,15 +168,15 @@ void cm_graph::removenode(string name)
         if (it_node != nodes.end())
         {
             cm_node* toremove = *it_node;
-            std::cerr << "cm_graph: " << "Remove node " << toremove->get_name() << std::endl;
+            std::cerr << "removenode: " << "Remove node " << toremove->get_name() << std::endl;
             nodes.erase(it_node);                        
             delete toremove;
         }
-        std::cerr << "cm_graph: Node " << name << " removed successfully." << std::endl;
+        std::cerr << "removenode: Node " << name << " removed successfully." << std::endl;
     }
     else
     {
-        std::cerr << "cm_graph: Couldn't find node called " << DEBUG_MGTTXT << name << DEBUG_RESTXT;
+        std::cerr << "removenode: Couldn't find node called " << DEBUG_MGTTXT << name << DEBUG_RESTXT;
     }
 }
 
@@ -119,13 +192,13 @@ cm_node* cm_graph::lookfor(std::string name)
     {
         copy = name;
     }
-    std::cerr << "cm_graph: looking for " << copy << std::endl;    
+    std::cerr << "cm_graph::lookfor: looking for " << copy << std::endl;    
     for (const auto& node : nodes) 
     {        
         //std::cerr << "cm_graph: comparing " << copy << " with " << node->get_name() << std::endl;
         if (copy == node->get_name())
         {
-            std::cerr << "cm_graph: Found node [" << node->get_name() << " : " << node->get_label() << "]" << std::endl;
+            std::cerr << "cm_graph::lookfor: Found node [" << node->get_name() << " : " << node->get_label() << "]" << std::endl;
             return(node);
         }
     }

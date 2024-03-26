@@ -15,6 +15,7 @@
 #include <QTextStream>
 
 /* graphviz */
+#include <gvc.h>
 #include <graphviz_version.h>
 
 /* PROJECT LIBS */
@@ -256,9 +257,51 @@ void cm_qt5_gui::quitcool()
 }
 
 void cm_qt5_gui::infile()
-{
-    debugqt("in file");
+{    
+    QString starter = QDir::currentPath();    
+    QString target = QFileDialog::getOpenFileName(this, tr("Open file"), starter, tr("DOT Files (*.dot)"));
+
+    if (!target.isEmpty()) 
+    {
+        /* graphviz dot reader link */
+        GVC_t *gvc;
+        Agraph_t *g;
+        FILE *fp;
+        gvc = gvContext();
+        fp = fopen(target.toStdString().c_str(), "r");        
+        g = agread(fp, 0);  
+        if (current_project!=nullptr)      
+        {
+            delete(current_project);
+        }
+        if (g == NULL)
+        {
+            QMessageBox warning;
+            warning.setWindowTitle("Warning");
+            warning.setText("Invalid file.");
+            warning.setStandardButtons(QMessageBox::Ok);    
+            warning.exec();
+            return;
+        }
+        current_project = new cm_graph(g);
+        gvFreeLayout(gvc, g);
+        agclose(g);
+        gvFreeContext(gvc);
+        /* codemapper tricks and traps */
+        /* to force reingest the xml */
+        if (canvas->svg_loaded_as_xml)
+        {
+            canvas->svg_loaded_as_xml = false;
+        }            
+        string svg_output, output = current_project->to_string();                
+        cm_dashclean(output);                        
+        int r = cm_render(output, svg_output, CM_OUTPUT_SVG);        
+        svg = svg_output;                
+        canvas->load(svg);
+        canvas->setgraph(current_project);
+    }
 }
+
 
 void cm_qt5_gui::infolder()
 {   
@@ -301,10 +344,21 @@ void cm_qt5_gui::infolder()
                 string svg_output, output = current_project->to_string();                
                 cm_dashclean(output);                
                 debugqt("graphviz call to svg build... ");
-                cm_render(output, svg_output, CM_OUTPUT_SVG);        
-                svg = svg_output;                
-                canvas->load(svg);
-                canvas->setgraph(current_project);                
+                int r = cm_render(output, svg_output, CM_OUTPUT_SVG);
+                if (r!=0)
+                {
+                    QMessageBox error;
+                    error.setWindowTitle("Graphviz error");
+                    error.setText("Graphviz render didnt work without errors, check about keywords in source (graph, node, edge) or reserver chars (-).");
+                    error.setStandardButtons(QMessageBox::Ok);    
+                    error.exec();
+                }
+                else
+                {                        
+                    svg = svg_output;                
+                    canvas->load(svg);
+                    canvas->setgraph(current_project);                
+                }
             }
             else if (selected_input_language == "py")
             {
@@ -317,10 +371,21 @@ void cm_qt5_gui::infolder()
                 string svg_output, output = current_project->to_string();
                 cm_dashclean(output);
                 debugqt("graphviz call to svg build... ");
-                cm_render(output, svg_output, CM_OUTPUT_SVG);        
-                svg = svg_output;                
-                canvas->load(svg);
-                canvas->setgraph(current_project);
+                int r = cm_render(output, svg_output, CM_OUTPUT_SVG);        
+                if (r!=0)
+                {
+                    QMessageBox error;
+                    error.setWindowTitle("Graphviz error");
+                    error.setText("Errors happened while graphviz rendering, check about keywords in source (graph, node, edge) or reserver chars (-).");
+                    error.setStandardButtons(QMessageBox::Ok);    
+                    error.exec();
+                }
+                else
+                {                        
+                    svg = svg_output;                
+                    canvas->load(svg);
+                    canvas->setgraph(current_project);                
+                }
             }            
         }
     }
