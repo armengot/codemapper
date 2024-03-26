@@ -23,6 +23,11 @@ string cm_node::get_label()
     return(label);
 }
 
+void cm_node::set_label(const std::string& in_label)
+{
+    label = in_label;
+}
+
 vector<string> cm_node::get_features()
 {
     return(features);

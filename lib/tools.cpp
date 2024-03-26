@@ -114,16 +114,14 @@ void erasestring(vector<string>& old, const string& key)
 int cm_render(const string& input, std::string& output, CM_OUTPUT_MODES mode)
 {
     GVC_t *gvc;
-    Agraph_t *g = nullptr;
-    FILE *fp;
+    Agraph_t *g = nullptr;    
     char* buffer;
     unsigned int len;
     int r;
 
     std::cerr << "cm_render: using graphviz under https://graphviz.org/license/ terms" << std::endl;
-    gvc = gvContext();
-    fp = fmemopen((void*)input.c_str(), input.length(), "r");    
-    g = agread(fp, 0);
+    gvc = gvContext();    
+    g = agmemread(input.c_str());        
     if (g == nullptr)
     {
         std::cerr << "cm_render: graphviz::agread() returned NULL" << std::endl;    
@@ -141,7 +139,7 @@ int cm_render(const string& input, std::string& output, CM_OUTPUT_MODES mode)
     gvFreeLayout(gvc, g);
     agclose(g);
     gvFreeContext(gvc);
-    fclose(fp);
+    //fclose(fp);
     
     if (buffer != NULL) 
     {

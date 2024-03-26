@@ -1,14 +1,21 @@
 /* external headers */
+#include <stdio.h>
 #include <iostream>
 #include <string>
 #include <sstream>
 #include <thread>
+
+/* grpahviz headers */
 #include <gvc.h>
+#include <cgraph.h>
 
 /* code mapper headers */
 #include <cm_graph.h>
 #include <cm_node.h>
 #include <cm_edge.h>
+
+/* learning cm_graph usage and graphviz Agraph_t usage */
+/* run: $ ./test > whatever.svg */
 
 using namespace std;
 
@@ -56,8 +63,25 @@ int main()
     test.removenode("toberemoved");
     test.edgesall("arrowhead = none");
 
-    std::cout << test.to_string() << std::endl;
+    /* test graph */
+    // std::cout << test.to_string() << std::endl;
+    string strtest = test.to_string();
+    const char *tograph = strtest.c_str();
+    Agraph_t *g = nullptr;        
+    GVC_t *gvc;    
+    gvc = gvContext();
+    g = agmemread(tograph);
+    if (g==nullptr)
+    {
+        std::cerr << "cm_render: agmemread() returned NULL " << std::endl;    
+        return(-1);
+    }    
+    cm_graph* result = new cm_graph(g);    
+    gvFreeLayout(gvc, g);
+    agclose(g);
+    gvFreeContext(gvc);    
 
+    std::cout << result->to_string() << std::endl;
     return(0);
 }
 

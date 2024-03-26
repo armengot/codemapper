@@ -27,8 +27,7 @@ $ ./codemapper -t /home/marcelo/dev/personal/github/codemapper/ -l cpp -o png > 
 - [x] (1) output as dot
 - [x] (2) output as png
 - [x] (3) output as svg
-- [ ] (4) output as internal codemapper project
-- [ ] (5) import a project file saved by (4) now empty in the GUI button
+- [x] (4) import a project file saved by (1) now empty in the GUI button
 - [ ] Documentation
 
 ## Win32 version
