@@ -319,7 +319,9 @@ void qcanvas::select_node(std::string label)
                     writer.writeCurrentToken(reader);
                     //std::cerr << "\n\n" << xmlout.toStdString() << std::endl;
                     //std::cerr << "\tcomparing " << qtarget.toStdString() << " with " << current.toStdString() << std::endl;
-                    if (current.indexOf(qtarget) != -1)                          
+                    //if (current.indexOf(qtarget) != -1)     
+                    //if (current.toStdString() == qtarget.toStdString())                     
+                    if (current == qtarget)
                     {                           
                         //std::cerr << "\n\n" << xmlout.toStdString() << std::endl;
                         //std::cerr << "\t\tINSIDE: " << reader.name().toString().toStdString() << std::endl;
