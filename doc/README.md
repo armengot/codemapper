@@ -47,5 +47,15 @@ $ dvips print_classes.dvi
 $ ps2pdf print_classes.ps
 ```
 
+## Flow diagram
+
+The data flow in the codemapper GUI can be somewhat obscured by the set of classes and functions (internal and external) involved.
+
+![flow](flow.png)
+
+In the following diagram, we can see more clearly that:
+- There are only two ways to input data, either through an absolute path to a system folder where there is code to process, or as a dot file, which is also a possibility to save work after processing the graph.
+- On the other hand, the cm_graph class directly uses the data structures of Graphviz in one of its constructors, to accept a Graphviz graph as input data.
+- Finally, the graphical representation in Qt5 is resolved through SVG, the cm_render function within tools.h allows going from data input to graphical output (in both directions) using also the available Graphviz functions.
 
 
