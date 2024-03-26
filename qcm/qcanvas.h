@@ -49,25 +49,30 @@ class qcanvas : public QLabel
         void setgraph(cm_graph* project);
         int xmlingest(std::string svg);
         void deletenode();
+        void deleteedge();
         QTextEdit* canvas_textline;
         bool svg_loaded_as_xml = false;
-                
+        void callable_rightmouse(QMouseEvent *event);
+        string selected_node = "";
+        cm_edge* selected_edge = nullptr;
+        QPoint lastclick;    
+        void select_edge(cm_edge* direct);
+        int tailhead = 0;
 
     protected:
         void mouseMoveEvent(QMouseEvent *event) override;   
-        void mousePressEvent(QMouseEvent *event) override;
+        void mousePressEvent(QMouseEvent *event) override;        
         //void keyPressEvent(QKeyEvent *event) override;
 
     private:
         /* functions */
-        void select_node(std::string label);
+        void select_node(std::string label);        
         /* attributes*/        
         QPoint mouse;
         QSvgRenderer svg_render;
         QString xml;
         struct xmlsvg* currentsvg = nullptr;
-        cm_graph* current_project = nullptr;
-        string selected_node = "";
+        cm_graph* current_project = nullptr;        
 
     signals:
         void user(QPoint mouse);    

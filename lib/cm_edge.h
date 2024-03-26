@@ -23,6 +23,9 @@ class cm_edge
         cm_node* get_tail();
         string get_name();
         string get_label();
+        string humanreadable();
+        void erasecolor();
+        void setcolor(string color);
         vector<string> get_features();        
 
     private:

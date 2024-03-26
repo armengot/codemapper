@@ -13,6 +13,7 @@
 #include <QObject>
 #include <QFileDialog>
 #include <QTextStream>
+#include <QMouseEvent>
 
 /* graphviz */
 #include <gvc.h>
@@ -41,19 +42,46 @@ cm_qt5_gui::cm_qt5_gui()
     setup_menus();   
 }
 
-void cm_qt5_gui::keyPressEvent(QKeyEvent *event)
+void cm_qt5_gui::keyReleaseEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_Escape) 
+    std::cerr << "cm_qt5_gui::keyReleaseEvent : " << canvas->selected_node << std::endl;
+    if (event->key() == Qt::Key_Tab)
+    {        
+        if (canvas->selected_node != "")
+        {
+            /* std::cerr << "tab" << std::endl; */
+            QPoint pos;
+            QMouseEvent *fake = new QMouseEvent(QEvent::MouseButtonPress, pos, Qt::RightButton, Qt::RightButton, Qt::NoModifier);
+            debugqt("sending right mouse event to canvas");
+            canvas->callable_rightmouse(fake);
+        }  
+        else
+        {
+            if (canvas->selected_edge != nullptr)
+            {
+                cm_edge* next = current_project->nextedge(canvas->selected_edge,canvas->tailhead);
+                canvas->select_edge(next);
+            }
+        }      
+    }    
+}
+
+void cm_qt5_gui::keyPressEvent(QKeyEvent *event)
+{    
+    QKeyEvent* key = static_cast<QKeyEvent*>(event);
+    std::cerr << "KEY PRESSED" << std::endl;
+    if (key->key() == Qt::Key_Escape) 
     {
         quitcool();
     }
-    else if (event->key() == Qt::Key_Delete)
+    else if (key->key() == Qt::Key_Delete)
     {
         canvas->deletenode();
+        canvas->deleteedge();
     }
     else
     {
-        debugqt(QKeySequence(event->key()).toString().toStdString());
+        debugqt(QKeySequence(key->key()).toString().toStdString());
     }
 }
 
@@ -349,7 +377,7 @@ void cm_qt5_gui::infolder()
                 {
                     QMessageBox error;
                     error.setWindowTitle("Graphviz error");
-                    error.setText("Graphviz render didnt work without errors, check about keywords in source (graph, node, edge) or reserver chars (-).");
+                    error.setText("Errors happened while Graphviz rendering, check about keywords in source (graph, node, edge) or reserver chars (-).");
                     error.setStandardButtons(QMessageBox::Ok);    
                     error.exec();
                 }

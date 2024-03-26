@@ -14,6 +14,8 @@
 #include <QByteArray>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
+#include <QMessageBox>
+#include <QMenu>
 
 /* codemapper project libraries */
 #include <cm_qt5_gui.h>
@@ -27,6 +29,11 @@ void debugqt(std::string stin)
 
 void qcanvas::mousePressEvent(QMouseEvent *event)
 {
+    callable_rightmouse(event);
+}
+
+void qcanvas::callable_rightmouse(QMouseEvent *event)
+{
     if (event->button() == Qt::LeftButton) 
     {
         debugqt("LEFT");
@@ -34,25 +41,90 @@ void qcanvas::mousePressEvent(QMouseEvent *event)
         if (!to_find.isEmpty()) // case mouse over label
         {
             select_node(to_find.toStdString());
-            selected_node = to_find.toStdString();
-            std::cerr << "Selected node: " << selected_node << std::endl;
+            selected_edge = nullptr;
+            selected_node = to_find.toStdString();            
+            lastclick = event->localPos().toPoint();
+            std::cerr << "qcanvas::callable_rightmouse: Selected node: " << selected_node << std::endl;
         }
         else
         {                       // mouse everywhere != label
             selected_node = "";
             load(xml.toStdString());           
-            std::cerr << "Any node selected node." << std::endl;
+            std::cerr << "qcanvas::callable_rightmouse: Any node selected node." << std::endl;
         }
     }
     else if (event->button() == Qt::RightButton) 
     {
         debugqt("RIGHT");        
+        if (selected_node!="")
+        {            
+            cm_node* p = current_project->lookfor(selected_node);
+            std::vector<cm_edge*> involved_edges = current_project->edgesinvolved(p);
+            if (!involved_edges.empty())
+            {
+                QMenu *cm_popup = new QMenu(this);
+                QAction *action;
+                for (auto& each_edge : involved_edges)
+                {                    
+                    debugqt("qcanvas: "+each_edge->humanreadable());
+                    action = new QAction(QString::fromStdString(each_edge->humanreadable()), this);
+                    cm_edge* edge_ptr = static_cast<cm_edge*>(each_edge);                    
+                    QObject::connect(action, &QAction::triggered, this, [this, edge_ptr]() { this->select_edge(edge_ptr); });   
+                    cm_popup->addAction(action);
+                }
+                
+                cm_popup->popup(mapToGlobal(QPoint(0,0))+lastclick);                
+            }
+        }
+        else
+        {
+        
+        }                
     } 
     else if (event->button() == Qt::MiddleButton) 
     {
         debugqt("CENTER");        
     }    
     QLabel::mousePressEvent(event);
+}
+
+void qcanvas::select_edge(cm_edge* direct)
+{
+    debugqt("qcanvas::select_edge "+direct->humanreadable());
+    current_project->reset_edge_colors();
+    direct->setcolor("blue");
+    std::string new_svg,fromgraphviz = current_project->to_string();
+    cm_dashclean(fromgraphviz);
+    cm_render(fromgraphviz, new_svg, CM_OUTPUT_SVG);                
+    load(new_svg);
+    selected_edge = direct;
+    cm_node* tailedge = direct->get_tail();
+    if (tailedge->get_name() == selected_node)
+    {
+        tailhead = 0;
+    }
+    else
+    {
+        tailhead = 1;
+    }
+    selected_node = "";       
+}
+
+void qcanvas::deleteedge()
+{
+    if (selected_edge != nullptr)
+    {
+        current_project->removeedge(selected_edge);
+        std::string new_svg,fromgraphviz = current_project->to_string();
+        cm_dashclean(fromgraphviz);
+        cm_render(fromgraphviz, new_svg, CM_OUTPUT_SVG);
+        svg_loaded_as_xml = false; // force re ingest                
+        load(new_svg);        
+    }
+    else
+    {
+        debugqt("No selected edge to remove.");
+    }
 }
 
 void qcanvas::deletenode()
@@ -69,9 +141,10 @@ void qcanvas::deletenode()
         current_project->removenode(clean);
         std::string new_svg,fromgraphviz = current_project->to_string();
         cm_dashclean(fromgraphviz);
-        cm_render(fromgraphviz, new_svg, CM_OUTPUT_SVG);                
+        cm_render(fromgraphviz, new_svg, CM_OUTPUT_SVG);
+        svg_loaded_as_xml = false;                
         load(new_svg);
-        xmlingest(new_svg);        
+        //xmlingest(new_svg);        
         //xml = QString::fromStdString(new_svg);        
     }
     else
@@ -144,10 +217,10 @@ void qcanvas::load(std::string svg)
     QByteArray qbytes(svg.c_str(), static_cast<int>(svg.length()));        
     svg_render.load(qbytes);
 
-    std::cerr << DEBUG_GRNTXT << "REFRESH" << DEBUG_RESTXT << std::endl;
-
+    std::cerr << DEBUG_GRNTXT << "REFRESH";
     if (svg_render.isValid()) 
     {
+        std::cerr << DEBUG_GRNTXT << " (OK)" << DEBUG_RESTXT << std::endl;
         QPixmap pixmap(svg_render.defaultSize());
         pixmap.fill(Qt::transparent);
         QPainter painter(&pixmap);
@@ -156,12 +229,27 @@ void qcanvas::load(std::string svg)
         setPixmap(pixmap);   
         if (!svg_loaded_as_xml) // first time
         {
-            if (xmlingest(svg)>2)
+            if (xmlingest(svg)>1)
+            {
                 svg_loaded_as_xml = true;
+            }
+            else
+            {
+                if (currentsvg!=nullptr)
+                    delete(currentsvg);                    
+                currentsvg = nullptr;
+                current_project = nullptr;
+                QMessageBox warning;
+                warning.setWindowTitle("Warning");
+                warning.setText("Any node was recover from input folder, check language selection.");
+                warning.setStandardButtons(QMessageBox::Ok);    
+                warning.exec();
+            }
         }
     }
     else 
     {
+        std::cerr << DEBUG_REDTXT << " (wrong   )" << DEBUG_RESTXT << std::endl;
         debugqt("Error happened rendering SVG graph.");
     }
 }
@@ -278,6 +366,7 @@ int qcanvas::xmlingest(std::string svg)
     bool ok = true;
     int r = 0;
 
+    debugqt("qcanvas::xmlingest: starting render and ingest");
     if (currentsvg)
     {
         delete(currentsvg);
@@ -390,10 +479,13 @@ int qcanvas::xmlingest(std::string svg)
                         //std::cerr << "\t" << each.x() << " " << each.y() << std::endl;
                     }
                     r = r + 1;
-                }
+                }                
             }
         }        
     }    
-    return(r);
+    debugqt("qcanvas::xmlingest: finish rendering " + std::to_string(r));
+    int nodes_number = currentsvg->nodes.size();
+    debugqt("qcanvas::xmlingest: nodes rendered " + std::to_string(nodes_number));    
+    return(nodes_number);
 }
 
