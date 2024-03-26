@@ -36,6 +36,9 @@ class cm_graph
         vector<cm_edge*> edgesinvolved(cm_node* node);
         vector<cm_node*> allnodes();
         void removenode(string name);
+        void removeedge(cm_edge* edge);
+        void reset_edge_colors();
+        cm_edge* nextedge(cm_edge* current);
 
     private:
         string name;

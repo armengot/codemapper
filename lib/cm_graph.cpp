@@ -145,6 +145,49 @@ vector<cm_node*> cm_graph::allnodes()
     return(nodes);
 }
 
+cm_edge* cm_graph::nextedge(cm_edge* current)
+{
+    cm_node* head = current->get_head();
+    cm_edge* bereturned = nullptr;
+    bool next = false;
+    for (int i = 0; i < edges.size(); i++)
+    {
+        cm_edge* each = edges[i];        
+        if (head == each->get_head())
+        {
+            if (current == each)
+            {
+                next = true;
+            }
+            else
+            {
+                if (bereturned == nullptr)
+                {
+                    bereturned = each;
+                }
+                if (next)                
+                    return(each);
+            }
+        }
+    }        
+    if (bereturned!=nullptr)
+        return(bereturned);
+    else
+        return(edges[0]);
+}
+
+void cm_graph::removeedge(cm_edge* edge)
+{
+    for (int i = edges.size() - 1; i >= 0; --i)
+    {
+        const cm_edge* each = edges[i];        
+        if (edge == each)
+        {
+            edges.erase(edges.begin() + i);
+        }
+    }
+}
+
 void cm_graph::removenode(string name)
 {
     cm_node* toberemoved = lookfor(name);
@@ -180,6 +223,13 @@ void cm_graph::removenode(string name)
     }
 }
 
+void cm_graph::reset_edge_colors()
+{
+    for(auto& edge : edges)
+    {
+        edge->erasecolor();
+    }
+}
 
 cm_node* cm_graph::lookfor(std::string name)
 {
@@ -191,6 +241,10 @@ cm_node* cm_graph::lookfor(std::string name)
     else
     {
         copy = name;
+    }    
+    if (charin(CM_SYS_SPLITER_CHAR,copy))
+    {
+        rechar(copy,CM_SYS_SPLITER_CHAR,CM_GLOBAL_JOIN_CHAR);
     }
     std::cerr << "cm_graph::lookfor: looking for " << copy << std::endl;    
     for (const auto& node : nodes) 

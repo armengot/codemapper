@@ -54,7 +54,15 @@ void cm_qt5_gui::keyReleaseEvent(QKeyEvent *event)
             QMouseEvent *fake = new QMouseEvent(QEvent::MouseButtonPress, pos, Qt::RightButton, Qt::RightButton, Qt::NoModifier);
             debugqt("sending right mouse event to canvas");
             canvas->callable_rightmouse(fake);
-        }        
+        }  
+        else
+        {
+            if (canvas->selected_edge != nullptr)
+            {
+                cm_edge* next = current_project->nextedge(canvas->selected_edge);
+                canvas->select_edge(next);
+            }
+        }      
     }
 }
 
@@ -69,6 +77,7 @@ void cm_qt5_gui::keyPressEvent(QKeyEvent *event)
     else if (key->key() == Qt::Key_Delete)
     {
         canvas->deletenode();
+        canvas->deleteedge();
     }
     else
     {

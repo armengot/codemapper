@@ -41,6 +41,7 @@ void qcanvas::callable_rightmouse(QMouseEvent *event)
         if (!to_find.isEmpty()) // case mouse over label
         {
             select_node(to_find.toStdString());
+            selected_edge = nullptr;
             selected_node = to_find.toStdString();            
             lastclick = event->localPos().toPoint();
             std::cerr << "qcanvas::callable_rightmouse: Selected node: " << selected_node << std::endl;
@@ -90,6 +91,31 @@ void qcanvas::callable_rightmouse(QMouseEvent *event)
 void qcanvas::select_edge(cm_edge* direct)
 {
     debugqt("qcanvas::select_edge "+direct->humanreadable());
+    current_project->reset_edge_colors();
+    direct->setcolor("blue");
+    std::string new_svg,fromgraphviz = current_project->to_string();
+    cm_dashclean(fromgraphviz);
+    cm_render(fromgraphviz, new_svg, CM_OUTPUT_SVG);                
+    load(new_svg);
+    selected_edge = direct;  
+    selected_node = "";       
+}
+
+void qcanvas::deleteedge()
+{
+    if (selected_edge != nullptr)
+    {
+        current_project->removeedge(selected_edge);
+        std::string new_svg,fromgraphviz = current_project->to_string();
+        cm_dashclean(fromgraphviz);
+        cm_render(fromgraphviz, new_svg, CM_OUTPUT_SVG);
+        svg_loaded_as_xml = false; // force re ingest                
+        load(new_svg);        
+    }
+    else
+    {
+        debugqt("No selected edge to remove.");
+    }
 }
 
 void qcanvas::deletenode()
@@ -106,9 +132,10 @@ void qcanvas::deletenode()
         current_project->removenode(clean);
         std::string new_svg,fromgraphviz = current_project->to_string();
         cm_dashclean(fromgraphviz);
-        cm_render(fromgraphviz, new_svg, CM_OUTPUT_SVG);                
+        cm_render(fromgraphviz, new_svg, CM_OUTPUT_SVG);
+        svg_loaded_as_xml = false;                
         load(new_svg);
-        xmlingest(new_svg);        
+        //xmlingest(new_svg);        
         //xml = QString::fromStdString(new_svg);        
     }
     else
