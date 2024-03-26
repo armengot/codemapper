@@ -44,6 +44,7 @@ cm_qt5_gui::cm_qt5_gui()
 
 void cm_qt5_gui::keyReleaseEvent(QKeyEvent *event)
 {
+    std::cerr << "cm_qt5_gui::keyReleaseEvent : " << canvas->selected_node << std::endl;
     if (event->key() == Qt::Key_Tab)
     {        
         if (canvas->selected_node != "")

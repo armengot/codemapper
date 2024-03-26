@@ -52,7 +52,8 @@ class qcanvas : public QLabel
         QTextEdit* canvas_textline;
         bool svg_loaded_as_xml = false;
         void callable_rightmouse(QMouseEvent *event);
-        string selected_node = "";                
+        string selected_node = "";
+        QPoint lastclick;    
 
     protected:
         void mouseMoveEvent(QMouseEvent *event) override;   

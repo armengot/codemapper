@@ -41,7 +41,8 @@ void qcanvas::callable_rightmouse(QMouseEvent *event)
         if (!to_find.isEmpty()) // case mouse over label
         {
             select_node(to_find.toStdString());
-            selected_node = to_find.toStdString();
+            selected_node = to_find.toStdString();            
+            lastclick = event->localPos().toPoint();
             std::cerr << "qcanvas::callable_rightmouse: Selected node: " << selected_node << std::endl;
         }
         else
@@ -53,11 +54,10 @@ void qcanvas::callable_rightmouse(QMouseEvent *event)
     }
     else if (event->button() == Qt::RightButton) 
     {
-        debugqt("RIGHT");
-        QString to_find = canvas_textline->toPlainText();
-        if (!to_find.isEmpty())
-        {
-            cm_node* p = current_project->lookfor(to_find.toStdString());
+        debugqt("RIGHT");        
+        if (selected_node!="")
+        {            
+            cm_node* p = current_project->lookfor(selected_node);
             std::vector<cm_edge*> involved_edges = current_project->edgesinvolved(p);
             if (!involved_edges.empty())
             {
@@ -71,7 +71,8 @@ void qcanvas::callable_rightmouse(QMouseEvent *event)
                     QObject::connect(action, &QAction::triggered, this, [this, edge_ptr]() { this->select_edge(edge_ptr); });   
                     cm_popup->addAction(action);
                 }
-                cm_popup->popup(QCursor::pos());
+                
+                cm_popup->popup(mapToGlobal(QPoint(0,0))+lastclick);                
             }
         }
         else
