@@ -349,7 +349,7 @@ void cm_qt5_gui::infolder()
                 {
                     QMessageBox error;
                     error.setWindowTitle("Graphviz error");
-                    error.setText("Graphviz render didnt work without errors, check about keywords in source (graph, node, edge) or reserver chars (-).");
+                    error.setText("Errors happened while Graphviz rendering, check about keywords in source (graph, node, edge) or reserver chars (-).");
                     error.setStandardButtons(QMessageBox::Ok);    
                     error.exec();
                 }

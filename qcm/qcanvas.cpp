@@ -14,6 +14,7 @@
 #include <QByteArray>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
+#include <QMessageBox>
 
 /* codemapper project libraries */
 #include <cm_qt5_gui.h>
@@ -144,10 +145,10 @@ void qcanvas::load(std::string svg)
     QByteArray qbytes(svg.c_str(), static_cast<int>(svg.length()));        
     svg_render.load(qbytes);
 
-    std::cerr << DEBUG_GRNTXT << "REFRESH" << DEBUG_RESTXT << std::endl;
-
+    std::cerr << DEBUG_GRNTXT << "REFRESH";
     if (svg_render.isValid()) 
     {
+        std::cerr << DEBUG_GRNTXT << " (OK)" << DEBUG_RESTXT << std::endl;
         QPixmap pixmap(svg_render.defaultSize());
         pixmap.fill(Qt::transparent);
         QPainter painter(&pixmap);
@@ -156,12 +157,27 @@ void qcanvas::load(std::string svg)
         setPixmap(pixmap);   
         if (!svg_loaded_as_xml) // first time
         {
-            if (xmlingest(svg)>2)
+            if (xmlingest(svg)>1)
+            {
                 svg_loaded_as_xml = true;
+            }
+            else
+            {
+                if (currentsvg!=nullptr)
+                    delete(currentsvg);                    
+                currentsvg = nullptr;
+                current_project = nullptr;
+                QMessageBox warning;
+                warning.setWindowTitle("Warning");
+                warning.setText("Any node was recover from input folder, check language selection.");
+                warning.setStandardButtons(QMessageBox::Ok);    
+                warning.exec();
+            }
         }
     }
     else 
     {
+        std::cerr << DEBUG_REDTXT << " (wrong   )" << DEBUG_RESTXT << std::endl;
         debugqt("Error happened rendering SVG graph.");
     }
 }
@@ -278,6 +294,7 @@ int qcanvas::xmlingest(std::string svg)
     bool ok = true;
     int r = 0;
 
+    debugqt("qcanvas::xmlingest: starting render and ingest");
     if (currentsvg)
     {
         delete(currentsvg);
@@ -394,6 +411,9 @@ int qcanvas::xmlingest(std::string svg)
             }
         }        
     }    
-    return(r);
+    debugqt("qcanvas::xmlingest: finish rendering " + std::to_string(r));
+    int nodes_number = currentsvg->nodes.size();
+    debugqt("qcanvas::xmlingest: nodes rendered " + std::to_string(nodes_number));    
+    return(nodes_number);
 }
 
