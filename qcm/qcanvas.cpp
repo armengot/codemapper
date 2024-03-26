@@ -38,20 +38,40 @@ void qcanvas::callable_rightmouse(QMouseEvent *event)
     {
         debugqt("LEFT");
         QString to_find = canvas_textline->toPlainText();
-        if (!to_find.isEmpty()) // case mouse over label
+        if (selected_node != to_find.toStdString())
         {
-            select_node(to_find.toStdString());
-            selected_edge = nullptr;
-            selected_node = to_find.toStdString();            
-            lastclick = event->localPos().toPoint();
-            std::cerr << "qcanvas::callable_rightmouse: Selected node: " << selected_node << std::endl;
+            
+            if (!to_find.isEmpty()) // case mouse over label
+            {
+                select_node(to_find.toStdString());
+                selected_edge = nullptr;
+                selected_node = to_find.toStdString();            
+                lastclick = event->localPos().toPoint();
+                std::cerr << "qcanvas::callable_rightmouse: Selected node: " << selected_node << std::endl;
+            }
+            else
+            {                       // mouse everywhere != label
+                selected_node = "";
+                load(xml.toStdString());           
+                std::cerr << "qcanvas::callable_rightmouse: Any node selected node." << std::endl;
+            }
         }
         else
-        {                       // mouse everywhere != label
-            selected_node = "";
-            load(xml.toStdString());           
-            std::cerr << "qcanvas::callable_rightmouse: Any node selected node." << std::endl;
-        }
+        {
+            cm_node* p = current_project->lookfor(selected_node);
+            if (p != nullptr)
+            {
+                QMenu *cm_node_features = new QMenu(this);
+                QAction *action;
+                for (auto& each : p->get_features())
+                {
+                    std::string feature = static_cast<string>(each);
+                    action = new QAction(QString::fromStdString(feature), this);
+                    cm_node_features->addAction(action);
+                }
+                cm_node_features->popup(mapToGlobal(QPoint(0,0))+lastclick);
+            }
+        }        
     }
     else if (event->button() == Qt::RightButton) 
     {
@@ -78,7 +98,18 @@ void qcanvas::callable_rightmouse(QMouseEvent *event)
         }
         else
         {
-        
+            if (selected_edge != nullptr)
+            {                
+                QMenu *cm_edge_features = new QMenu(this);
+                QAction *action;
+                for (auto& each : selected_edge->get_features())
+                {
+                    std::string feature = static_cast<string>(each);
+                    action = new QAction(QString::fromStdString(feature), this);
+                    cm_edge_features->addAction(action);
+                }
+                cm_edge_features->popup(mapToGlobal(QPoint(0,0))+lastclick);                
+            }        
         }                
     } 
     else if (event->button() == Qt::MiddleButton) 

@@ -53,7 +53,8 @@ void cm_edge::erasecolor()
 void cm_edge::setcolor(std::string color)
 {
     erasecolor();
-    features.push_back("color = "+color);
+    std::string fcolor = "color = "+color;
+    features.push_back(fcolor);
 }
 
 

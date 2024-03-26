@@ -81,7 +81,7 @@ cm_graph::cm_graph(Agraph_t *g)
                         insert = false;
                     }
                 }
-                if (insert)
+                if ((insert)&&(feature != "color = "))
                     wedge->add_feature(feature);
             }
             addedge(wedge);
@@ -135,7 +135,17 @@ int cm_graph::addedge(cm_edge* edge)
         if ((tail == each_edge->get_tail())&&(head == each_edge->get_head()))
             return(0);
     }
-    edge->add_feature("dir=back");
+    bool backdir_stillempty = true;
+    for (auto& feat : edge->get_features())
+    {
+        std::string feature = static_cast<std::string>(feat);
+        if ((feature == "dir=back")||(feature == "dir = back"))
+        {
+            backdir_stillempty = false;
+        }
+    }
+    if (backdir_stillempty)
+        edge->add_feature("dir=back");
     edges.push_back(edge);
     return(1);
 }

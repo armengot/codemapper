@@ -321,12 +321,25 @@ void cm_qt5_gui::infile()
         {
             canvas->svg_loaded_as_xml = false;
         }            
-        string svg_output, output = current_project->to_string();                
+        string svg_output, output = current_project->to_string();                        
         cm_dashclean(output);                        
-        int r = cm_render(output, svg_output, CM_OUTPUT_SVG);        
-        svg = svg_output;                
-        canvas->load(svg);
-        canvas->setgraph(current_project);
+        std::cout << output << std::endl;
+        int r = cm_render(output, svg_output, CM_OUTPUT_SVG);
+        if (r==0)                
+        {
+            debugqt("infile: "+target.toStdString());
+            svg = svg_output;                
+            canvas->load(svg);
+            canvas->setgraph(current_project);
+        }
+        else
+        {
+            QMessageBox warning;
+            warning.setWindowTitle("Warning");
+            warning.setText("Error while dot parsing.");
+            warning.setStandardButtons(QMessageBox::Ok);    
+            warning.exec();
+        }
     }
 }
 
