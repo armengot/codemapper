@@ -53,7 +53,10 @@ cm_graph::cm_graph(Agraph_t *g)
                 if (std::string(agxget(n,sym))!="")                
                 {
                     feature = std::string(sym->name) + " = " + std::string(agxget(n,sym));
-                    wnode->add_feature(feature);
+                    char *q = agxget(n,sym);
+                    size_t l = strlen(q);
+                    if (l>0)
+                        wnode->add_feature(feature);
                 }
             }
             addnode(wnode);
@@ -71,18 +74,23 @@ cm_graph::cm_graph(Agraph_t *g)
             for (sym = agnxtattr(g,AGEDGE,NULL); sym != NULL; sym = agnxtattr(g,AGEDGE,sym))
             {           
                 bool insert = true;     
-                std::string feature = std::string(sym->name) + " = " + std::string(agxget(e, sym));
-                //fprintf(stderr,"cm_graph: Edge feature: %s = %s\n", sym->name, agxget(e, sym));                
-                for (const auto& feature : wedge->get_features())
+                std::string feature = std::string(sym->name) + " = " + std::string(agxget(e, sym));                
+                char *q = agxget(e, sym);
+                size_t l = strlen(q);
+                if (l>0)
                 {
-                    size_t pos = feature.find(std::string(sym->name));
-                    if (pos==std::string::npos)
+                    //fprintf(stderr,"cm_graph: Edge feature: %s = %s [%ld]\n", sym->name, agxget(e, sym),l);                               
+                    for (const auto& feature : wedge->get_features())
                     {
-                        insert = false;
+                        size_t pos = feature.find(std::string(sym->name));
+                        if (pos==std::string::npos)
+                        {
+                            insert = false;
+                        }
                     }
+                    if (insert)
+                        wedge->add_feature(feature);
                 }
-                if ((insert)&&(feature != "color = "))
-                    wedge->add_feature(feature);
             }
             addedge(wedge);
         }

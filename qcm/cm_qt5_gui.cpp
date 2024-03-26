@@ -322,8 +322,7 @@ void cm_qt5_gui::infile()
             canvas->svg_loaded_as_xml = false;
         }            
         string svg_output, output = current_project->to_string();                        
-        cm_dashclean(output);                        
-        std::cout << output << std::endl;
+        cm_dashclean(output);                                
         int r = cm_render(output, svg_output, CM_OUTPUT_SVG);
         if (r==0)                
         {
