@@ -32,3 +32,15 @@ vector<string> cm_node::get_features()
 {
     return(features);
 }
+
+void cm_node::erase_feature(std::string feature)
+{
+    for (int i = features.size() - 1; i >= 0; --i)
+    {
+        const std::string& f = features[i];        
+        if (f == feature)
+        {
+            features.erase(features.begin()+i);
+        }
+    }
+}

@@ -71,8 +71,12 @@ void qcanvas::callable_rightmouse(QMouseEvent *event)
                 {
                     std::string feature = static_cast<string>(each);
                     action = new QAction(QString::fromStdString(feature), this);
+                    QObject::connect(action, &QAction::triggered, this, [this, p, feature]() { this->remove_node_feature(p, feature); });   
                     cm_node_features->addAction(action);
                 }
+                action = new QAction(QString::fromStdString("new"), this);
+                QObject::connect(action, &QAction::triggered, this, [this, p]() { this->remove_node_feature(p, ""); });   
+                cm_node_features->addAction(action);
                 cm_node_features->popup(mapToGlobal(QPoint(0,0))+lastclick);
             }
         }        
@@ -129,9 +133,10 @@ void qcanvas::remove_edge_feature(std::string feature)
     if (selected_edge!=nullptr)
     {
         QDialog window;
+        QLabel *info;
         QVBoxLayout* layout = new QVBoxLayout();
-        QLabel *info = new QLabel("Remove feature: "+QString::fromStdString(feature)+QString::fromStdString("?"));
-        layout->addWidget(info);
+        info = new QLabel("Remove feature: "+QString::fromStdString(feature)+QString::fromStdString("?"));
+        layout->addWidget(info);        
         QCheckBox *check = new QCheckBox("Edit", this);
         layout->addWidget(check);
         QLineEdit *editbar = new QLineEdit(this);
@@ -165,7 +170,46 @@ void qcanvas::remove_edge_feature(std::string feature)
 
 void qcanvas::remove_node_feature(cm_node* n, std::string feature)
 {
-
+    if (n!=nullptr)
+    {
+        QDialog window;
+        QVBoxLayout* layout = new QVBoxLayout();
+        QLabel *info;
+        if (feature=="")
+            info = new QLabel("Write new feature following standard graphviz syntax.\nfield = value");
+        else
+            info = new QLabel("Remove feature: "+QString::fromStdString(feature)+QString::fromStdString("?"));
+        layout->addWidget(info);
+        QCheckBox *check = new QCheckBox("Edit", this);
+        layout->addWidget(check);
+        QLineEdit *editbar = new QLineEdit(this);
+        editbar->setPlaceholderText(QString::fromStdString(feature));
+        editbar->setEnabled(false);
+        layout->addWidget(editbar);
+        connect(check, &QCheckBox::toggled, editbar, &QLineEdit::setEnabled);
+        QPushButton *OK = new QPushButton("Ok", this);
+        QPushButton *CANCEL = new QPushButton("Cancel", this);        
+        connect(OK, &QPushButton::clicked, &window, &QDialog::accept);
+        connect(CANCEL, &QPushButton::clicked, &window, &QDialog::reject);        
+        layout->addWidget(OK);        
+        layout->addWidget(CANCEL);
+        window.setLayout(layout);
+        if (window.exec() == QDialog::Accepted)
+        {
+            std::cerr << editbar->text().toStdString() << std::endl;
+            if (feature != "")
+                n->erase_feature(feature);
+            if (check->isChecked())
+            {
+                n->add_feature(editbar->text().toStdString());
+            }
+            std::string new_svg,fromgraphviz = current_project->to_string();
+            cm_dashclean(fromgraphviz);
+            cm_render(fromgraphviz, new_svg, CM_OUTPUT_SVG);                
+            svg_loaded_as_xml = false;
+            load(new_svg);
+        }
+    }
 }
 
 void qcanvas::select_edge(cm_edge* direct)

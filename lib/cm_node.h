@@ -24,6 +24,7 @@ class cm_node
         string get_label();
         void set_label(const string& in_label);
         vector<string> get_features();
+        void erase_feature(string feature);
 
     private:
         string name;

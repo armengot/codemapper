@@ -72,7 +72,7 @@ void cm_edge::setcolor(std::string color)
 
 string cm_edge::humanreadable()
 {    
-    std::string edge_humanreadable = tail->get_name()+" --> "+head->get_name();
+    std::string edge_humanreadable = tail->get_name()+" -> "+head->get_name();
     return(edge_humanreadable);
 }
 
