@@ -7,13 +7,25 @@
 
 Code Mapper is a set of tools to generate standard ```graphviz``` graphs from source code. Play with ```codemapper``` learning ```Graphviz```.
 
-This project is starting and in progress, please join us to work together and start with the: [TO-DO](doc/TODO.md) list.
+This project is starting and it still is in progress, please join us to work together and start with the: [TO-DO](doc/TODO.md) list.
 
 ![demo](doc/demogui.gif)
 
+## Download and compile
+
+The ```codemapper``` tools are written in C++ language:
+
+```
+$ git clone git@github.com:armengot/codemapper.git
+$ cd codemapper
+$ mkdir build
+$ cmake ..
+$ make
+```
+
 ## Requirements
 
-Code Mapper sources must link with ```graphviz``` as a library, so first to compile  ```codemapper``` sources your system must find ```graphviz``` sources.
+Code Mapper sources must link with ```graphviz``` as a library, so first to compile  ```codemapper``` sources your system must find ```graphviz``` sources. The codemapper (```cmgui```) GUI binary requires **[Qt5 libraries](https://wiki.qt.io/Install_Qt_5_on_Ubuntu)**.
 
 ```
 $ git clone https://gitlab.com/graphviz/graphviz
@@ -24,11 +36,12 @@ $ make
 $ make install
 ```
 
-To complete this previous step, may be other packages could be required, as ```bison``` or ```flex```, etc.
+To complete this previous step, may be other packages could be required, as ```bison``` or ```flex```, etc. As still incomplete, it is commented, but there is a cpack section in the cmake file which can clearify some other dependences.
 ```
 $ sudo apt-get install bison
 $ sudo apt-get install flex
 ```
+To learn more about ```graphviz``` software and library bindings review the **[library documents](https://www.graphviz.org/pdf/libguide.pdf)**, **[graph documents](https://www.graphviz.org/pdf/libguide.pdf)** or many other ```graphviz``` **[documents](https://www.graphviz.org/documentation/)**.
 
 ## Codemapper as separated graph library
 
