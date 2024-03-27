@@ -25,6 +25,7 @@ class cm_edge
         string get_label();
         string humanreadable();
         void erasecolor();
+        void erase_feature(std::string);
         void setcolor(string color);
         vector<string> get_features();        
 

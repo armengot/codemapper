@@ -50,6 +50,8 @@ class qcanvas : public QLabel
         int xmlingest(std::string svg);
         void deletenode();
         void deleteedge();
+        void remove_edge_feature(std::string feature);
+        void remove_node_feature(cm_node* n, std::string feature);
         QTextEdit* canvas_textline;
         bool svg_loaded_as_xml = false;
         void callable_rightmouse(QMouseEvent *event);
