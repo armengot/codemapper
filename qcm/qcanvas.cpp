@@ -16,6 +16,10 @@
 #include <QXmlStreamWriter>
 #include <QMessageBox>
 #include <QMenu>
+#include <QVBoxLayout>
+#include <QCheckBox>
+#include <QLineEdit>
+#include <QPushButton>
 
 /* codemapper project libraries */
 #include <cm_qt5_gui.h>
@@ -38,20 +42,40 @@ void qcanvas::callable_rightmouse(QMouseEvent *event)
     {
         debugqt("LEFT");
         QString to_find = canvas_textline->toPlainText();
-        if (!to_find.isEmpty()) // case mouse over label
+        if (selected_node != to_find.toStdString())
         {
-            select_node(to_find.toStdString());
-            selected_edge = nullptr;
-            selected_node = to_find.toStdString();            
-            lastclick = event->localPos().toPoint();
-            std::cerr << "qcanvas::callable_rightmouse: Selected node: " << selected_node << std::endl;
+            
+            if (!to_find.isEmpty()) // case mouse over label
+            {
+                select_node(to_find.toStdString());
+                selected_edge = nullptr;
+                selected_node = to_find.toStdString();            
+                lastclick = event->localPos().toPoint();
+                std::cerr << "qcanvas::callable_rightmouse: Selected node: " << selected_node << std::endl;
+            }
+            else
+            {                       // mouse everywhere != label
+                selected_node = "";
+                load(xml.toStdString());           
+                std::cerr << "qcanvas::callable_rightmouse: Any node selected node." << std::endl;
+            }
         }
         else
-        {                       // mouse everywhere != label
-            selected_node = "";
-            load(xml.toStdString());           
-            std::cerr << "qcanvas::callable_rightmouse: Any node selected node." << std::endl;
-        }
+        {
+            cm_node* p = current_project->lookfor(selected_node);
+            if (p != nullptr)
+            {
+                QMenu *cm_node_features = new QMenu(this);
+                QAction *action;
+                for (auto& each : p->get_features())
+                {
+                    std::string feature = static_cast<string>(each);
+                    action = new QAction(QString::fromStdString(feature), this);
+                    cm_node_features->addAction(action);
+                }
+                cm_node_features->popup(mapToGlobal(QPoint(0,0))+lastclick);
+            }
+        }        
     }
     else if (event->button() == Qt::RightButton) 
     {
@@ -78,7 +102,19 @@ void qcanvas::callable_rightmouse(QMouseEvent *event)
         }
         else
         {
-        
+            if (selected_edge != nullptr)
+            {                
+                QMenu *cm_edge_features = new QMenu(this);
+                QAction *action;
+                for (auto& each : selected_edge->get_features())
+                {
+                    std::string feature = static_cast<string>(each);
+                    action = new QAction(QString::fromStdString(feature), this);
+                    QObject::connect(action, &QAction::triggered, this, [this, feature]() { this->remove_edge_feature(feature); });   
+                    cm_edge_features->addAction(action);
+                }
+                cm_edge_features->popup(mapToGlobal(QPoint(0,0))+lastclick);                
+            }        
         }                
     } 
     else if (event->button() == Qt::MiddleButton) 
@@ -86,6 +122,50 @@ void qcanvas::callable_rightmouse(QMouseEvent *event)
         debugqt("CENTER");        
     }    
     QLabel::mousePressEvent(event);
+}
+
+void qcanvas::remove_edge_feature(std::string feature)
+{
+    if (selected_edge!=nullptr)
+    {
+        QDialog window;
+        QVBoxLayout* layout = new QVBoxLayout();
+        QLabel *info = new QLabel("Remove feature: "+QString::fromStdString(feature)+QString::fromStdString("?"));
+        layout->addWidget(info);
+        QCheckBox *check = new QCheckBox("Edit", this);
+        layout->addWidget(check);
+        QLineEdit *editbar = new QLineEdit(this);
+        editbar->setPlaceholderText(QString::fromStdString(feature));
+        editbar->setEnabled(false);
+        layout->addWidget(editbar);
+        connect(check, &QCheckBox::toggled, editbar, &QLineEdit::setEnabled);
+        QPushButton *OK = new QPushButton("Ok", this);
+        QPushButton *CANCEL = new QPushButton("Cancel", this);        
+        connect(OK, &QPushButton::clicked, &window, &QDialog::accept);
+        connect(CANCEL, &QPushButton::clicked, &window, &QDialog::reject);        
+        layout->addWidget(OK);        
+        layout->addWidget(CANCEL);
+        window.setLayout(layout);
+        if (window.exec() == QDialog::Accepted)
+        {
+            std::cerr << editbar->text().toStdString() << std::endl;
+            selected_edge->erase_feature(feature);
+            if (check->isChecked())
+            {
+                selected_edge->add_feature(editbar->text().toStdString());
+            }
+            std::string new_svg,fromgraphviz = current_project->to_string();
+            cm_dashclean(fromgraphviz);
+            cm_render(fromgraphviz, new_svg, CM_OUTPUT_SVG);                
+            svg_loaded_as_xml = false;
+            load(new_svg);
+        }
+    }
+}
+
+void qcanvas::remove_node_feature(cm_node* n, std::string feature)
+{
+
 }
 
 void qcanvas::select_edge(cm_edge* direct)
@@ -319,7 +399,9 @@ void qcanvas::select_node(std::string label)
                     writer.writeCurrentToken(reader);
                     //std::cerr << "\n\n" << xmlout.toStdString() << std::endl;
                     //std::cerr << "\tcomparing " << qtarget.toStdString() << " with " << current.toStdString() << std::endl;
-                    if (current.indexOf(qtarget) != -1)                          
+                    //if (current.indexOf(qtarget) != -1)     
+                    //if (current.toStdString() == qtarget.toStdString())                     
+                    if (current == qtarget)
                     {                           
                         //std::cerr << "\n\n" << xmlout.toStdString() << std::endl;
                         //std::cerr << "\t\tINSIDE: " << reader.name().toString().toStdString() << std::endl;

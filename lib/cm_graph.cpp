@@ -53,7 +53,10 @@ cm_graph::cm_graph(Agraph_t *g)
                 if (std::string(agxget(n,sym))!="")                
                 {
                     feature = std::string(sym->name) + " = " + std::string(agxget(n,sym));
-                    wnode->add_feature(feature);
+                    char *q = agxget(n,sym);
+                    size_t l = strlen(q);
+                    if (l>0)
+                        wnode->add_feature(feature);
                 }
             }
             addnode(wnode);
@@ -71,18 +74,23 @@ cm_graph::cm_graph(Agraph_t *g)
             for (sym = agnxtattr(g,AGEDGE,NULL); sym != NULL; sym = agnxtattr(g,AGEDGE,sym))
             {           
                 bool insert = true;     
-                std::string feature = std::string(sym->name) + " = " + std::string(agxget(e, sym));
-                //fprintf(stderr,"cm_graph: Edge feature: %s = %s\n", sym->name, agxget(e, sym));                
-                for (const auto& feature : wedge->get_features())
+                std::string feature = std::string(sym->name) + " = " + std::string(agxget(e, sym));                
+                char *q = agxget(e, sym);
+                size_t l = strlen(q);
+                if (l>0)
                 {
-                    size_t pos = feature.find(std::string(sym->name));
-                    if (pos==std::string::npos)
+                    //fprintf(stderr,"cm_graph: Edge feature: %s = %s [%ld]\n", sym->name, agxget(e, sym),l);                               
+                    for (const auto& feature : wedge->get_features())
                     {
-                        insert = false;
+                        size_t pos = feature.find(std::string(sym->name));
+                        if (pos==std::string::npos)
+                        {
+                            insert = false;
+                        }
                     }
+                    if (insert)
+                        wedge->add_feature(feature);
                 }
-                if (insert)
-                    wedge->add_feature(feature);
             }
             addedge(wedge);
         }
@@ -135,7 +143,17 @@ int cm_graph::addedge(cm_edge* edge)
         if ((tail == each_edge->get_tail())&&(head == each_edge->get_head()))
             return(0);
     }
-    edge->add_feature("dir=back");
+    bool backdir_stillempty = true;
+    for (auto& feat : edge->get_features())
+    {
+        std::string feature = static_cast<std::string>(feat);
+        if ((feature == "dir=back")||(feature == "dir = back"))
+        {
+            backdir_stillempty = false;
+        }
+    }
+    if (backdir_stillempty)
+        edge->add_feature("dir=back");
     edges.push_back(edge);
     return(1);
 }

@@ -37,6 +37,18 @@ std::vector<std::string> cm_edge::get_features()
     return(features);
 }
 
+void cm_edge::erase_feature(std::string feature)
+{
+    for (int i = features.size() - 1; i >= 0; --i)
+    {
+        const std::string& f = features[i];        
+        if (f == feature)
+        {
+            features.erase(features.begin()+i);
+        }
+    }
+}
+
 void cm_edge::erasecolor()
 {
     for (int i = features.size() - 1; i >= 0; --i)
@@ -53,7 +65,8 @@ void cm_edge::erasecolor()
 void cm_edge::setcolor(std::string color)
 {
     erasecolor();
-    features.push_back("color = "+color);
+    std::string fcolor = "color = "+color;
+    features.push_back(fcolor);
 }
 
 
