@@ -1,4 +1,50 @@
-cmake_minimum_required(VERSION 3.22.1)
+cmake_minimum_required(VERSION 3.00.0)
+# ---------------------------------------------------------------------------------------------------------
+if(WIN32)
+    add_definitions(-DWINDOWS)
+    set(SYSTEM_DETECTED WINDOWS)
+else()
+    add_definitions(-DLINUX)
+    set(SYSTEM_DETECTED LINUX)
+endif()
+message(STATUS "System compilation: ${SYSTEM_DETECTED}")
+# ---------------------------------------------------------------------------------------------------------
+# Qt5 requirements to compile the GUI side
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Qt5 Sources in WIN32
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+if (WIN32)
+  # cmake -DCMAKE_MAKE_PROGRAM=C:/msys64/mingw32.exe -G "MinGW Makefiles" -Wno-dev ..
+  # C:\make-3.81-bin\bin\make.exe
+  message(STATUS "Win32 CMake build... ")  
+  set(ENV{PKG_CONFIG_PATH} "C:/Users/marmengot/dev/Graphviz-10.0.1-win64/lib/pkgconfig")
+  set(CMAKE_C_COMPILER "C:/msys64/ucrt64/bin/gcc.exe")
+  set(CMAKE_CXX_COMPILER "C:/msys64/ucrt64/bin/g++.exe")    
+  set(Qt5_DIR "C:/Qt/Qt5.12.12/5.12.12/mingw73_64/lib/cmake/Qt5")
+  file(COPY "${Qt5_DIR}/../../../plugins/platforms/qwindows.dll" DESTINATION "${CMAKE_BINARY_DIR}/platforms/")
+  message(STATUS "COPY FORCED ${Qt5_DIR}/../../../plugins/platforms/qwindows.dll TO FOLDER IN ${CMAKE_BINARY_DIR}/platforms")
+  set(Qt5lib Widgets Core Gui)
+  set(graphviz_kit cgraph gvc pathplan cdt xdot expat gvplugin_pango vcruntime140 gvplugin_dot_layout gvplugin_core)
+  find_package(Qt5 5.12 REQUIRED Core Gui Widgets)
+  find_package(Qt5 COMPONENTS Svg REQUIRED)  
+  set(GRAPHVIZ_INCLUDE_DIR "C:/Users/marmengot/dev/Graphviz-10.0.1-win64/include/graphviz")
+  set(GRAPHVIZ_LIBRARY_DIR "C:/Users/marmengot/dev/Graphviz-10.0.1-win64/lib")  
+  link_directories(${GRAPHVIZ_LIBRARY_DIR})
+  #set(BISON_EXECUTABLE "C:/win_flex_bison-latest/win_bison.exe")
+else()
+  message(STATUS "GNU/Linux CMake build... ")
+  find_package(Qt5Widgets)
+  find_package(Qt5Core)
+  find_package(Qt5Gui)
+  find_package(Qt5 COMPONENTS Svg REQUIRED)
+  set(GRAPHVIZ_INCLUDE_DIR /usr/local/include/graphviz/)
+endif()
+# ---------------------------------------------------------------------------------------------------------
+if (NOT CMAKE_CXX_FLAGS)
+    set(CMAKE_CXX_FLAGS "")
+endif()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-dev")
 # ---------------------------------------------------------------------------------------------------------
 project(codemapper)
 set(${PROJECT_NAME}_AUTHOR "Marcelo Armengot")
@@ -6,7 +52,7 @@ set(${PROJECT_NAME}_URL "https://github.com/armengot/codemapper")
 # ---------------------------------------------------------------------------------------------------------
 set(GUI_CODEMAPPER cmgui)
 # ---------------------------------------------------------------------------------------------------------
-set(GRAPHVIZ_INCLUDE_DIR /usr/local/include/graphviz/)
+# set(GRAPHVIZ_INCLUDE_DIR /usr/local/include/graphviz/)
 # ---------------------------------------------------------------------------------------------------------
 string(ASCII 27 Esc)
 set(RESETCOLOR "${Esc}[39m${Esc}[0m")
@@ -62,18 +108,21 @@ file(WRITE ${GIT_COMMIT_HEADER_FILE} "// Get GIT info\n"
     "#define GIT_OFFICIAL_VERSION \"${GIT_LASTAG}\"\n"
     "#define CODEMAPPER_AUTHOR \"${${PROJECT_NAME}_AUTHOR}\"\n"
     "#define CODEMAPPER_URL \"${${PROJECT_NAME}_URL}\"\n"
+    "#define SYSTEM_DETECTED \"${SYSTEM_DETECTED}\"\n"
     "#endif\n")
 add_custom_target(git_commit_header_target DEPENDS ${GIT_COMMIT_HEADER_FILE})
-# ---------------------------------------------------------------------------------------------------------
-# Qt5 requirements to compile the GUI side
-find_package(Qt5Widgets)
-find_package(Qt5Core)
-find_package(Qt5Gui)
-find_package(Qt5 COMPONENTS Svg REQUIRED)
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------
 # graphviz library usage
-execute_process(COMMAND pkg-config libgvc --cflags OUTPUT_VARIABLE CFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
-execute_process(COMMAND pkg-config libgvc --libs OUTPUT_VARIABLE LDFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
+if (WIN32)   
+  execute_process(COMMAND C:/pkg-config-lite-0.28-1/bin/pkg-config.exe libgvc --cflags OUTPUT_VARIABLE CFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
+  execute_process(COMMAND C:/pkg-config-lite-0.28-1/bin/pkg-config.exe libgvc --libs OUTPUT_VARIABLE LDFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
+else()
+  execute_process(COMMAND pkg-config libgvc --cflags OUTPUT_VARIABLE CFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
+  execute_process(COMMAND pkg-config libgvc --libs OUTPUT_VARIABLE LDFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
+endif()
+message(STATUS "LDFLAGS: ${LDFLAGS}")
+message(STATUS "CFLAGS: ${CFLAGS}")
 # ---------------------------------------------------------------------------------------------------------
 # include graphbiz and own libraries
 # ---------------------------------------------------------------------------------------------------------
@@ -111,7 +160,12 @@ add_executable(simple exe/simple.c)
 add_executable(test exe/testlib.cpp)
 # ---------------------------------------------------------------------------------------------------------
 # main GUI (beta) in progress
-add_executable(${GUI_CODEMAPPER} gui/main.cpp)
+if(WIN32)
+  add_executable(${GUI_CODEMAPPER} WIN32 gui/main.cpp)
+  # add_executable(${GUI_CODEMAPPER} gui/main.cpp)
+else()
+  add_executable(${GUI_CODEMAPPER} gui/main.cpp)
+endif()
 # ---------------------------------------------------------------------------------------------------------
 # git
 add_dependencies(${PROJECT_NAME} git_commit_header_target)
@@ -128,7 +182,24 @@ target_compile_options(test PUBLIC ${CFLAGS})
 target_link_libraries(test PUBLIC ${LDFLAGS} PRIVATE cm_graph cm_tools)
 target_compile_options(${GUI_CODEMAPPER} PUBLIC ${CFLAGS})
 # ---------------------------------------------------------------------------------------------------------
-# Qt5 link
+# dll links
+if (WIN32)
+  # Qt5 dll common
+  foreach(file ${Qt5lib})    
+    file(COPY "${Qt5_DIR}/../../../bin/Qt5${file}.dll" DESTINATION "${CMAKE_BINARY_DIR}/")
+    message(STATUS "COPY FORCED ${Qt5_DIR}/../../../bin/Qt5${file}.dll TO BUILD FOLDER IN ${CMAKE_BINARY_DIR}/")        
+  endforeach(file ${Qt5lib})
+  # Qt5 alone
+  file(COPY "${Qt5_DIR}/../../../bin/Qt5Svg.dll" DESTINATION "${CMAKE_BINARY_DIR}/")
+  message(STATUS "COPY FORCED ${Qt5_DIR}/../../../bin/Qt5Svg.dll TO BUILD FOLDER IN ${CMAKE_BINARY_DIR}/")
+  # graphviz dll and deps
+  foreach(file ${graphviz_kit})    
+    file(COPY "${GRAPHVIZ_LIBRARY_DIR}/../bin/${file}.dll" DESTINATION "${CMAKE_BINARY_DIR}/")
+    message(STATUS "COPY FORCED ${GRAPHVIZ_LIBRARY_DIR}/../bin/${file}.dll TO BUILD FOLDER IN ${CMAKE_BINARY_DIR}/")        
+  endforeach(file ${Qt5lib})  
+  file(COPY "${GRAPHVIZ_LIBRARY_DIR}/../bin/config6" DESTINATION "${CMAKE_BINARY_DIR}/")
+  message(STATUS "COPY FORCED ${GRAPHVIZ_LIBRARY_DIR}/../bin/config6 TO BUILD FOLDER IN ${CMAKE_BINARY_DIR}/")        
+endif()
 target_link_libraries(cm_qcanvas Qt5::Gui)
 target_link_libraries(cm_qcanvas Qt5::Widgets)
 target_link_libraries(cm_qtlib cm_qcanvas)
@@ -216,21 +287,26 @@ include(CPack)
 # | |\/| |/ _ \| ' <| _|| _| | || |__| _|  | (_| (_) | |\/| | |\/| | _|| .` | | | \__ \
 # |_|  |_/_/ \_\_|\_\___|_| |___|____|___|  \___\___/|_|  |_|_|  |_|___|_|\_| |_| |___/
 # ==============================================================================================================================
+if (WIN32)
+  set(ECHO_COMMAND "echo \"\"")
+else()
+  set(ECHO_COMAND "echo -n")
+endif()
 add_custom_command(TARGET ${PROJECT_NAME}
     POST_BUILD
-    COMMAND echo -n
+    COMMAND ${ECHO_COMAND}
     COMMENT "${GREENCOLOR}${PROJECT_NAME}${RESETCOLOR} is just command line tool to parse source code projects."
     VERBATIM
 )
 add_custom_command(TARGET test
     POST_BUILD
-    COMMAND echo -n
+    COMMAND ${ECHO_COMAND}
     COMMENT "${GREENCOLOR}test${RESETCOLOR} is a example of cm_graph library usage."
     VERBATIM
 )
 add_custom_command(TARGET ${GUI_CODEMAPPER}
     POST_BUILD
-    COMMAND echo -n
+    COMMAND ${ECHO_COMAND}
     COMMENT "${GREENCOLOR}${GUI_CODEMAPPER}${RESETCOLOR} is a Qt5 frontend to render graphs parsed by codemapper libs and edit the result (beta, in progress)."
     VERBATIM
 )

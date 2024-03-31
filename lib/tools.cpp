@@ -12,7 +12,11 @@
 using namespace std;
 
 const char CM_GLOBAL_JOIN_CHAR = '_';
+#ifdef WINDOWS
+const char CM_SYS_SPLITER_CHAR = '\\';
+#else
 const char CM_SYS_SPLITER_CHAR = '/';
+#endif
 
 void rechar(std::string& str, char oldc, char newc)
 {
@@ -135,7 +139,9 @@ int cm_render(const string& input, std::string& output, CM_OUTPUT_MODES mode)
     else if (mode == CM_OUTPUT_PNG)
         r = gvRenderData(gvc, g, "png", &buffer, &len);
     std::cerr << "cm_render: graphviz::gvRenderData() returned " << r << std::endl;
+
     
+
     gvFreeLayout(gvc, g);
     agclose(g);
     gvFreeContext(gvc);
@@ -161,4 +167,14 @@ void cm_dashclean(std::string& str)
         }
     }
     std::cerr << "cm_dashclean: " << c << " slashes removed" << std::endl;
+}
+
+void slash_independence(string& folder)
+{
+    #ifdef WINDOWS
+    std::cerr << "Windows adaptation slash splitting." << std::endl;
+    std::replace(folder.begin(),folder.end(),'/','\\');
+    #else
+    std::cerr << "Linux slash char default usage." << std::endl;
+    #endif
 }

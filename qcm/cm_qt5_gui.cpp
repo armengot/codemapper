@@ -368,6 +368,7 @@ void cm_qt5_gui::infolder()
                 delete(current_project);
             }
             string folder_input = folder.toStdString();
+            slash_independence(folder_input);
             debugqt("Folder selected: "+folder_input);
             if (selected_input_language[0]=='c')
             {
@@ -396,6 +397,7 @@ void cm_qt5_gui::infolder()
                 else
                 {                        
                     svg = svg_output;                
+                    // std::cout << svg << std::endl;
                     canvas->load(svg);
                     canvas->setgraph(current_project);                
                 }
@@ -435,7 +437,7 @@ void cm_qt5_gui::guiabout()
 {
     QMessageBox box;
     QString about;
-    about = QString("codemapper by Marcelo Armengot (C) 2024 - ") + QString(GIT_OFFICIAL_VERSION) + QString("\n");
+    about = QString("codemapper by Marcelo Armengot (C) 2024 - ") + QString(GIT_OFFICIAL_VERSION) + QString(" for ") + QString(SYSTEM_DETECTED) + ("\n");
     about = about + QString("This application is a GUI for codemapper tools.\n");
     about = about + QString("For more information, visit: ") + QString(CODEMAPPER_URL) + QString("\n");
     about = about + QString("(+) Qt ") + QString(QT_VERSION_STR) + QString(" is included.\n");
