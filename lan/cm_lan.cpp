@@ -35,19 +35,19 @@ void language::lookfor_sources()
             size_t pos = input.path().string().find("build");
             if (pos!=string::npos)
             {
-                std::cerr << DEBUG_REDTXT << " ignored" << DEBUG_RESTXT << std::endl;                                
+                std::cerr << DEBUG_REDTXT << " ignored because build keyword found" << DEBUG_RESTXT << std::endl;                                
                 continue;
             }
             pos = input.path().string().find(".git");
             if (pos!=string::npos)
             {
-                std::cerr << DEBUG_REDTXT << " ignored" << DEBUG_RESTXT << std::endl;                
+                std::cerr << DEBUG_REDTXT << " ignored because git keyword found" << DEBUG_RESTXT << std::endl;                
                 continue;
             }
-            pos = input.path().string().find(CM_SYS_SPLITER_CHAR+".");
+            pos = input.path().string().find(CM_SYS_SPLITER_CHAR+'.');
             if (pos!=string::npos)
             {
-                std::cerr << DEBUG_REDTXT << " ignored" << DEBUG_RESTXT << std::endl;                
+                std::cerr << DEBUG_REDTXT << " ignored becaouse dot special char found" << DEBUG_RESTXT << std::endl;                
                 continue;                                
             }
             std::cerr << std::endl;

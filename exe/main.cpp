@@ -118,7 +118,7 @@ int main(int argc, char* argv[])
     {
         #ifdef WINDOWS
             output = "WARNING: save as PNG from std::output does not work in Win32 systems because is a binary pipe, use cmgui instead for your proposal.\n";
-        #elif
+        #else
             string png_output = codetree->to_string();
             cm_dashclean(png_output);
             graphviz_response = cm_render(png_output, output, CM_OUTPUT_PNG);                        

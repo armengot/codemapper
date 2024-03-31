@@ -34,6 +34,8 @@ if (WIN32)
   #set(BISON_EXECUTABLE "C:/win_flex_bison-latest/win_bison.exe")
 else()
   message(STATUS "GNU/Linux CMake build... ")
+  set(Qt5_DIR /usr/lib/x86_64-linux-gnu/cmake/Qt5/)
+  # set(Qt5DIR /usr/lib/x86_64-linux-gnu/cmake/Qt5/)
   find_package(Qt5Widgets)
   find_package(Qt5Core)
   find_package(Qt5Gui)
@@ -290,23 +292,23 @@ include(CPack)
 if (WIN32)
   set(ECHO_COMMAND "echo \"\"")
 else()
-  set(ECHO_COMAND "echo -n")
+  set(ECHO_COMMAND echo -n)
 endif()
 add_custom_command(TARGET ${PROJECT_NAME}
     POST_BUILD
-    COMMAND ${ECHO_COMAND}
+    COMMAND ${ECHO_COMMAND}
     COMMENT "${GREENCOLOR}${PROJECT_NAME}${RESETCOLOR} is just command line tool to parse source code projects."
     VERBATIM
 )
 add_custom_command(TARGET test
     POST_BUILD
-    COMMAND ${ECHO_COMAND}
+    COMMAND ${ECHO_COMMAND}
     COMMENT "${GREENCOLOR}test${RESETCOLOR} is a example of cm_graph library usage."
     VERBATIM
 )
 add_custom_command(TARGET ${GUI_CODEMAPPER}
     POST_BUILD
-    COMMAND ${ECHO_COMAND}
+    COMMAND ${ECHO_COMMAND}
     COMMENT "${GREENCOLOR}${GUI_CODEMAPPER}${RESETCOLOR} is a Qt5 frontend to render graphs parsed by codemapper libs and edit the result (beta, in progress)."
     VERBATIM
 )
