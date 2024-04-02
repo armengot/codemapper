@@ -9,6 +9,12 @@ else()
     set(SYSTEM_DETECTED LINUX)
 endif()
 message(STATUS "System compilation: ${SYSTEM_DETECTED}")
+string(ASCII 27 Esc)
+set(RESETCOLOR "${Esc}[39m${Esc}[0m")
+set(GREENCOLOR "${Esc}[92m")
+set(REDCOLOR "${Esc}[91m")
+set(REDBOLD "${Esc}[91m${Esc}[1m")
+# ---------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------
 # Qt5 requirements to compile the GUI side
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -31,6 +37,7 @@ if (WIN32)
   find_package(Qt5 COMPONENTS Svg REQUIRED)  
   set(GRAPHVIZ_INCLUDE_DIR "C:/Users/marmengot/dev/Graphviz-10.0.1-win64/include/graphviz")
   set(GRAPHVIZ_LIBRARY_DIR "C:/Users/marmengot/dev/Graphviz-10.0.1-win64/lib")  
+  set(PKGCONFIG_WIN C:/pkg-config-lite-0.28-1/bin/pkg-config.exe)
   link_directories(${GRAPHVIZ_LIBRARY_DIR})
   #set(BISON_EXECUTABLE "C:/win_flex_bison-latest/win_bison.exe")
 else()
@@ -44,6 +51,39 @@ else()
   set(GRAPHVIZ_INCLUDE_DIR /usr/local/include/graphviz/)
 endif()
 # ---------------------------------------------------------------------------------------------------------
+#   ___ _  _ ___ ___ _  __
+#  / __| || | __/ __| |/ /
+# | (__| __ | _| (__| ' < 
+#  \___|_||_|___\___|_|\_\
+# ---------------------------------------------------------------------------------------------------------
+set(checking_paths_unix CMAKE_C_COMPILER CMAKE_CXX_COMPILER CMAKE_MAKE_PROGRAM Qt5_DIR GRAPHVIZ_INCLUDE_DIR)
+set(checking_paths_windows ${checking_paths_unix} GRAPHVIZ_LIBRARY_DIR PKGCONFIG_WIN)
+if(WIN32)
+    set(required_paths ${checking_paths_windows})
+else()
+    set(required_paths ${checking_paths_unix})
+endif()
+list(LENGTH required_paths num_required_paths)
+math(EXPR num_existing_paths "0")
+# ---------------------------------------------------------------------------------------------------------
+foreach(path ${required_paths})
+    if(EXISTS "${${path}}")
+        message(STATUS "${GREENCOLOR}[Ok]${RESETCOLOR} ${path}: ${${path}}")
+        math(EXPR num_existing_paths "${num_existing_paths} + 1")
+    else()
+        message(STATUS "${REDCOLOR}[xx]${RESETCOLOR} not found or still not defined ${path}")
+    endif()
+endforeach()
+# ---------------------------------------------------------------------------------------------------------
+if(num_existing_paths LESS num_required_paths)
+    if (WIN32)
+      message(FATAL_ERROR "Required deps missing. Check required deps in CMakeLists.txt file. ${REDCOLOR}Forced exit.${RESETCOLOR}")
+    else()
+      message(STATUS "${REDCOLOR}Check required deps in CMakeLists.txt file or call cmake again.${RESETCOLOR}")
+    endif()
+endif()
+message(STATUS "${GREENCOLOR}Continue...${RESETCOLOR}")
+# ---------------------------------------------------------------------------------------------------------
 if (NOT CMAKE_CXX_FLAGS)
     set(CMAKE_CXX_FLAGS "")
 endif()
@@ -56,12 +96,6 @@ set(${PROJECT_NAME}_URL "https://github.com/armengot/codemapper")
 set(GUI_CODEMAPPER cmgui)
 # ---------------------------------------------------------------------------------------------------------
 # set(GRAPHVIZ_INCLUDE_DIR /usr/local/include/graphviz/)
-# ---------------------------------------------------------------------------------------------------------
-string(ASCII 27 Esc)
-set(RESETCOLOR "${Esc}[39m${Esc}[0m")
-set(GREENCOLOR "${Esc}[92m")
-set(REDCOLOR "${Esc}[91m")
-set(REDBOLD "${Esc}[91m${Esc}[1m")
 # ---------------------------------------------------------------------------------------------------------
 #   ___ ___ _____ 
 #  / __|_ _|_   _|
@@ -118,8 +152,8 @@ add_custom_target(git_commit_header_target DEPENDS ${GIT_COMMIT_HEADER_FILE})
 # ---------------------------------------------------------------------------------------------------------
 # graphviz library usage
 if (WIN32)   
-  execute_process(COMMAND C:/pkg-config-lite-0.28-1/bin/pkg-config.exe libgvc --cflags OUTPUT_VARIABLE CFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
-  execute_process(COMMAND C:/pkg-config-lite-0.28-1/bin/pkg-config.exe libgvc --libs OUTPUT_VARIABLE LDFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
+  execute_process(COMMAND ${PKGCONFIG_WIN} libgvc --cflags OUTPUT_VARIABLE CFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
+  execute_process(COMMAND ${PKGCONFIG_WIN} libgvc --libs OUTPUT_VARIABLE LDFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
 else()
   execute_process(COMMAND pkg-config libgvc --cflags OUTPUT_VARIABLE CFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
   execute_process(COMMAND pkg-config libgvc --libs OUTPUT_VARIABLE LDFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
