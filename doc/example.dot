@@ -1,0 +1,188 @@
+digraph codemapper
+{
+	cm_lan
+	[
+		label="{cm_lan.cpp|cm_lan.h}"
+		shape = record
+		penwidth=4
+        style = filled
+        fillcolor = cornflowerblue
+		fontsize = 24
+	];
+	cm_pylan
+	[
+		label="{cm_pylan.cpp|cm_pylan.h}"
+		shape = record
+		penwidth=4
+        style = filled
+        fillcolor = cornflowerblue		
+		fontsize = 24
+	];
+	cm_clan
+	[
+		label="{cm_clan.cpp|cm_clan.h}"
+		shape = record
+		penwidth=4
+        style = filled
+        fillcolor = cornflowerblue		
+		fontsize = 24
+	];
+	cm_qt5_gui
+	[
+		label="{cm_qt5_gui.cpp|cm_qt5_gui.h}"
+		shape = record
+		penwidth=4
+        style = filled
+        fillcolor = chartreuse3
+		fontsize = 32
+	];
+	qcanvas
+	[
+		label="{qcanvas.cpp|qcanvas.h}"
+		shape = record
+		penwidth=4
+        style = filled
+        fillcolor = chartreuse3		
+		fontsize = 32
+	];
+	cm_edge
+	[
+		label="{cm_edge.cpp|cm_edge.h}"
+		shape = record
+		penwidth=4
+        style = filled
+        fillcolor = lightblue		
+	];
+	cm_graph
+	[
+		label="{cm_graph.cpp|cm_graph.h}"
+		shape = record
+		penwidth=4
+        style = filled
+        fillcolor = lightblue		
+	];
+	cm_node
+	[
+		label="{cm_node.cpp|cm_node.h}"
+		shape = record
+		penwidth=4
+        style = filled
+		fillcolor = lightblue		
+	];
+	gui_main
+	[
+		label="gui_main.cpp"
+		shape = circle
+		penwidth=4
+        style = filled
+        fillcolor = chartreuse3		
+		fontsize = 24
+	];
+	invisible_trick
+	[
+		style = invis
+	]
+
+	// edges
+	cm_clan -> cm_graph
+	[
+		label=""
+		dir=back
+        penwidth=4
+        color = cornflowerblue   		
+	];
+	cm_clan -> cm_lan
+	[
+		label=""
+		dir=back
+        penwidth=4
+        color = cornflowerblue   		
+	];
+	cm_graph -> cm_node
+	[
+		label=""
+		dir=back
+        penwidth=4
+        color = lightblue
+	];
+	cm_graph -> cm_edge
+	[
+		label=""
+		dir=back
+        penwidth=4
+        color = lightblue   		
+	];
+	cm_lan -> cm_graph
+	[
+		label=""
+		dir=back
+        penwidth=4
+        color = cornflowerblue   		
+	];
+	cm_pylan -> cm_graph
+	[
+		label=""
+		dir=back
+        penwidth=4
+        color = cornflowerblue   		
+	];
+	cm_pylan -> cm_lan
+	[
+		label=""
+		dir=back
+        penwidth=4
+        color = cornflowerblue   		
+	];
+	
+	cm_qt5_gui -> cm_clan
+	[
+		label=""
+		dir=back
+        penwidth=4
+        color = chartreuse3   		
+	];
+	cm_qt5_gui -> cm_pylan
+	[
+		label=""
+		dir=back
+        penwidth=4
+        color = chartreuse3   		
+	];
+	cm_qt5_gui -> cm_graph
+	[
+		label=""
+		dir=back
+        penwidth=4
+        color = chartreuse3   		
+	];
+	cm_qt5_gui -> qcanvas
+	[
+		label=""
+		dir=back
+        penwidth=4
+        color = chartreuse3   		
+	];
+	gui_main -> cm_qt5_gui
+	[
+		label=""
+		dir=back
+        penwidth=4
+        color = chartreuse3   		
+	];
+	qcanvas -> cm_graph
+	[
+		label=""
+		dir=back
+        penwidth=4
+        color = chartreuse3   		
+	];
+	// tricks and traps
+	qcanvas -> invisible_trick
+	[
+		style = invis
+	]
+	invisible_trick -> cm_graph
+	[
+		style = invis
+	]
+}
