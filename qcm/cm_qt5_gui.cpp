@@ -437,7 +437,7 @@ void cm_qt5_gui::guiabout()
 {
     QMessageBox box;
     QString about;
-    about = QString("codemapper by Marcelo Armengot (C) 2024 - ") + QString(GIT_OFFICIAL_VERSION) + QString(" for ") + QString(SYSTEM_DETECTED) + ("\n");
+    about = QString("codemapper by ")+QString(CODEMAPPER_AUTHOR)+QString(" (C) 2024 - ") + QString(GIT_OFFICIAL_VERSION) + QString(" for ") + QString(SYSTEM_DETECTED) + ("\n");
     about = about + QString("This application is a GUI for codemapper tools.\n");
     about = about + QString("For more information, visit: ") + QString(CODEMAPPER_URL) + QString("\n");
     about = about + QString("(+) Qt ") + QString(QT_VERSION_STR) + QString(" is included.\n");

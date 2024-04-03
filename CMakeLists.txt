@@ -102,38 +102,70 @@ set(GUI_CODEMAPPER cmgui)
 # | (_ || |  | |  
 #  \___|___| |_| 
 # ---------------------------------------------------------------------------------------------------------
-find_package(Git REQUIRED)
+set(DEFAULT_GIT_HASH "Unknown")
+set(DEFAULT_HOSTNAME "Unknown")
+set(DEFAULT_GIT_TIME "Unknown")
+set(DEFAULT_GITAUTHORLST "Unknown")
+set(DEFAULT_GIT_USER_CXX "Unknown")
+set(DEFAULT_GIT_LASTAG "its_UN_UN_UNknown")
+# find_package(Git REQUIRED)
 set(GIT_COMMIT_HEADER_FILE "${CMAKE_SOURCE_DIR}/lib/gitinfo.h")
-execute_process(COMMAND git log -1 --pretty=format:"%H" OUTPUT_VARIABLE GIT_HASH
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
-execute_process(COMMAND hostname OUTPUT_VARIABLE HOSTNAME
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
-execute_process(COMMAND date "+%F-%T" OUTPUT_VARIABLE GIT_TIME
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
-execute_process(COMMAND git log -1 --pretty=format:%ae
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-  OUTPUT_VARIABLE GITAUTHORLST
-  OUTPUT_STRIP_TRAILING_WHITESPACE)    
-execute_process(COMMAND git config user.email OUTPUT_VARIABLE GIT_USER_CXX
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
-if("${GIT_USER_CXX}" STREQUAL "")
-  message(STATUS "${REDCOLOR}Warning: Commits without ${REDBOLD}NAME${REDCOLOR} not allowed${RESETCOLOR}")
-else()
-  message(STATUS "Please ${REDCOLOR}check${RESETCOLOR} the GIT NAME recorded within the executable binary: ${GREENCOLOR}${GITAUTHORLST}${RESETCOLOR}")
+if(IS_DIRECTORY "${CMAKE_SOURCE_DIR}/.git")
+  find_package(Git)
+  if(Git_FOUND)
+    execute_process(COMMAND git log -1 --pretty=format:"%H" OUTPUT_VARIABLE GIT_HASH
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+    execute_process(COMMAND hostname OUTPUT_VARIABLE HOSTNAME
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+    execute_process(COMMAND date "+%F-%T" OUTPUT_VARIABLE GIT_TIME
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+    execute_process(COMMAND git log -1 --pretty=format:%ae
+      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      OUTPUT_VARIABLE GITAUTHORLST
+      OUTPUT_STRIP_TRAILING_WHITESPACE)    
+    execute_process(COMMAND git config user.email OUTPUT_VARIABLE GIT_USER_CXX
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+    if("${GIT_USER_CXX}" STREQUAL "")
+      message(STATUS "${REDCOLOR}Warning: Commits without ${REDBOLD}NAME${REDCOLOR} not allowed${RESETCOLOR}")
+    else()
+      message(STATUS "Please ${REDCOLOR}check${RESETCOLOR} the GIT NAME recorded within the executable binary: ${GREENCOLOR}${GITAUTHORLST}${RESETCOLOR}")
+    endif()
+    #execute_process(COMMAND git fetch --tags)
+    execute_process(COMMAND git describe --tags --abbrev=0 OUTPUT_VARIABLE GIT_LASTAG
+      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      OUTPUT_STRIP_TRAILING_WHITESPACE)
+    if("${GIT_LASTAG}" STREQUAL "")
+      message(STATUS "${REDCOLOR}Warning: unknown version")
+    else()
+      message(STATUS "Checking the compilation of ${REDCOLOR}${GIT_LASTAG}${RESETCOLOR} release, visit our repo if want more info about other releases.")
+    endif()  
+  endif()
 endif()
-#execute_process(COMMAND git fetch --tags)
-execute_process(COMMAND git describe --tags --abbrev=0 OUTPUT_VARIABLE GIT_LASTAG
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-  OUTPUT_STRIP_TRAILING_WHITESPACE)
-if("${GIT_LASTAG}" STREQUAL "")
-  message(STATUS "${REDCOLOR}Warning: unknown version")
-else()
-  message(STATUS "Checking the compilation of ${REDCOLOR}${GIT_LASTAG}${RESETCOLOR} release, visit our repo if want more info about other releases.")
-endif()  
+# Set values to defaults if Git information is not available
+if(NOT DEFINED GIT_HASH)
+    set(GIT_HASH ${DEFAULT_GIT_HASH})
+endif()
+if(NOT DEFINED HOSTNAME)
+    set(HOSTNAME ${DEFAULT_HOSTNAME})
+endif()
+if(NOT DEFINED GIT_TIME)
+    set(GIT_TIME ${DEFAULT_GIT_TIME})
+endif()
+if(NOT DEFINED GITAUTHORLST)
+    set(GITAUTHORLST ${DEFAULT_GITAUTHORLST})
+endif()
+if(NOT DEFINED GIT_USER_CXX)
+    set(GIT_USER_CXX ${DEFAULT_GIT_USER_CXX})
+endif()
+if(NOT DEFINED GIT_LASTAG)
+    set(GIT_LASTAG ${DEFAULT_GIT_LASTAG})
+endif()
+
+# Write Git information to header file
 file(WRITE ${GIT_COMMIT_HEADER_FILE} "// Get GIT info\n"
     "#ifndef GITINFO_H\n"
     "#define GITINFO_H\n"
@@ -147,6 +179,7 @@ file(WRITE ${GIT_COMMIT_HEADER_FILE} "// Get GIT info\n"
     "#define CODEMAPPER_URL \"${${PROJECT_NAME}_URL}\"\n"
     "#define SYSTEM_DETECTED \"${SYSTEM_DETECTED}\"\n"
     "#endif\n")
+
 add_custom_target(git_commit_header_target DEPENDS ${GIT_COMMIT_HEADER_FILE})
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------------
