@@ -39,7 +39,7 @@ $ make
 $ make install
 ```
 
-To complete this previous step, may be other packages could be required, as ```bison``` or ```flex```, etc. As still incomplete, it is commented, but there is a cpack section in the cmake file which can clearify some other dependences.
+To complete this previous step, may be other packages could be required, as ```bison``` or ```flex```, etc. **Please** if you uses Windows, **go to [details](doc/winsetup.md)** to more info about requirements.
 ```
 $ sudo apt-get install bison
 $ sudo apt-get install flex
