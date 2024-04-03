@@ -86,6 +86,8 @@ void cpp_language::create_nodes(cm_graph* project)
         for (const auto& source : sources)
         {
             cm_node* alone;
+            alone = new cm_node(firstname(source,'.'),source);
+            /*
             if (charin(CM_GLOBAL_JOIN_CHAR,source))
             {
                 string label = lastwo(source,CM_GLOBAL_JOIN_CHAR,CM_SYS_SPLITER_CHAR);
@@ -95,6 +97,8 @@ void cpp_language::create_nodes(cm_graph* project)
             {
                 alone = new cm_node(firstname(source,'.'),source);
             }
+            */
+
             alone->add_feature("shape = box");
             project->addnode(alone);
         }

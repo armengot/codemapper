@@ -17,7 +17,7 @@ int main(int argc, char** argv)
 { 
     QApplication app(argc, argv);
 
-    cerr << "codemapper by Marcelo Armengot (C) 2024 " << GIT_OFFICIAL_VERSION << endl;                              
+    cerr << "codemapper by " << CODEMAPPER_AUTHOR << " (C) 2024 " << GIT_OFFICIAL_VERSION << endl;                              
     cerr << argv[0] << " is GUI from codemapper tools, for more info, you're wellcome to visit: " << CODEMAPPER_URL << endl;
     cerr << "this release was tagged as " << GIT_OFFICIAL_VERSION << " version number" << endl;
     cerr << "Qt " << QT_VERSION_STR << " is included." << endl;

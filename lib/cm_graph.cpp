@@ -14,6 +14,7 @@
 
 /* graphviz headers */
 #include <cgraph.h>
+#include <gvc.h>
 
 cm_graph::cm_graph(const std::string& in_name)
 {

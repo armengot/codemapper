@@ -2,6 +2,9 @@
 <a href="https://nerdinmadrid.tumblr.com/post/667400970801692672/free-software-for-video-editing-get-your-last"><img src="https://img.shields.io/badge/GNU%2FLinux-100%25-lightgreen"></a>
 <a href="https://graphviz.org/docs/library/"><img src="https://img.shields.io/badge/graphviz-5%25-red"></a>
 
+![Win32](https://img.shields.io/badge/Win32%20-tested-blue)
+![Linux](https://img.shields.io/badge/Ubuntu%2022.04%20-tested-blue)
+
 
 # Code Mapper
 
@@ -36,7 +39,7 @@ $ make
 $ make install
 ```
 
-To complete this previous step, may be other packages could be required, as ```bison``` or ```flex```, etc. As still incomplete, it is commented, but there is a cpack section in the cmake file which can clearify some other dependences.
+To complete this previous step, may be other packages could be required, as ```bison``` or ```flex```, etc. **Please** if you uses Windows, **go to [details](doc/winsetup.md)** to more info about requirements.
 ```
 $ sudo apt-get install bison
 $ sudo apt-get install flex

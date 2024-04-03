@@ -15,7 +15,18 @@
 #include <cm_edge.h>
 #include <gitinfo.h>
 
+/* graphviz headers */
+#include <cgraph.h>
+#include <gvc.h>
+
 using namespace std;
+
+void signature()
+{
+    cerr << "codemapper by " << CODEMAPPER_AUTHOR << " (C) 2024 " << GIT_OFFICIAL_VERSION << " version for " << SYSTEM_DETECTED << " splitting folders with char " << CM_SYS_SPLITER_CHAR << endl;
+    cerr << "graphviz rendering has been included from version " << PACKAGE_VERSION << endl;                
+    cerr << "more info in: " << CODEMAPPER_URL << endl;
+}
 
 int main(int argc, char* argv[]) 
 {
@@ -41,17 +52,13 @@ int main(int argc, char* argv[])
                 lang_provided = true;
                 break;
             case 'v':
-                cerr << "codemapper by Marcelo Armengot (C) 2024 " << GIT_OFFICIAL_VERSION << endl;
-                cerr << "graphviz rendering has been included from version " << PACKAGE_VERSION << endl;                
-                cerr << "more info in: " << CODEMAPPER_URL << endl;
+                signature();
                 return 0;
             case 'o':
                 output_format = optarg;
                 break;
             case 'h':
-                cerr << "codemapper by Marcelo Armengot (C) 2024 " << GIT_OFFICIAL_VERSION << endl;
-                cerr << "graphviz rendering has been included from version " << PACKAGE_VERSION << endl;
-                cerr << "more info in: " << CODEMAPPER_URL << endl << endl;
+                signature();                
                 cerr << "Usage: " << argv[0] << " -t folder -l lang [-v] [-o output_format]" << endl;
                 cerr << "\t\t-t root folder of the target project." << endl;
                 cerr << "\t\t-l source code language of the target project, currenly only available \"cpp\" for C/C++ (Python in progress)." << endl;
@@ -63,8 +70,7 @@ int main(int argc, char* argv[])
     
     if (!target_provided || !lang_provided) 
     {
-        cerr << "codemapper by Marcelo Armengot (C) 2024 " << GIT_OFFICIAL_VERSION << endl;
-        cerr << "graphviz rendering has been included from version " << PACKAGE_VERSION << endl;
+        signature();
         cerr << "Usage: " << argv[0] << " -t folder -l lang [-v] [-o output_format] [h for help]" << endl;        
         cerr << "Missing mandatory parameters language and target folder." << std::endl;       
         return(1);
@@ -72,7 +78,7 @@ int main(int argc, char* argv[])
 
     if (!format_provided)
     {
-        cerr << "Missing output format, " << output_format << " default option selected." << endl;
+        cerr << "Missing output format, " << output_format << " default option " << DEBUG_BLUTXT << output_format << DEBUG_RESTXT << " selected." << endl;
     }
     
     cerr << "-------------------------------------------------------------------------------------------" << endl;
@@ -112,9 +118,13 @@ int main(int argc, char* argv[])
     }
     if ((output_format == "png")||(output_format=="PNG"))
     {
-        string png_output = codetree->to_string();
-        cm_dashclean(png_output);
-        graphviz_response = cm_render(png_output, output, CM_OUTPUT_PNG);                        
+        #ifdef WINDOWS
+            output = "WARNING: save as PNG from std::output does not work in Win32 systems because is a binary pipe, use cmgui instead for your proposal.\n";
+        #else
+            string png_output = codetree->to_string();
+            cm_dashclean(png_output);
+            graphviz_response = cm_render(png_output, output, CM_OUTPUT_PNG);                        
+        #endif
     }    
     if ((output_format == "dot")||(output_format=="DOT"))
     {        
@@ -124,9 +134,10 @@ int main(int argc, char* argv[])
     }        
     if (graphviz_response == 0)
     {
-        cout << output << endl;  
+        cout << output << endl;     
     }
 
-    return(0);
+    return(graphviz_response);
 }
 
+ 
