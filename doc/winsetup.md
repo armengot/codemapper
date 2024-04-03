@@ -13,7 +13,7 @@ If everything is OK your cmake call will be:
 
 Call cmake with:
 ```
-$ cmake ..
+cmake ..
 ```
 And obtain something like:
 - [Ok] CMAKE_C_COMPILER: /usr/bin/cc
@@ -24,14 +24,14 @@ And obtain something like:
 
 If everything was found, call make:
 ```
-$ make
+make
 ```
 
 ### Win32/64
 
-In windows version I usually did:
+In windows version I usually did (inside ```C:\~\~\codemapper\build>``` folder):
 ```
-C:\Users\armengot\dev\codemapper\build> cmake -DCMAKE_MAKE_PROGRAM=C:/msys64/mingw32.exe -G "MinGW Makefiles" -Wno-dev ..
+cmake -DCMAKE_MAKE_PROGRAM=C:/msys64/mingw32.exe -G "MinGW Makefiles" -Wno-dev ..
 ```
 And obtain:
 - [Ok] CMAKE_C_COMPILER: C:/msys64/ucrt64/bin/gcc.exe
@@ -44,12 +44,12 @@ And obtain:
 
 If everything was found, call make:
 ```
-C:\Users\armengot\dev\codemapper\build> C:\make-3.81-bin\bin\make.exe
+C:\make-3.81-bin\bin\make.exe
 ```
 
 ## Solving requirements to compile Windows version
 
-### (1) GCC for Win32
+### (1) GCC for Windows
 For tests I used [MSYS 64](https://www.msys2.org/) on Windows and [include](https://www.computerhope.com/issues/ch000549.htm) it in the path environment variable.
 
 ### (2) Install CMake
