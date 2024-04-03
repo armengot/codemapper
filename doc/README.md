@@ -58,4 +58,9 @@ In the following diagram, we can see more clearly that:
 - On the other hand, the cm_graph class directly uses the data structures of Graphviz in one of its constructors, to accept a Graphviz graph as input data.
 - Finally, the graphical representation in Qt5 is resolved through SVG, the cm_render function within tools.h allows going from data input to graphical output (in both directions) using also the available Graphviz functions.
 
+## First auto example
+
+Loading with ```cmgui``` tool its own source code with folder option, I removed some nodes and played with colors and sizes. The result is an interesting and auto explicit file deps diagram so near than previous flow diagram. You can finish your graphs editing the .dot file.
+
+![example](example.png)
 
