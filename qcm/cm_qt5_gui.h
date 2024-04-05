@@ -31,6 +31,7 @@ class cm_qt5_gui : public QMainWindow
     
     private:
         QString getversion();
+        
         /* global vars */
         QScrollArea* sarea;
         QTextEdit* textbar;
@@ -41,7 +42,7 @@ class cm_qt5_gui : public QMainWindow
 
         /* target objects */
         cm_graph* current_project = nullptr;
-        string svg;             
+        string svg;           
         
         /* setup */
         void setup_canvas();
@@ -49,11 +50,13 @@ class cm_qt5_gui : public QMainWindow
         /* input data load */
         void infolder();
         void infile();
+        void select_language(string lan);
         /* output data saving */
         void project_save();
+        /* be cool */
         void guiabout();        
         void quitcool();
-        void select_language(string lan);
+        
         
     public:
         /* constructor */

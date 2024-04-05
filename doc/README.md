@@ -63,4 +63,3 @@ In the following diagram, we can see more clearly that:
 Loading with ```cmgui``` tool its own source code with folder option, I removed some nodes and played with colors and sizes. The result is an interesting and auto explicit file deps diagram so near than previous flow diagram. You can finish your graphs editing the .dot file.
 
 ![example](example.png)
-
