@@ -37,7 +37,7 @@ $ ./codemapper -t /home/marcelo/dev/personal/github/codemapper/ -l cpp -o png > 
 - [x] (3) output as svg
 - [x] GUI ways of input:
 - [x] (4) import a project file saved by (1) now empty in the GUI button
-- [ ] Automatize color of nodes
+- [x] Automatize color of nodes
 - [ ] Automatize color of edges
 - [ ] Review the node selection logic and think about the edge way
 - [ ] Documentation

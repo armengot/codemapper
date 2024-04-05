@@ -101,7 +101,7 @@ void cm_qcolor::update_from_wheel()
     int s = equal(selection);
     if (s==-1)
     {
-        if (timeswheel>25)
+        if (timeswheel>5)
         {
             timeswheel = 0;
             s = nearest(selection);
@@ -163,4 +163,10 @@ int cm_qcolor::equal(cm_rgb_color selection)
         i++;
     }
     return(-1);
+}
+
+string cm_qcolor::getselected()
+{
+    int c = colorcombo->currentIndex();
+    return(colorcombo->itemText(c).toStdString());
 }

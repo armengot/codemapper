@@ -178,3 +178,9 @@ void slash_independence(string& folder)
     std::cerr << "Linux slash char default usage." << std::endl;
     #endif
 }
+
+bool substringin(string substr,string str)
+{
+    size_t found = str.find(substr);    
+    return found != std::string::npos;
+}

@@ -77,8 +77,21 @@ void cm_qt5_gui::keyPressEvent(QKeyEvent *event)
     }
     else if (key->key() == Qt::Key_C)
     {
-        cm_qcolor selector;
-        selector.exec();
+        cm_node* p = current_project->lookfor(canvas->selected_node);
+        if (p!=nullptr)
+        {
+            cm_qcolor selector;
+            if (selector.exec() == QDialog::Accepted)
+            {                
+                p->switchcolor(selector.getselected());
+                /* refresh */
+                std::string new_svg,fromgraphviz = current_project->to_string();
+                cm_dashclean(fromgraphviz);
+                cm_render(fromgraphviz, new_svg, CM_OUTPUT_SVG);                
+                canvas->svg_loaded_as_xml = false;
+                canvas->load(new_svg);
+            }                        
+        }
     }
     else if (key->key() == Qt::Key_Delete)
     {

@@ -40,5 +40,6 @@ bool charin(char c, const std::string& str);
 int cm_render(const string& input, std::string& output, CM_OUTPUT_MODES mode);
 void cm_dashclean(string& str);
 void slash_independence(string& folder);
+bool substringin(string substr,string str);
 
 #endif

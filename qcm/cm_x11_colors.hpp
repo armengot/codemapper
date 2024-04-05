@@ -31,7 +31,8 @@ class cm_qcolor : public QDialog
     Q_OBJECT
 
     public:
-        cm_qcolor(QWidget *parent = nullptr); 
+        cm_qcolor(QWidget *parent = nullptr);
+        string getselected();
 
     protected:        
 
