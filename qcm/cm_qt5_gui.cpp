@@ -23,6 +23,7 @@
 #include <cm_qt5_gui.h>
 #include <cm_clan.h>
 #include <cm_pylan.h>
+#include <cm_x11_colors.hpp>
 #include <tools.h>
 
 using namespace std;
@@ -73,6 +74,11 @@ void cm_qt5_gui::keyPressEvent(QKeyEvent *event)
     if (key->key() == Qt::Key_Escape) 
     {
         quitcool();
+    }
+    else if (key->key() == Qt::Key_C)
+    {
+        cm_qcolor selector;
+        selector.exec();
     }
     else if (key->key() == Qt::Key_Delete)
     {
