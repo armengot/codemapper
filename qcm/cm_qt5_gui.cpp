@@ -23,7 +23,7 @@
 #include <cm_qt5_gui.h>
 #include <cm_clan.h>
 #include <cm_pylan.h>
-#include <cm_x11_colors.hpp>
+#include <cm_x11_colors.h>
 #include <tools.h>
 
 using namespace std;
@@ -401,15 +401,22 @@ void cm_qt5_gui::infolder()
                 input_source_code.create_nodes(current_project);
                 input_source_code.create_edges(current_project);        
                 debugqt("CODEMAPPER graph created, rendering ... ");
-                string svg_output, output = current_project->to_string();                
+                string svg_output, output = current_project->to_string();                  
                 cm_dashclean(output);                
-                debugqt("graphviz call to svg build... ");
+                debugqt("graphviz call to svg build... ");                
                 int r = cm_render(output, svg_output, CM_OUTPUT_SVG);
                 if (r!=0)
                 {
+                    QFile file("output.dot");
+                    if (file.open(QIODevice::WriteOnly)) 
+                    {
+                        QTextStream fout(&file);
+                        fout << QString::fromStdString(output);
+                        file.close();                    
+                    }
                     QMessageBox error;
                     error.setWindowTitle("Graphviz error");
-                    error.setText("Errors happened while Graphviz rendering, check about keywords in source (graph, node, edge) or reserver chars (-).");
+                    error.setText("Errors happened while Graphviz rendering, check about keywords in source (graph, node, edge) or reserver chars (-). An output.dot file has been created.");
                     error.setStandardButtons(QMessageBox::Ok);    
                     error.exec();
                 }

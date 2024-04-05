@@ -15,7 +15,7 @@
 
 
 /* codemapper libraries */
-#include <cm_x11_colors.hpp>
+#include <cm_x11_colors.h>
 
 cm_qcolor::cm_qcolor(QWidget *parent) : QDialog(parent)
 {   
