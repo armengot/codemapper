@@ -44,3 +44,19 @@ void cm_node::erase_feature(std::string feature)
         }
     }
 }
+
+void cm_node::switchcolor(string color)
+{
+    for (int i = features.size() - 1; i >= 0; --i)
+    {
+        const std::string& f = features[i];  
+        if (substringin("fill",f))              
+        {
+            features.erase(features.begin()+i);
+        }
+    }
+    std::string fillcolor = "fillcolor = " + color;
+    features.push_back("style = filled");
+    features.push_back(fillcolor);
+
+}

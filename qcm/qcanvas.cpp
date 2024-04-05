@@ -218,6 +218,7 @@ void qcanvas::select_edge(cm_edge* direct)
     current_project->reset_edge_colors();
     direct->setcolor("blue");
     std::string new_svg,fromgraphviz = current_project->to_string();
+    current_project->reset_edge_colors();
     cm_dashclean(fromgraphviz);
     cm_render(fromgraphviz, new_svg, CM_OUTPUT_SVG);                
     load(new_svg);

@@ -23,6 +23,7 @@
 #include <cm_qt5_gui.h>
 #include <cm_clan.h>
 #include <cm_pylan.h>
+#include <cm_x11_colors.h>
 #include <tools.h>
 
 using namespace std;
@@ -73,6 +74,24 @@ void cm_qt5_gui::keyPressEvent(QKeyEvent *event)
     if (key->key() == Qt::Key_Escape) 
     {
         quitcool();
+    }
+    else if (key->key() == Qt::Key_C)
+    {
+        cm_node* p = current_project->lookfor(canvas->selected_node);
+        if (p!=nullptr)
+        {
+            cm_qcolor selector;
+            if (selector.exec() == QDialog::Accepted)
+            {                
+                p->switchcolor(selector.getselected());
+                /* refresh */
+                std::string new_svg,fromgraphviz = current_project->to_string();
+                cm_dashclean(fromgraphviz);
+                cm_render(fromgraphviz, new_svg, CM_OUTPUT_SVG);                
+                canvas->svg_loaded_as_xml = false;
+                canvas->load(new_svg);
+            }                        
+        }
     }
     else if (key->key() == Qt::Key_Delete)
     {
@@ -382,15 +401,22 @@ void cm_qt5_gui::infolder()
                 input_source_code.create_nodes(current_project);
                 input_source_code.create_edges(current_project);        
                 debugqt("CODEMAPPER graph created, rendering ... ");
-                string svg_output, output = current_project->to_string();                
+                string svg_output, output = current_project->to_string();                  
                 cm_dashclean(output);                
-                debugqt("graphviz call to svg build... ");
+                debugqt("graphviz call to svg build... ");                
                 int r = cm_render(output, svg_output, CM_OUTPUT_SVG);
                 if (r!=0)
                 {
+                    QFile file("output.dot");
+                    if (file.open(QIODevice::WriteOnly)) 
+                    {
+                        QTextStream fout(&file);
+                        fout << QString::fromStdString(output);
+                        file.close();                    
+                    }
                     QMessageBox error;
                     error.setWindowTitle("Graphviz error");
-                    error.setText("Errors happened while Graphviz rendering, check about keywords in source (graph, node, edge) or reserver chars (-).");
+                    error.setText("Errors happened while Graphviz rendering, check about keywords in source (graph, node, edge) or reserver chars (-). An output.dot file has been created.");
                     error.setStandardButtons(QMessageBox::Ok);    
                     error.exec();
                 }
