@@ -7,7 +7,6 @@
 #include <cstdint>
 
 /* Qt5 libraries */
-/* Qt libraries */
 #include <QDialog>
 #include <QWidget>
 #include <QObject>

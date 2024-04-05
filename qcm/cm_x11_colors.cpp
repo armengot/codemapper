@@ -51,7 +51,7 @@ cm_qcolor::cm_qcolor(QWidget *parent) : QDialog(parent)
     QPushButton *OK = new QPushButton("OK", this);
     QPushButton *CANCEL = new QPushButton("Cancel", this);
 
-    // Adding widgets to layouts
+    /* set up */
     grid_layout->addRow(title, colorcombo);
     grid_layout->addRow("Red:", red_spin);
     grid_layout->addRow("Green:", green_spin);
@@ -62,9 +62,8 @@ cm_qcolor::cm_qcolor(QWidget *parent) : QDialog(parent)
     bar_layout->addWidget(CANCEL);
     main_layout->addLayout(grid_layout);        
     main_layout->addLayout(bar_layout);        
-    
 
-    // Connect signals and slots
+    /* link */
     connect(OK, &QPushButton::clicked, this, &QDialog::accept);
     connect(CANCEL, &QPushButton::clicked, this, &QDialog::reject);
     connect(colorcombo, QOverload<int>::of(&QComboBox::activated), this, &cm_qcolor::update_from_name);
@@ -72,7 +71,7 @@ cm_qcolor::cm_qcolor(QWidget *parent) : QDialog(parent)
     connect(green_spin, QOverload<int>::of(&QSpinBox::valueChanged), this, &cm_qcolor::update_from_wheel);
     connect(blue_spin, QOverload<int>::of(&QSpinBox::valueChanged), this, &cm_qcolor::update_from_wheel);
 
-    // Set window title
+    /* title */
     setWindowTitle("Color Selector");
 }
 
@@ -113,18 +112,20 @@ void cm_qcolor::update_from_wheel()
             return;
         }
     }
-    std::cerr << "color " << s;
-    colorcombo->setCurrentIndex(s);
-    std::string current = colorcombo->itemText(s).toStdString();  
-    std::cerr << current << std::endl;
-    QColor color(x11colors[current].red,x11colors[current].green,x11colors[current].blue);    
-    red_spin->setValue(x11colors[current].red);
-    green_spin->setValue(x11colors[current].green);
-    blue_spin->setValue(x11colors[current].blue);
-    QString hex = color.name();    
-    sample->setStyleSheet("QLabel { background-color: " + hex + "; color: white; }");
-    html.setText(hex);
-    std::cerr << "cm_qcolor: Update()" << std::endl;    
+    if (s!=colorcombo->currentIndex())
+    {
+        std::cerr << "color [" << s << "] - X11 rgb.txt name = ";
+        colorcombo->setCurrentIndex(s);
+        std::string current = colorcombo->itemText(s).toStdString();  
+        std::cerr << current << std::endl;
+        QColor color(x11colors[current].red,x11colors[current].green,x11colors[current].blue);    
+        red_spin->setValue(x11colors[current].red);
+        green_spin->setValue(x11colors[current].green);
+        blue_spin->setValue(x11colors[current].blue);
+        QString hex = color.name();    
+        sample->setStyleSheet("QLabel { background-color: " + hex + "; color: white; }");
+        html.setText(hex);          
+    }
 }
 
 double cm_qcolor::distance(const cm_rgb_color& color1, const cm_rgb_color& color2) 
