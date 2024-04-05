@@ -39,7 +39,7 @@ $ make
 $ make install
 ```
 
-To complete this previous step, may be other packages could be required, as ```bison``` or ```flex```, etc. **Please** if you uses Windows, **go to [details](doc/winsetup.md)** to more info about requirements.
+To complete this previous step, may be other packages could be required, as ```bison``` or ```flex```, etc. **Please** if **you** uses **Windows**, **go to [details](doc/winsetup.md)** to more info about requirements.
 ```
 $ sudo apt-get install bison
 $ sudo apt-get install flex

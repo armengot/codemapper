@@ -2,7 +2,7 @@
 <a href="https://nerdinmadrid.tumblr.com/post/667400970801692672/free-software-for-video-editing-get-your-last"><img src="https://img.shields.io/badge/GNU%2FLinux-100%25-lightgreen"></a>
 <a href="https://graphviz.org/docs/library/"><img src="https://img.shields.io/badge/graphviz-5%25-red"></a>
 
-# Code Mapper documentation
+# Code Mapper documentation (for devs)
 
 The ```codemapper``` tools have been developed with a triple objective: 
 
