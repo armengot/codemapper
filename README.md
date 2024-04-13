@@ -1,12 +1,10 @@
 <a href="https://en.wikipedia.org/wiki/The_C_Programming_Language"><img src="https://img.shields.io/badge/C%2FC%2B%2B-100%25-green"></a>
 <a href="https://nerdinmadrid.tumblr.com/post/667400970801692672/free-software-for-video-editing-get-your-last"><img src="https://img.shields.io/badge/GNU%2FLinux-100%25-lightgreen"></a>
-<a href="https://graphviz.org/docs/library/"><img src="https://img.shields.io/badge/graphviz-5%25-red"></a>
-
-![Win32](https://img.shields.io/badge/Win32%20-tested-blue)
+<a href="https://graphviz.org/docs/library/"><img src="https://img.shields.io/badge/graphviz-5%25-red"></a><br/>![Win32](https://img.shields.io/badge/Win32%20-tested-blue)
 ![Linux](https://img.shields.io/badge/Ubuntu%2022.04%20-tested-blue)
 
 
-# Code Mapper
+# Code Mapper &nbsp;&nbsp;&nbsp;<img src="ico/codemapper_ico.png" width=24>
 
 Code Mapper is a set of tools to generate standard ```graphviz``` graphs from source code. Play with ```codemapper``` learning ```Graphviz```.
 

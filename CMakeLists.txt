@@ -51,6 +51,7 @@ else()
   set(GRAPHVIZ_INCLUDE_DIR /usr/local/include/graphviz/)
   set(ICONPATH ${CMAKE_SOURCE_DIR}/ico/codemapper_ico.png)
 endif()
+set(LOGOPATH ${CMAKE_SOURCE_DIR}/ico/codemapper_ico.png)
 # ---------------------------------------------------------------------------------------------------------
 #   ___ _  _ ___ ___ _  __
 #  / __| || | __/ __| |/ /
@@ -180,6 +181,7 @@ file(WRITE ${GIT_COMMIT_HEADER_FILE} "// Get GIT info\n"
     "#define CODEMAPPER_URL \"${${PROJECT_NAME}_URL}\"\n"
     "#define SYSTEM_DETECTED \"${SYSTEM_DETECTED}\"\n"
     "#define ICONPATH \"${ICONPATH}\"\n"
+    "#define LOGOPATH \"${LOGOPATH}\"\n"
     "#endif\n")
 
 add_custom_target(git_commit_header_target DEPENDS ${GIT_COMMIT_HEADER_FILE})

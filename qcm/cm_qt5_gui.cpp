@@ -463,16 +463,27 @@ void cm_qt5_gui::guiabout()
 {
     QMessageBox box;
     QString about;
-    about = QString("codemapper by ")+QString(CODEMAPPER_AUTHOR)+QString(" (C) 2024 - ") + QString(GIT_OFFICIAL_VERSION) + QString(" for ") + QString(SYSTEM_DETECTED) + ("\n");
-    about = about + QString("This application is a GUI for codemapper tools.\n");
-    about = about + QString("For more information, visit: ") + QString(CODEMAPPER_URL) + QString("\n");
-    about = about + QString("(+) Qt ") + QString(QT_VERSION_STR) + QString(" is included.\n");
-    about = about + QString("(+) Graphviz ") + QString(PACKAGE_VERSION) + QString(" is used.\n");    
-    box.setInformativeText(about);
-    QSpacerItem* horizontal = new QSpacerItem(800, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    /* text */
+    about = QString("<b>codemapper</b> by ")+QString(CODEMAPPER_AUTHOR)+QString(" (C) 2024 - ") + QString(GIT_OFFICIAL_VERSION) + QString(" for ") + QString(SYSTEM_DETECTED) + ("<br>");
+    about = about + QString("This application is a GUI for codemapper tools.<br>");
+    about = about + QString("For more information, visit: <a href='") + QString(CODEMAPPER_URL) + QString("'>") + QString(CODEMAPPER_URL) + QString("</a><br>");
+    about = about + QString("(+) Qt ") + QString(QT_VERSION_STR) + QString(" is included.<br>");
+    about = about + QString("(+) Graphviz ") + QString(PACKAGE_VERSION) + QString(" is used.");    
+    /* logo */
+    QLabel *logo = new QLabel;
+    QPixmap logoload(LOGOPATH);
+    logo->setPixmap(logoload);
+    logo->setAlignment(Qt::AlignRight | Qt::AlignTop);
+    /* layout */
+    QLabel *text = new QLabel(about);
+    text->setWordWrap(true);    
+    text->setFixedWidth(800);
     QGridLayout* layout = (QGridLayout*)box.layout();
-    layout->addItem(horizontal, layout->rowCount(), 0, 1, layout->columnCount());
+    layout->addWidget(text,0,0);
+    layout->addWidget(logo,0,1);  
     box.exec();
+    /* free */    
+    delete(logo);
 }
 
 QString cm_qt5_gui::getversion()
