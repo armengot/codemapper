@@ -15,7 +15,9 @@ using namespace std;
 
 int main(int argc, char** argv)
 { 
-    QApplication app(argc, argv);
+    /* codemapper GUI */
+    QApplication cmgui(argc, argv);
+    cmgui.setWindowIcon(QIcon(ICONPATH));
 
     cerr << "codemapper by " << CODEMAPPER_AUTHOR << " (C) 2024 " << GIT_OFFICIAL_VERSION << endl;                              
     cerr << argv[0] << " is GUI from codemapper tools, for more info, you're wellcome to visit: " << CODEMAPPER_URL << endl;
@@ -26,5 +28,5 @@ int main(int argc, char** argv)
     auto win = new cm_qt5_gui;
     win->show();
 
-    return app.exec();
+    return cmgui.exec();
 }

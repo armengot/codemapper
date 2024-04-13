@@ -115,10 +115,12 @@ $ ./codemapper -t /home/marcelo/dev/personal/github/codemapper/ -l cpp -o dot > 
 
 There are (until REL_00_07.02 version) the next available actions in the ```cmgui``` tool:
 
+
 | ACTION            | WAY/WHEN      | CLICK ON       |
 |-------------------|---------------|----------------|
 | Select language   | menus -> lan  | MOUSE          |
 | Parse folder      | menus -> open | MOUSE          |
+| Open .dot file    | menus -> open | MOUSE          |
 | Select node       | mouse         | left click     |
 | Select edge       | node selected | right click    |
 | Select edge       | node selected | tab            |
@@ -128,4 +130,5 @@ There are (until REL_00_07.02 version) the next available actions in the ```cmgu
 | Remove node       | node selected | keyboard (DEL) |
 | Remove edge       | edge selected | keyboard (DEL) |
 | Color of node     | node selected | keyboard (C)   |
+
 

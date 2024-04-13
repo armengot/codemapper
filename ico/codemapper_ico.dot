@@ -1,0 +1,38 @@
+digraph example
+{
+	a
+	[
+		label=""
+		shape=box
+		penwidth=5
+		style=filled
+		fillcolor=chartreuse3
+	];
+	b
+	[
+		label=""
+		penwidth=5
+		style=filled
+		fillcolor=RoyalBlue2
+	];
+	c
+	[
+		label=""
+		shape=circle
+		penwidth=5
+		style=filled
+		fillcolor=RoyalBlue2
+		
+	];
+	a -> b
+	[
+		arrowhead=none
+		penwidth=5		
+	];
+	a->c
+	[
+		constraint=none,
+		arrowhead=none
+		penwidth=5		
+	]
+}
